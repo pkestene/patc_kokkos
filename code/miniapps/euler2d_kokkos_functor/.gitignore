@@ -1,0 +1,4 @@
+*.o
+euler2d.cuda
+euler2d.omp
+*.vti
