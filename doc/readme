@@ -1,3 +1,11 @@
 - video de Mauro Bianco / CSCS : Modern C++ Workshop
  * GridTools video : 5'13
  * Kokkos video
+
+- mini-app:
+ * miniPIC : http://www.nersc.gov/research-and-development/apex/apex-benchmarks/minipic/
+ * miniFE : https://github.com/Mantevo/miniFE
+ * miniMD : https://github.com/Mantevo/miniMD
+ * miniAero : https://github.com/Mantevo/miniAero
+ * TeaLeaf : https://github.com/UoB-HPC/TeaLeaf
+ * SummerSchool2016 / CSCS
