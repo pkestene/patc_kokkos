@@ -10,7 +10,7 @@ def read_csv(filename):
     data = np.loadtxt(filename, delimiter=',')
     return data
 
-fig = plt.figure() # initialise la figure
+fig = plt.figure()
 
 index = 0
 filename = "Serial_{0:03d}.csv".format(index)
