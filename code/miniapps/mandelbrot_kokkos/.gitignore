@@ -1,0 +1,4 @@
+*.o
+*.ppm
+mandelbrot.omp
+mandelbrot.cuda
