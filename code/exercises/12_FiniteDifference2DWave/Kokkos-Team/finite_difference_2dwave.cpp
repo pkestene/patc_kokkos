@@ -42,10 +42,12 @@
 */
 
 // -*- C++ -*-
-// FiniteDifference2DWave.cc
+// FiniteDifference2DWave.cpp
 // An exercise for getting to know Kokkos.
 // Here we solve the wave equation in 2d with finite difference
 
+// header file containing some uninteresting ickies that are used by
+//  this example.
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -53,14 +55,10 @@
 #include <array>
 #include <string>
 #include <algorithm>
-#include <chrono>
 
 using std::string;
 using std::vector;
 using std::array;
-using std::chrono::high_resolution_clock;
-using std::chrono::duration;
-using std::chrono::duration_cast;
 
 // header files for kokkos
 #include <Kokkos_Core.hpp>
@@ -229,8 +227,7 @@ int main(int argc, char** argv) {
              100. * timestepIndex / float(numberOfTimesteps));
     }
 
-    const high_resolution_clock::time_point thisTimestepsTic =
-      high_resolution_clock::now();
+    Kokkos::Timer timer;
 
     const unsigned int t                    = timestepIndex % 2;
     const unsigned int tp1                  = (timestepIndex + 1) % 2;
@@ -249,10 +246,8 @@ int main(int argc, char** argv) {
     Kokkos::parallel_for(Kokkos::TeamPolicy<>(numberOfTeams, teamSize),
                          functor);
 
-    const high_resolution_clock::time_point thisTimestepsToc =
-      high_resolution_clock::now();
-    const double thisTimestepsElapsedTime =
-      duration_cast<duration<double> >(thisTimestepsToc - thisTimestepsTic).count();
+    Kokkos::fence();
+    const double thisTimestepsElapsedTime = timer.seconds();
     totalCalculationTime += thisTimestepsElapsedTime;
 
     if (timestepIndex % fileWriteTimestepInterval == 0) {
@@ -282,7 +277,7 @@ int main(int argc, char** argv) {
 
   }
 
-  printf("total calculation time was %.2lf\n", 1000 * totalCalculationTime);
+  printf("total calculation time was %.2lf seconds\n", totalCalculationTime);
 
   Kokkos::finalize();
 
