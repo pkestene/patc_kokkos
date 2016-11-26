@@ -42,7 +42,7 @@
 */
 
 // -*- C++ -*-
-// FiniteDifference2DWave.cc
+// FiniteDifference2DWave.cpp
 // An exercise for getting to know Kokkos.
 // Here we solve the wave equation in 2d with finite difference
 

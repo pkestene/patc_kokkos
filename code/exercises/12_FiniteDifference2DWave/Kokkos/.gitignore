@@ -1,5 +1,6 @@
 *.o
 KokkosCore_config.*
 finite_difference_2dwave.host
+finite_difference_2dwave.cuda
 libkokkos.a
 *.csv
