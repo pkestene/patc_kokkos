@@ -13,7 +13,7 @@ def read_csv(filename):
 fig, ax = plt.subplots()
 
 index = 0
-prefix = "Serial"
+prefix = "Kokkos"
 filename = prefix+"_{0:03d}.csv".format(index)
 data = read_csv(filename)
 nx,ny = data.shape

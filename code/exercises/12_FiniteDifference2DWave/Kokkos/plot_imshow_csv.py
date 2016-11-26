@@ -13,7 +13,7 @@ def read_csv(filename):
 fig = plt.figure()
 
 index = 0
-prefix = "Serial"
+prefix = "Kokkos"
 filename = prefix+"_{0:03d}.csv".format(index)
 data = read_csv(filename)
 im = plt.imshow(data, cmap=plt.get_cmap('viridis'), animated=True)

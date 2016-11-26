@@ -36,7 +36,7 @@ $(EXE): $(OBJ) $(KOKKOS_LINK_DEPENDS)
 	$(LINK) $(KOKKOS_LDFLAGS) $(LINKFLAGS) $(EXTRA_PATH) $(OBJ) $(KOKKOS_LIBS) $(LIB) -o $(EXE)
 
 clean: kokkos-clean 
-	rm -f *.o *.cuda *.host
+	rm -f *.o *.cuda *.host *.csv
 
 # Compilation rules
 
