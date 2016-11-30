@@ -1,1 +1,11 @@
 Kokkos must be configured with hwloc.
+
+This example is the most simple thing you think of:
+just initialize MPI, then Kokkos, and finaly check
+how MPI ranks and GPU are binded.
+
+example: on a node with 2 GPUs
+mpirun -np 2 ./test_mpi.cpu --ndevices=2
+you should see the correct binding
+
+If you omit option "--ndevices=2", all MPI tasks will use the same GPU (#0)
