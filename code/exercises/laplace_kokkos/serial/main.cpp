@@ -9,7 +9,7 @@
 
 #include "OpenMPTimer.h"
 
-#include "laplace2d_kernel.h"
+#include "laplace2d_serial_kernel.h"
 
 int main(int argc, char* argv[])
 {
