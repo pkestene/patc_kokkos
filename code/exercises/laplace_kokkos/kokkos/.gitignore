@@ -1,0 +1,3 @@
+*.o
+laplace2d_kokkos.omp
+laplace2d_kokkos.cuda

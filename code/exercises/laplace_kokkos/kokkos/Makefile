@@ -7,7 +7,7 @@ EXE_PREFIX=laplace2d_kokkos
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
-CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA
+CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA -O3
 LDFLAGS = -lgomp
 EXE = $(EXE_PREFIX).cuda
 else
@@ -24,10 +24,19 @@ SRC = \
 	OpenMPTimer.cpp \
 	main.cpp
 
+HEADERS = common.h kokkos_shared.h \
+	OpenMPTimer.h CudaTimer.h \
+	DataContext.h DataContextKokkos.h \
+	laplace2d_kokkos_kernel.h \
+	laplace2d_serial_kernel.h \
+	params.h
+
 TMP_OBJ = $(SRC:.c=.o)
 OBJ     = $(TMP_OBJ:.cpp=.o)
 
 .DEFAULT_GOAL=$(EXE)
+
+$(OBJ): $(HEADERS)
 
 $(EXE) : $(OBJ)
 	echo $@

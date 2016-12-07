@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
    */
 #ifdef CUDA
   // Initialize Host mirror device
-  Kokkos::HostSpace::execution_space::initialize(1);
+  Kokkos::HostSpace::execution_space::initialize();
   //const unsigned device_count = Kokkos::Cuda::detect_device_count();
 
   // Use the first device:
@@ -54,12 +54,14 @@ int main(int argc, char* argv[])
   }
 
 
-  int NX = 512;
-  int NY = 512;
+  int NX = 1024;
+  int NY = 1024;
   int iter_max = 1000;
   real_t tol = 1e-5;
   Params params(NX, NY, iter_max, tol);
 
+  printf("Jacobi relaxation Calculation: %d x %d mesh\n", NY, NX);
+  
   // allocate data context
   DataContext context(params);
 
@@ -78,6 +80,7 @@ int main(int argc, char* argv[])
   }
 
   // serial computation
+  printf("Calculate reference solution and time serial execution.\n");
   OpenMPTimer timer;
   timer.start();
   poisson2d_serial( context, params );
@@ -85,6 +88,7 @@ int main(int argc, char* argv[])
   real_t runtime_serial = timer.elapsed();
 
   // kokkos computation
+  printf("Parallel execution with kokkos.\n");
   DataContextKokkos context_kokkos(params);
 
   // initialize context
