@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
    */
 #ifdef CUDA
   // Initialize Host mirror device
-  Kokkos::HostSpace::execution_space::initialize(1);
+  Kokkos::HostSpace::execution_space::initialize();
   //const unsigned device_count = Kokkos::Cuda::detect_device_count();
 
   // Use the first device:

@@ -7,7 +7,7 @@ EXE_PREFIX=laplace2d_kokkos
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
-CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA
+CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA -O3
 LDFLAGS = -lgomp
 EXE = $(EXE_PREFIX).cuda
 else

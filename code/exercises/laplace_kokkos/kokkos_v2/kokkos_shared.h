@@ -37,22 +37,22 @@ typedef DataArray::HostMirror          DataArrayHost;
  */
 KOKKOS_INLINE_FUNCTION
 void index2coord(int index, int &i, int &j, int Nx, int Ny) {
-  // #ifdef CUDA
+#ifdef CUDA
   j = index / Nx;
   i = index - j*Nx;
-  // #else
-  // i = index / Ny;
-  // j = index - i*Ny;
-  // #endif
+#else
+  i = index / Ny;
+  j = index - i*Ny;
+#endif
 }
 
 KOKKOS_INLINE_FUNCTION
 int coord2index(int i, int j, int Nx, int Ny) {
-// #ifdef CUDA
+#ifdef CUDA
   return i + Nx*j; // left layout
-// #else
-//   return j + Ny*i; // right layout
-// #endif
+#else
+  return j + Ny*i; // right layout
+#endif
 }
 
 #endif // KOKKOS_SHARED_H_
