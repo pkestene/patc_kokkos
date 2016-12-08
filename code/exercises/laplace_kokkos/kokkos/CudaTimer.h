@@ -49,7 +49,7 @@ public:
     total_time += (double)1e-3*gpuTime;
   }
   
-  /** return elapsed time in seconds (as record in total_time) */
+  /** return elapsed time in seconds (as recorded in total_time) */
   double elapsed() const {
     return total_time;
   }
