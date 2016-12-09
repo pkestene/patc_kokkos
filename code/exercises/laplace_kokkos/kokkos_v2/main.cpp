@@ -13,6 +13,8 @@
 #include "laplace2d_serial_kernel.h"
 #include "laplace2d_kokkos_kernel.h"
 
+#include "check_results.h"
+
 int main(int argc, char* argv[])
 {
 
@@ -57,9 +59,21 @@ int main(int argc, char* argv[])
   int NX = 1024;
   int NY = 1024;
   int iter_max = 1000;
+
+#ifdef USE_DOUBLE
   real_t tol = 1e-5;
+#else
+  real_t tol = 1e-4;
+#endif
+  
   Params params(NX, NY, iter_max, tol);
 
+#ifdef USE_DOUBLE
+  printf("DOUBLE PRECISION computations\n");
+#else
+  printf("SINGLE PRECISION computations\n");
+#endif
+  
   printf("Jacobi relaxation Calculation: %d x %d mesh\n", NY, NX);
   
   // allocate data context
@@ -113,6 +127,11 @@ int main(int argc, char* argv[])
   timer.stop();
   real_t runtime_kokkos = timer.elapsed();
 
+  if ( check_results(context, context_kokkos, params) )
+    printf("Serial and Kokkos results match !\n");
+  else
+    printf("Serial and Kokkos results don't match !\n");    
+  
   printf("serial %dx%d: %8.4f secondes\n",NX,NY,runtime_serial);
   printf("kokkos %dx%d: %8.4f secondes\n",NX,NY,runtime_kokkos);
 
