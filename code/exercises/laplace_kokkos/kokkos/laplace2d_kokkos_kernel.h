@@ -97,23 +97,35 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
 
     Kokkos::parallel_reduce(NX*NY, functor, error);
     
-    // copy Anew into A
-    Kokkos::deep_copy(context.A, context.Anew);
-    
-    // Ensure periodic boundary conditions
-    Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
+    // copy Anew into A (bulk)
+    //Kokkos::deep_copy(context.A, context.Anew);
+    Kokkos::parallel_for( NX*NY, KOKKOS_LAMBDA(const int index) {    
+
     	int ix,iy;
     	index2coord(index,ix,iy,NX,NY);
 	
+    	if ( ix >= 1 and ix < NX-1 and
+	     iy >= 1 and iy < NY-1) {
+	  context.A(coord2index(ix,iy,NX,NY)) =
+	    context.Anew(coord2index(ix,iy,NX,NY));	  
+	}
+	
+      });
+	
+    // Ensure periodic boundary conditions
+    Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
+
+	int ix = index;
+	
     	if ( ix >= 1 and ix < NX-1 ) {
     	  context.A(coord2index(ix,   0,NX,NY)) = context.A(coord2index(ix,NY-2,NX,NY));
-    	  context.A(coord2index(ix,NY-1,NX,NY)) = context.A(coord2index(ix,1,NX,NY));
+    	  context.A(coord2index(ix,NY-1,NX,NY)) = context.A(coord2index(ix,1   ,NX,NY));
     	}
       });
     
-    Kokkos::parallel_for( NY, KOKKOS_LAMBDA(const int index) {    
-    	int ix,iy;
-    	index2coord(index,ix,iy,NX,NY);
+    Kokkos::parallel_for( NY, KOKKOS_LAMBDA(const int index) {
+
+	int iy = index;
 	
     	if ( iy >= 1 and iy < NY-1 ) {
     	  context.A(coord2index(   0,iy,NX,NY)) = context.A(coord2index(NX-2,iy,NX,NY));
