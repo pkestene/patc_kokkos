@@ -9,6 +9,7 @@
 #include "DataContextKokkos.h"
 
 #include "OpenMPTimer.h"
+#include "CudaTimer.h"
 
 #include "laplace2d_serial_kernel.h"
 #include "laplace2d_kokkos_kernel.h"
@@ -79,13 +80,13 @@ int main(int argc, char* argv[])
   /*
    * Inititalize some parameters.
    */
-  int NX = 1024;
-  int NY = 1024;
-  int iter_max = 200;
+  int NX = 128;
+  int NY = 128;
+  int iter_max = 500;
   real_t tol = 1e-5;
   
-  real_t runtime_serial;
-  real_t runtime_kokkos;
+  real_t runtime_serial = 0;
+  real_t runtime_kokkos = 0;
 
   /*
    * Perform serial reference computation.
@@ -165,7 +166,7 @@ int main(int argc, char* argv[])
     });
 
 #ifdef CUDA
-  CUDATimer timer;
+  CudaTimer timer;
 #else
   OpenMPTimer timer;
 #endif

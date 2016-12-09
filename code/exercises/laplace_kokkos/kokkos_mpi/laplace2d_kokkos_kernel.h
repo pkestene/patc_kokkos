@@ -143,21 +143,66 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
 
     // assumes a CUDA-aware MPI implementation 
     {
+
+      // create border buffer
+      DataArray sendBuf("sendBuf",ix_end-ix_start);
+      DataArray recvBuf("recvBuf",ix_end-ix_start);
+
       //1. Sent row iy_start (first modified row) to top
       //   receive lower boundary (iy_end) from bottom
+      /*
+       * downward communications: 
+       * - prepare to send
+       * - send/recvbuf
+       * - postprocess received data
+       */
 
-      // create subviews
-      typedef DataArray::size_type size_type;
-      typedef Kokkos::pair<size_type, size_type> pair;
-      DataArray rowBlock = Kokkos::subview(image, pair(start,end));
+      // copy A's border into rowBlock
+      Kokkos::parallel_for( ix_end-ix_start, KOKKOS_LAMBDA(const int index) {    
+	
+    	  sendBuf(index) = context.Anew(coord2index(index,iy_start,NX,NY));
+	  
+      });
+      
+      MPI_Sendrecv( sendBuf.data(), (ix_end-ix_start), MPI_REAL_TYPE, top, 0,
+		    recvBuf.data(), (ix_end-ix_start), MPI_REAL_TYPE, bottom, 0,
+		    MPI_COMM_WORLD, MPI_STATUS_IGNORE );
 
-
-      MPI_Sendrecv( &A[iy_start][ix_start], (ix_end-ix_start), MPI_REAL_TYPE, top   , 0, &A[iy_end][ix_start], (ix_end-ix_start), MPI_REAL_TYPE, bottom, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+      // copy back in place received data
+      Kokkos::parallel_for( ix_end-ix_start, KOKKOS_LAMBDA(const int index) {    
+	  
+    	  context.Anew(coord2index(index,iy_end,NX,NY)) = recvBuf(index);
+	  
+      });
+      
       
       //2. Sent row (iy_end-1) (last modified row) to bottom receive upper boundary (iy_start-1) from top
-      MPI_Sendrecv( &A[(iy_end-1)][ix_start], (ix_end-ix_start), MPI_REAL_TYPE, bottom, 0, &A[(iy_start-1)][ix_start], (ix_end-ix_start), MPI_REAL_TYPE, top   , 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE );
-    }
+      /*
+       * upward communications: 
+       * - prepare to send
+       * - send/recvbuf
+       * - postprocess received data
+       */
+      Kokkos::parallel_for( ix_end-ix_start, KOKKOS_LAMBDA(const int index) {    
+	
+    	  sendBuf(index) = context.Anew(coord2index(index,iy_end-1,NX,NY));
+	  
+      });
+      
 
+      MPI_Sendrecv( sendBuf.data(), (ix_end-ix_start), MPI_REAL_TYPE, bottom, 0,
+		    recvBuf.data(), (ix_end-ix_start), MPI_REAL_TYPE, top   , 0,
+		    MPI_COMM_WORLD, MPI_STATUS_IGNORE );
+
+
+      // copy back in place received data
+      Kokkos::parallel_for( ix_end-ix_start, KOKKOS_LAMBDA(const int index) {    
+	  
+    	  context.Anew(coord2index(index,iy_start-1,NX,NY)) = recvBuf(index);
+	  
+      });
+
+    } // end of MPI communications
 
 
     
@@ -171,7 +216,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
 	}
       });
 
-    if (mpi_rank == 0) if ( (iter % 100) == 0) printf("%5d, %0.6f\n", iter, error);
+    if (mpi_rank == 0 and (iter % 100) == 0) printf("%5d, %0.6f\n", iter, error);
     iter++;
 
   } // end while
