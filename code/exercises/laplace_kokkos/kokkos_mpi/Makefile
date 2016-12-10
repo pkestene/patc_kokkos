@@ -33,7 +33,7 @@ HEADERS = common.h kokkos_shared.h \
 	DataContext.h DataContextKokkos.h \
 	laplace2d_kokkos_kernel.h \
 	laplace2d_serial_kernel.h \
-	params.h
+	params.h check_results.h
 
 TMP_OBJ = $(SRC:.c=.o)
 OBJ     = $(TMP_OBJ:.cpp=.o)

@@ -4,6 +4,8 @@
 #include "params.h"
 #include "DataContext.h"
 
+#include <mpi.h>
+
 /**
  * Compute a reference solution stored in Aref.
  */
@@ -21,6 +23,9 @@ void poisson2d_serial( DataContext& context, Params& params )
   
   int iter  = 0;
   real_t error = 1.0;
+
+  int mpi_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &mpi_rank);
 
   while ( error > tol && iter < iter_max ) {
     error = 0.0;
@@ -55,7 +60,7 @@ void poisson2d_serial( DataContext& context, Params& params )
       Aref[iy*NX+(NX-1)] = Aref[iy*NX+1];
     }
 
-    if ( (iter % 100) == 0) printf("%5d, %0.6f\n", iter, error);
+    if ( (mpi_rank==0) and (iter % 100) == 0) printf("%5d, %0.6f\n", iter, error);
     iter++;
 
   } // end while
