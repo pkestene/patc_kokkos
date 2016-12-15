@@ -1,0 +1,190 @@
+\documentclass[9pt,hyperref={pdfpagemode=FullScreen,urlcolor=blue},xcolor=x11names]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  %\usetheme{Darmstadt}
+  %\usetheme{Marburg}
+  \setbeamertemplate{navigation symbols}{}
+
+  %\usecolortheme{crane}
+  %\usecolortheme{rose,sidebartab}
+
+  \usecolortheme{beaver}
+  %\usecolortheme{lily,sidebartab}
+  %\usecolortheme{seahorse}
+
+  \usefonttheme{serif}
+
+  \setbeamertemplate{footline}[page number]
+  \setbeamertemplate{sidebar canvas right}[vertical shading][top=palette
+  primary.bg,%,middle=white,
+  bottom=palette primary.bg]
+  %\setbeamertemplate{sections/subsections in toc}[section numbered,subsection numbered]
+
+  %\setbeamertemplate{itemize subitem}[circle]
+
+  \setbeamercovered{transparent}
+
+  %\beamertemplatenavigationsymbolsempty
+
+  \useinnertheme{default}
+}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xspace}
+\usepackage{amsmath,amssymb}
+\usepackage[english]{babel}
+%\usepackage[latin1]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage{aeguill,fourier}
+
+% souligne, barre
+\usepackage{ulem}
+%\usepackage[x11names]{xcolor}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+
+
+\usepackage{wasysym}
+\usepackage{fancyvrb}
+%\usepackage{verbatim}
+\usepackage{marvosym}
+
+\usepackage{colortbl}
+
+\usepackage{pdftricks}
+\begin{psinputs}
+\usepackage{pstricks}
+\usepackage{pst-bar}
+\usepackage{pstricks-add}
+\end{psinputs}
+
+\usepackage{ulem}
+
+\usepackage{ifdraft}
+\usepackage{animate}
+\usepackage{multimedia}
+
+%\usepackage{texmath}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}   % for hatching
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{arrows, decorations.markings}
+\usetikzlibrary{shapes.geometric}
+\newcommand{\warningsign}{\tikz[baseline=-.75ex] \node[shape=regular polygon, regular polygon sides=3, inner sep=0pt, draw, thick] {\textbf{!}};}
+\newcommand{\reddanger}{\textcolor{red}{\danger}}
+
+
+% the following is from 
+% http://tex.stackexchange.com/questions/4811/make-first-row-of-table-all-bold
+%\usepackage{array}
+%\newcolumntype{$}{>{\global\let\currentrowstyle\relax}}
+%\newcolumntype{^}{>{\currentrowstyle}}
+%\newcommand{\rowstyle}[1]{\gdef\currentrowstyle{#1}%
+%  #1\ignorespaces
+%}
+
+\usepackage{listings}
+\usepackage{minted}
+
+\usepackage{caption}
+
+
+%%%%%%%%%%%%%%%%%%%
+\hypersetup{%
+  pdftitle={PATC-KOKKOS-2017},%
+  pdfauthor={Pierre Kestener - CEA Saclay - MDLS - http://www.maisondelasimulation.fr},
+  pdfsubject={Introdcution to Kokkos},
+  pdfkeywords={KOKKOS, C++, GPU},
+  pdfproducer={pdflatex avec la classe BEAMER},
+  bookmarksopen=false,
+  urlcolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Kokkos, Modern C++, performance portability, ...}
+
+\author
+{
+  \mbox{\underline{Pierre Kestener}}\inst{1}
+}
+
+\institute[mdls sap]{%
+  \inst{1}%
+  CEA Saclay, DSM, Maison de la Simulation
+}
+
+\date{PATC, January, 16-18th, 2017}
+
+\pgfdeclareimage[height=0.5cm]{university-logo}{./images/Sigle-mdls}
+\logo{\pgfuseimage{university-logo}}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+\pgfdeclareimage[width=2.0cm]{sigle-cea}{./images/Sigle-mdls}
+\pgfdeclareimage[width=2.0cm]{sigle-prace}{images/logo_prace}
+\pgfdeclareimage[width=2.0cm]{sigle-nvidia}{images/NV_CUDA_Teaching_Center_3D.jpg}
+
+\titlegraphic{
+  % \pgfuseimage{sigle-prace}
+  \hfill
+  \pgfuseimage{sigle-cea}
+  \hfill
+  % \pgfuseimage{sigle-nvidia}
+}
+
+
+
+\begin{document}
+
+
+\definecolor{green2}{rgb}{0.1,0.8,0.1} 
+\definecolor{trust}{rgb}{0.71,0.14,0.07}
+\definecolor{FancyPurple}{rgb}{0.5176, 0.1137, 0.2314}
+
+\colorlet{redshaded}{red!25!bg}
+\colorlet{shaded}{black!25!bg}
+\colorlet{shadedshaded}{black!10!bg}
+\colorlet{blackshaded}{black!40!bg}
+
+\colorlet{darkred}{red!80!black}
+\colorlet{darkblue}{blue!80!black}
+\colorlet{darkgreen}{green!70!black}
+\colorlet{greenshaded}{green!95!bg}
+%\colorlet{coral}{Coral1!95!bg}
+
+%red, green, blue, cyan, magenta, yellow, black, white, darkgray, gray,
+%lightgray, brown, lime, olive, orange, pink, purple, teal, violet
+
+\newcommand\myurl[1]{\textcolor{purple}{\underline{\url{#1}}}}
+\newcommand\myhref[2]{\textcolor{purple}{\underline{\href{#1}{#2}}}}
+
+\newcommand\mySmiley{\textcolor{darkgreen}{\Smiley{}}}
+\newcommand\myFrowny{\textcolor{red}{\Frowny{}}}
+
+%% Big-O notation.
+\providecommand{\OO}[1]{\ensuremath{\operatorname{O}\bigl(#1\bigr)}}
+
+% definition des couleurs pour affichage de code
+\input{code/pygmentize2.tex}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% 1ere page
+\begin{frame}[label=courant]
+  \titlepage
+\end{frame}
+
+\input{build_kokkos}
+
+\end{document}
