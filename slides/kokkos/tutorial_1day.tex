@@ -1,0 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Tutorial Kokkos}
+
+  \begin{itemize}
+  \item We will first re-use material from Kokkos github repository.
+  \item On your home, on \texttt{oeussant}: 
+    \begin{enumerate}
+    \item \texttt{mkdir kokkos-tutorial; cd kokkos-tutorial}
+    \item \texttt{git clone https://github.com/kokkos/kokkos.git} \\
+      \# \textbf{Don't try to build kokkos}
+    \item \texttt{git clone https://github.com/kokkos/kokkos-tutorials.git}
+    \item \texttt{cd kokkos-tutorials/1-Day-Tutorial}\\
+      \# 1 Day tutorial exercice are routed to build kokkos for you
+    \end{enumerate}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{1Day Tutorial: SAXPY}
+
+  \begin{itemize}
+  \item \textbf{Proposed activity}
+  \item \textcolor{red}{\textbf{Saxpy serial (reference executable on Power8)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Serial}
+    \item Open \texttt{Makefile} and change \texttt{SNB} into \texttt{Power8}
+    \item \texttt{make}
+    \end{itemize}
+  \item \textcolor{orange}{\textbf{Saxpy OpenMP (on Power8)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Kokkos-Lambda}
+    \item Change again \texttt{Makefile}
+    \item Add 3 lines in \texttt{saxpy.cpp} right after Kokkos initialization
+      \begin{minted}{c++}
+        std::ostringstream msg;
+        Kokkos::OpenMP::print_configuration( msg );
+        std::cout << msg.str();
+      \end{minted}
+    \item Make sure all available CPU cores were used ($1\times 160 \times 1$)
+    \item Change the number of OpenMP threads created by kokkos, e.g. :\\
+      \texttt{./saxpy.host  --threads=20}
+    \item We need to change \texttt{Makefile} and use hwloc\\
+      add \texttt{KOKKOS\_USE\_TPLS="hwloc"} right after \texttt{KOKKOS\_DEVICES} in \texttt{Makefile}\\
+      Rebuild and rerun, you should see that application uses the available numa domains, and increasee bandwidth use !
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{1Day Tutorial: SAXPY}
+
+  \begin{itemize}
+  \item \textbf{Proposed activity}
+  \item \textcolor{darkgreen}{\textbf{Saxpy CUDA (on Power8 + Nvidia K80/P100)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Kokkos-Lambda}
+    \item \texttt{module load cuda/8.0}
+    \item Change again \texttt{Makefile}: \\
+      add CUDA to variable KOKKOS\_DEVICES = "Cuda,OpenMP"\\
+      Kepler35 $\Rightarrow$ Kepler37 (for Nvidia K80)\\
+      Kepler35 $\Rightarrow$ Pascal60 (for Nvidia P100)
+    \end{itemize}
+  \item Rebuild for K80, run on ouessant (front node)
+  \item Rebuild for P100, run on compute node using \texttt{submit\_ouessant.sh} (should see a strong difference)
+  \end{itemize}
+
+\end{frame}
