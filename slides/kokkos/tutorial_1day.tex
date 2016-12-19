@@ -73,3 +73,22 @@
   \end{itemize}
 
 \end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container}
+
+  \begin{itemize}
+  \item \texttt{Kokkos::View<...>}; replacement for \texttt{std::vector} with multidimensionnal feature and hardware adapted memory layout\\
+    \begin{itemize}
+    \item \texttt{Kokkos::View<double **>}
+    \end{itemize}
+
+  \item \texttt{Kokkos::DualView<...>} : usefull when porting an application incrementally, adata container on two different memory space.\\
+    see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
+  \item \texttt{Kokkos::UnorderedMap<...>}
+  \end{itemize}
+
+\end{frame}
