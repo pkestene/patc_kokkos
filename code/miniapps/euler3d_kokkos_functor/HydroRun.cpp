@@ -33,7 +33,6 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
   U(), U2(), Q(),
   Fluxes_x(), Fluxes_y(), Fluxes_z(),
   Slopes_x(), Slopes_y(), Slopes_z(),
-  Qm_x(), Qm_y(), Qm_z(), Qp_x(), Qp_y(), Qp_z(),
   isize(params.isize),
   jsize(params.jsize),
   ksize(params.ksize),
@@ -66,16 +65,6 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
     Fluxes_y = Fluxes_x;
     Fluxes_z = Fluxes_x;
     
-  } else if (params.implementationVersion == 2) {
-
-    Qm_x = DataArray("Qm_x", ijksize);
-    Qm_y = DataArray("Qm_y", ijksize);
-    Qm_z = DataArray("Qm_z", ijksize);
-    
-    Qp_x = DataArray("Qp_x", ijksize);
-    Qp_y = DataArray("Qp_y", ijksize);
-    Qp_z = DataArray("Qp_z", ijksize);
-
   }
   
   // default riemann solver
@@ -272,10 +261,7 @@ void HydroRun::godunov_unsplit_cpu(DataArray data_in,
       Kokkos::parallel_for(ijksize, functor);
     }
 
-  } else if (params.implementationVersion == 2) {
-    
-
-  } // end params.implementationVersion == 2
+  } // end params.implementationVersion == 1
   
   godunov_timer.stop();
   
@@ -294,33 +280,6 @@ void HydroRun::convertToPrimitives(DataArray Udata)
   Kokkos::parallel_for(ijksize, convertToPrimitivesFunctor);
   
 } // HydroRun::convertToPrimitives
-
-// =======================================================
-// =======================================================
-// ///////////////////////////////////////////////////////////////////
-// Compute trace (only used in implementation version 2), i.e.
-// fill global array qm_x, qmy, qp_x, qp_y
-// ///////////////////////////////////////////////////////////////////
-// void HydroRun::computeTrace(DataArray Udata, real_t dt)
-// {
-
-//   // local variables
-//   real_t dtdx;
-//   real_t dtdy;
-//   real_t dtdz;
-  
-//   dtdx = dt / params.dx;
-//   dtdy = dt / params.dy;
-//   dtdz = dt / params.dz;
-
-//   // call device functor
-//   ComputeTraceFunctor computeTraceFunctor(params, Udata, Q,
-// 					  Qm_x, Qm_y, Qm_z,
-// 					  Qp_x, Qp_y, Qp_z,
-// 					  dtdx, dtdy, dtdz);
-//   Kokkos::parallel_for(ijksize, computeTraceFunctor);
-
-// } // HydroRun::computeTrace
 
 // =======================================================
 // =======================================================
@@ -374,9 +333,15 @@ void HydroRun::init_implode(DataArrayHost Udata)
 {
 
   const int ghostWidth = params.ghostWidth;
-  const int nx = params.nx;
-  const int ny = params.ny;
-  const int nz = params.nz;
+
+  const real_t xmin = params.xmin;
+  const real_t ymin = params.ymin;
+  const real_t zmin = params.zmin;
+  
+  const real_t dx = params.dx;
+  const real_t dy = params.dy;
+  const real_t dz = params.dz;
+
   const real_t gamma0 = params.settings.gamma0;
 
   for (int index=0; index<ijksize; ++index) {
@@ -384,10 +349,11 @@ void HydroRun::init_implode(DataArrayHost Udata)
     int i,j,k;
     index2coord(index,i,j,k,isize,jsize,ksize);
 
-    real_t tmp =
-      1.0*(i-ghostWidth)/nx +
-      1.0*(j-ghostWidth)/ny +
-      1.0*(k-ghostWidth)/nz ;
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
+    real_t z = zmin + dz/2 + (k-ghostWidth)*dz;
+
+    real_t tmp = x + y + z;
 	  
     if (tmp > 0.5 && tmp < 2.5) {
       Udata(index , ID) = 1.0;
@@ -417,12 +383,20 @@ void HydroRun::init_blast(DataArrayHost Udata)
 
   real_t gamma0 = params.settings.gamma0;
 
+  const int ghostWidth = params.ghostWidth;
+  const real_t xmin = params.xmin;
+  const real_t ymin = params.ymin;
+  const real_t zmin = params.zmin;
+  const real_t dx = params.dx;
+  const real_t dy = params.dy;
+  const real_t dz = params.dz;
+
   // blast problem parameters
   real_t blast_radius = params.blast_radius;
   real_t radius2      = blast_radius*blast_radius;
-  int blast_center_x  = params.blast_center_x;
-  int blast_center_y  = params.blast_center_y;
-  int blast_center_z  = params.blast_center_z;
+  real_t blast_center_x  = params.blast_center_x;
+  real_t blast_center_y  = params.blast_center_y;
+  real_t blast_center_z  = params.blast_center_z;
   real_t blast_density_in  = params.blast_density_in;
   real_t blast_density_out = params.blast_density_out;
   real_t blast_pressure_in = params.blast_pressure_in;
@@ -432,10 +406,14 @@ void HydroRun::init_blast(DataArrayHost Udata)
     int i,j,k;
     index2coord(index,i,j,k,isize,jsize,ksize);
     
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
+    real_t z = zmin + dz/2 + (k-ghostWidth)*dz;
+
     real_t d2 = 
-      (i-blast_center_x)*(i-blast_center_x)+
-      (j-blast_center_y)*(j-blast_center_y)+
-      (k-blast_center_z)*(k-blast_center_z);
+      (x-blast_center_x)*(x-blast_center_x)+
+      (y-blast_center_y)*(y-blast_center_y)+
+      (z-blast_center_z)*(z-blast_center_z);
     
     if (d2 < radius2) {
       Udata(index , ID) = blast_density_in;

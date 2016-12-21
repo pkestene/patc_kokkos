@@ -74,16 +74,22 @@ void hydroParams_setup(HydroParams& params, ConfigMap &configMap)
     params.problemType = PROBLEM_IMPLODE;
   }
 
-  params.blast_radius   = configMap.getFloat("blast","radius", 1.0);
-  params.blast_center_x = configMap.getInteger("blast","center_x", params.nx/2-1);
-  params.blast_center_y = configMap.getInteger("blast","center_y", params.ny/2-1);
-  params.blast_center_z = configMap.getInteger("blast","center_z", params.nz/2-1);
+  params.blast_radius   = configMap.getFloat("blast","radius", (params.xmin+params.xmax)/2.0/10);
+  params.blast_center_x = configMap.getFloat("blast","center_x", (params.xmin+params.xmax)/2);
+  params.blast_center_y = configMap.getFloat("blast","center_y", (params.ymin+params.ymax)/2);
+  params.blast_center_z = configMap.getFloat("blast","center_z", (params.zmin+params.zmax)/2);
   params.blast_density_in  = configMap.getFloat("blast","density_in", 1.0);
   params.blast_density_out = configMap.getFloat("blast","density_out", 1.2);
   params.blast_pressure_in  = configMap.getFloat("blast","pressure_in", 10.0);
   params.blast_pressure_out = configMap.getFloat("blast","pressure_out", 0.1);
 
   params.implementationVersion  = configMap.getFloat("OTHER","implementationVersion", 0);
+  if (params.implementationVersion != 0 and
+      params.implementationVersion != 1) {
+    std::cout << "Implementation version is invalid (must be 0 or 1)\n";
+    std::cout << "Use the default : 0\n";
+    params.implementationVersion = 0;
+  }
 
   hydroParams_init(params);
 
@@ -123,7 +129,7 @@ void hydroParams_init(HydroParams& params)
     fprintf(stderr, "Check your parameter file, section OTHER");
     exit(EXIT_FAILURE);
   } else {
-    fprintf(stdout, "Using implementation version %d\n", params.implementationVersion);
+    fprintf(stdout, "Using Euler implementation version %d\n", params.implementationVersion);
   }
 
 } // hydroParams_init

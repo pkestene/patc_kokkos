@@ -38,13 +38,6 @@ public:
   DataArray Slopes_y; /*!< implementation 1 only */
   DataArray Slopes_z; /*!< implementation 1 only */
 
-  /* implementation 2 only */
-  DataArray Qm_x; /*!< hydrodynamics Riemann states array implementation 2 */
-  DataArray Qm_y; /*!< hydrodynamics Riemann states array */
-  DataArray Qm_z; /*!< hydrodynamics Riemann states array */
-  DataArray Qp_x; /*!< hydrodynamics Riemann states array */
-  DataArray Qp_y; /*!< hydrodynamics Riemann states array */
-  DataArray Qp_z; /*!< hydrodynamics Riemann states array */
 
   //riemann_solver_t riemann_solver_fn; /*!< riemann solver function pointer */
 

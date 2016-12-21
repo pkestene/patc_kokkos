@@ -173,9 +173,9 @@ struct HydroParams {
   
   // blast problem parameters
   real_t blast_radius=10.0;
-  int blast_center_x=0;
-  int blast_center_y=0;
-  int blast_center_z=0;
+  real_t blast_center_x=0.0;
+  real_t blast_center_y=0.0;
+  real_t blast_center_z=0.0;
   real_t blast_density_in=1.0;
   real_t blast_density_out=1.2;
   real_t blast_pressure_in=10.0;
@@ -202,7 +202,7 @@ struct HydroParams {
     settings(),
     niter_riemann(10), riemannSolverType(), problemType(),
     blast_radius(10.0),
-    blast_center_x(0), blast_center_y(0), blast_center_z(0),
+    blast_center_x(0.0), blast_center_y(0.0), blast_center_z(0.0),
     blast_density_in(1.0), blast_density_out(1.2),
     blast_pressure_in(10.0), blast_pressure_out(0.1),
     implementationVersion(0) {}
