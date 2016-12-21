@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
 
   // test: create a HydroParams object
   HydroParams params = HydroParams();
-  hydroParams_setup(params, configMap);
+  params.setup(configMap);
   
   // print parameters on screen
-  hydroParams_print(params);
+  params.print();
 
   // initialize workspace memory (U, U2, ...)
   HydroRun *hydro = new HydroRun(params, configMap);
