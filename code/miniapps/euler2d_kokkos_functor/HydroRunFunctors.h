@@ -1129,7 +1129,6 @@ public:
     const int jmax = params.jmax;
     
     int i,j;
-    //index2coord(index,i,j,isize,jsize);
 
     int boundary_type;
     
@@ -1140,10 +1139,11 @@ public:
     if (faceId == FACE_XMIN) {
       
       // boundary xmin
+      boundary_type = params.boundary_type_xmin;
+
       j = index / ghostWidth;
       i = index - j*ghostWidth;
       
-      boundary_type = params.boundary_type_xmin;
       if(j >= jmin && j <= jmax    &&
 	 i >= 0    && i <ghostWidth) {
 	
@@ -1172,7 +1172,11 @@ public:
       
       // boundary xmax
       boundary_type = params.boundary_type_xmax;
+
+      j = index / ghostWidth;
+      i = index - j*ghostWidth;
       i += (nx+ghostWidth);
+
       if(j >= jmin          && j <= jmax             &&
 	 i >= nx+ghostWidth && i <= nx+2*ghostWidth-1) {
 	
@@ -1199,9 +1203,11 @@ public:
     if (faceId == FACE_YMIN) {
       
       // boundary ymin
+      boundary_type = params.boundary_type_ymin;
+
       i = index / ghostWidth;
       j = index - i*ghostWidth;
-      boundary_type = params.boundary_type_ymin;
+
       if(i >= imin && i <= imax    &&
 	 j >= 0    && j <ghostWidth) {
 	
@@ -1228,6 +1234,9 @@ public:
 
       // boundary ymax
       boundary_type = params.boundary_type_ymax;
+
+      i = index / ghostWidth;
+      j = index - i*ghostWidth;
       j += (ny+ghostWidth);
       if(i >= imin          && i <= imax              &&
 	 j >= ny+ghostWidth && j <= ny+2*ghostWidth-1) {

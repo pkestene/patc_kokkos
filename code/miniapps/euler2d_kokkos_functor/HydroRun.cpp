@@ -300,15 +300,22 @@ void HydroRun::init_implode(DataArrayHost Udata)
 {
 
   const int ghostWidth = params.ghostWidth;
-  const int nx = params.nx;
-  const int ny = params.ny;
+  
+  const real_t xmin = params.xmin;
+  const real_t ymin = params.ymin;
+  const real_t dx = params.dx;
+  const real_t dy = params.dy;
+  
   const real_t gamma0 = params.settings.gamma0;
   
   for (int index=0; index<ijsize; ++index) {
     int i,j;
     index2coord(index,i,j,isize,jsize);
+
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
     
-    real_t tmp = 1.0*(i-ghostWidth)/nx + 1.0*(j-ghostWidth)/ny;
+    real_t tmp = x+y;
     if (tmp > 0.5 && tmp < 1.5) {
       Udata(index , ID) = 1.0;
       Udata(index , IP) = 1.0/(gamma0-1.0);
@@ -335,11 +342,17 @@ void HydroRun::init_blast(DataArrayHost Udata)
 
   real_t gamma0 = params.settings.gamma0;
 
+  const int ghostWidth = params.ghostWidth;
+  const real_t xmin = params.xmin;
+  const real_t ymin = params.ymin;
+  const real_t dx = params.dx;
+  const real_t dy = params.dy;
+
   // blast problem parameters
-  real_t blast_radius = params.blast_radius;
-  real_t radius2      = blast_radius*blast_radius;
-  int blast_center_x  = params.blast_center_x;
-  int blast_center_y  = params.blast_center_y;
+  real_t blast_radius      = params.blast_radius;
+  real_t radius2           = blast_radius*blast_radius;
+  real_t blast_center_x    = params.blast_center_x;
+  real_t blast_center_y    = params.blast_center_y;
   real_t blast_density_in  = params.blast_density_in;
   real_t blast_density_out = params.blast_density_out;
   real_t blast_pressure_in = params.blast_pressure_in;
@@ -349,9 +362,12 @@ void HydroRun::init_blast(DataArrayHost Udata)
     int i,j;
     index2coord(index,i,j,isize,jsize);
     
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
+
     real_t d2 = 
-      (i-blast_center_x)*(i-blast_center_x)+
-      (j-blast_center_y)*(j-blast_center_y);
+      (x-blast_center_x)*(x-blast_center_x)+
+      (y-blast_center_y)*(y-blast_center_y);    
     
     if (d2 < radius2) {
       Udata(index , ID) = blast_density_in;
