@@ -36,12 +36,6 @@ public:
   DataArray Slopes_x; /*!< implementation 1 only */
   DataArray Slopes_y; /*!< implementation 1 only */
 
-  /* implementation 2 only */
-  DataArray Qm_x; /*!< hydrodynamics Riemann states array implementation 2 */
-  DataArray Qm_y; /*!< hydrodynamics Riemann states array */
-  DataArray Qp_x; /*!< hydrodynamics Riemann states array */
-  DataArray Qp_y; /*!< hydrodynamics Riemann states array */
-
   //riemann_solver_t riemann_solver_fn; /*!< riemann solver function pointer */
 
   Timer boundaries_timer, godunov_timer;

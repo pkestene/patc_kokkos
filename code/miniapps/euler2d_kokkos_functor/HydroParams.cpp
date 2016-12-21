@@ -78,6 +78,12 @@ void hydroParams_setup(HydroParams& params, ConfigMap &configMap)
   params.blast_pressure_out = configMap.getFloat("blast","pressure_out", 0.1);
 
   params.implementationVersion  = configMap.getFloat("OTHER","implementationVersion", 0);
+  if (params.implementationVersion != 0 and
+      params.implementationVersion != 1) {
+    std::cout << "Implementation version is invalid (must be 0 or 1)\n";
+    std::cout << "Use the default : 0\n";
+    params.implementationVersion = 0;
+  }
 
   hydroParams_init(params);
 

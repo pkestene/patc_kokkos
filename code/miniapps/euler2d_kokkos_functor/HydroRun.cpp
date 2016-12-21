@@ -33,7 +33,6 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
   U(), U2(), Q(),
   Fluxes_x(), Fluxes_y(),
   Slopes_x(), Slopes_y(),
-  Qm_x(), Qm_y(), Qp_x(), Qp_y(),
   isize(params.isize),
   jsize(params.jsize),
   ijsize(params.isize*params.jsize)
@@ -61,14 +60,7 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
     Fluxes_x = DataArray("Fluxes_x", ijsize);
     Fluxes_y = Fluxes_x;
     
-  } else if (params.implementationVersion == 2) {
-
-    Qm_x = DataArray("Qm_x", ijsize);
-    Qm_y = DataArray("Qm_y", ijsize);
-    Qp_x = DataArray("Qp_x", ijsize);
-    Qp_y = DataArray("Qp_y", ijsize);
-
-  }
+  } 
   
   // default riemann solver
   // riemann_solver_fn = &HydroRun::riemann_approx;
@@ -246,15 +238,7 @@ void HydroRun::godunov_unsplit_cpu(DataArray data_in,
       Kokkos::parallel_for(ijsize, functor);
     }
 
-  } else if (params.implementationVersion == 2) {
-    
-    // trace computation: fill arrays qm_x, qm_y, qp_x, qp_y
-    computeTrace(data_in, dt);
-
-    // Compute flux via Riemann solver and update (time integration)
-    computeFluxesAndUpdate(data_out, dt);
-
-  } // end params.implementationVersion == 2
+  } // end params.implementationVersion == 1
   
   godunov_timer.stop();
   
@@ -273,52 +257,6 @@ void HydroRun::convertToPrimitives(DataArray Udata)
   Kokkos::parallel_for(ijsize, convertToPrimitivesFunctor);
   
 } // HydroRun::convertToPrimitives
-
-// =======================================================
-// =======================================================
-// ///////////////////////////////////////////////////////////////////
-// Compute trace (only used in implementation version 2), i.e.
-// fill global array qm_x, qmy, qp_x, qp_y
-// ///////////////////////////////////////////////////////////////////
-void HydroRun::computeTrace(DataArray Udata, real_t dt)
-{
-
-  // local variables
-  real_t dtdx;
-  real_t dtdy;
-  
-  dtdx = dt / params.dx;
-  dtdy = dt / params.dy;
-
-  // call device functor
-  ComputeTraceFunctor computeTraceFunctor(params, Udata, Q,
-					  Qm_x, Qm_y, Qp_x, Qp_y,
-					  dtdx, dtdy);
-  Kokkos::parallel_for(ijsize, computeTraceFunctor);
-
-} // HydroRun::computeTrace
-
-// =======================================================
-// =======================================================
-// //////////////////////////////////////////////////////////////////
-// Compute flux via Riemann solver and update (time integration)
-// //////////////////////////////////////////////////////////////////
-void HydroRun::computeFluxesAndUpdate(DataArray Udata, 
-				      real_t dt)
-{
-   
-  real_t dtdx = dt / params.dx;
-  real_t dtdy = dt / params.dy;
-
-  // call device functor
-  ComputeFluxesAndUpdateFunctor computeFluxesAndUpdateFunctor(params,
-							      Udata,
-							      Qm_x, Qm_y,
-							      Qp_x, Qp_y,
-							      dtdx, dtdy);
-  Kokkos::parallel_for(ijsize, computeFluxesAndUpdateFunctor);
- 
-} // computeFluxesAndUpdate
 
 // =======================================================
 // =======================================================
