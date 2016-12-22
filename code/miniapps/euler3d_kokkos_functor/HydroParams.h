@@ -207,14 +207,18 @@ struct HydroParams {
     blast_pressure_in(10.0), blast_pressure_out(0.1),
     implementationVersion(0) {}
 
+  void setup(ConfigMap& map);
+  void init();
+  void print();
+  
 }; // struct HydroParams
 
 /*
  * build an hydroParams structure from a ConfigMap object.
  */
-void hydroParams_setup(HydroParams& params, ConfigMap& map);
+// void hydroParams_setup(HydroParams& params, ConfigMap& map);
 
-void hydroParams_init(HydroParams& params);
-void hydroParams_print(HydroParams& params);
+// void hydroParams_init(HydroParams& params);
+// void hydroParams_print(HydroParams& params);
 
 #endif // HYDRO_PARAMS_H_
