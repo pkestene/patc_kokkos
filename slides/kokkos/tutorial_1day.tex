@@ -9,10 +9,10 @@
     \begin{enumerate}
     \item \texttt{mkdir kokkos-tutorial; cd kokkos-tutorial}
     \item \texttt{git clone https://github.com/kokkos/kokkos.git} \\
-      \# \textbf{Don't try to build kokkos}
+      \# \textbf{Don't try to build kokkos here (for now)}
     \item \texttt{git clone https://github.com/kokkos/kokkos-tutorials.git}
     \item \texttt{cd kokkos-tutorials/1-Day-Tutorial}\\
-      \# 1 Day tutorial exercice are routed to build kokkos for you
+      \# 1 Day tutorial exercice are routed to \textbf{build kokkos for you}
     \end{enumerate}
   \end{itemize}
 
@@ -91,4 +91,53 @@
   \item \texttt{Kokkos::UnorderedMap<...>}
   \end{itemize}
 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels}
+
+  \begin{itemize}
+  \item How to specify a compute kernel in Kokkos ?
+    \begin{enumerate}
+    \item \textcolor{blue}{\textbf{Use Lambda functions.}}\\
+      NB: a lambda in c++11 is an unnamed function object capable of capturing variables in scope.
+      \begin{minted}{c++}
+        Kokkos::parallel_for (100, KOKKOS_LAMBDA (const int i) {
+          data(i) = 2*i;
+        });
+      \end{minted}
+    \item \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}\\
+      A functor is a class containing a function to execute in parallel.
+      \begin{minted}{c++}
+        class FunctorType {
+          public:
+          KOKKOS_INLINE_FUNCTION
+          void operator() ( const int i ) const ;
+        };
+      \end{minted}
+    \end{enumerate}
+  \end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels}
+
+  \textbf{Lambda or Functor: which one to use in Kokkos ? Both !}
+  \begin{enumerate}
+  \item \textcolor{blue}{\textbf{Use Lambda functions.}}\\
+    \begin{itemize}
+    \item easy way for small compute kernels
+    \item For GPU, requires Cuda 7.5 (8.0 is current and latest CUDA version)
+    \end{itemize}
+  \item \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}\\
+    \begin{itemize}
+    \item More flexible, allow to design more complex kernel
+    \end{itemize}
+  \end{enumerate}
 \end{frame}

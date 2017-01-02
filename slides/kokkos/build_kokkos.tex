@@ -55,6 +55,27 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Kokkos - Documentation}
+
+  \begin{itemize}
+  \item PDF documentation in kokkos source tree : \texttt{doc/Kokkos\_PG.pdf} (programming guide)
+  \item \myhref{http://www.stack.nl/~dimitri/doxygen/}{Doxygen} can only be built from inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos source tree}\\
+    Version of the day can be browsed at \myurl{https://trilinos.org/docs/dev/packages/kokkos/doc/html/index.html}
+  \item Kokkos source code itself, reading unit tests code is also helpful
+  \end{itemize}
+
+  Additionnal resources:
+
+  \begin{itemize}
+  \item Tutorial slides and codes: \\
+    \myurl{https://github.com/kokkos/kokkos-tutorials}
+  \end{itemize}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos - basics}
 
@@ -66,12 +87,13 @@
       #include <Kokkos_Core.hpp>
       
       int main(int argc, char* argv[]) {
-        
-        // default initialization
+        // default: initialize the host exec space
+        // What exactly gets initialized depends on how kokkos
+        // was built, i.e. which options was passed to
+        // generate_makefile.bash
         Kokkos::initialize();
         ...
         Kokkos::finalize();
-        
       }
     \end{minted}
     %
@@ -79,7 +101,7 @@
     \begin{itemize}
     \item Defines \textcolor{blue}{\texttt{DefaultExecutionSpace}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Threads > Serial)\\
       e.g. if \texttt{\-- \-- with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\-- \-- with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
-    \item Defines a default memory space
+    \item Defines a \textcolor{blue}{default memory space}
     \item all these will internally be used inside Kokkos sources as default (hidden) template parameters
     \end{itemize}
     % 
@@ -115,7 +137,8 @@
       User can change/fix e.g. number OpenMP threads on the application's command line
     \item This is regular initialization. If available \textcolor{orange}{\textbf{\texttt{hwloc}}} is used to decide:
       \begin{itemize}
-      \item For OpenMP exec space: number of threads (default is all CPU cores)
+      \item For OpenMP exec space: number of threads (default is all CPU cores)\\
+        NB: usual envirinment variables (e.g. \texttt{OMP\_NUM\_THREADS} can be used
       \item Mapping between GPUs and MPI task
       \end{itemize}
     \end{itemize}
@@ -132,7 +155,7 @@
 
   \begin{itemize}
   \item \textcolor{red}{\textbf{Advanced initialization}} with \textcolor{blue}{\textbf{OpenMP + CUDA}}\\
-    \textbf{Needed/usefull to be able to execution compution on both HOST / GPU}
+    \textbf{Needed/usefull to be able to execution computation on both HOST / GPU}
   \end{itemize}
   \begin{minted}{c++}
     #if defined( KOKKOS_HAVE_CUDA )
