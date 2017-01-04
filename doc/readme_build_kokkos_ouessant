@@ -1,0 +1,32 @@
+All you need is to have module cuda/8.0 loaded.
+
+#######################
+# build cuda version (K80 arch is sm_37)
+#######################
+../generate_makefile.bash --with-cuda --arch=Kepler37 --prefix=$HOME/local/kokkos_cuda80_gnu485_dev_k80 --with-cuda-options=enable_lambda --with-openmp --with-hwloc
+
+make kokkoslib
+make install
+
+#######################
+# build cuda version (P100 arch is sm_60)
+#######################
+../generate_makefile.bash --with-cuda --arch=Pascal60 --prefix=$HOME/local/kokkos_cuda80_gnu485_dev_p100 --with-cuda-options=enable_lambda --with-openmp --with-hwloc
+
+make kokkoslib
+make install
+
+
+###########################################
+# build openmp version (Power8) gnu 4.8.5
+###########################################
+../generate_makefile.bash --with-openmp --arch=Power8 --prefix=$HOME/local/kokkos_openmp_gnu485_dev --compiler=/usr/bin/g++ --with-hwloc
+make kokkoslib
+make install
+
+###########################################
+# build openmp version (Power8) xlc 13.1.5
+###########################################
+../generate_makefile.bash --with-openmp --arch=Power8 --prefix=$HOME/local/kokkos_openmp_xlc1315_dev --compiler=/opt/ibm/xlC/13.1.5/bin/xlc++ --with-hwloc
+make kokkoslib
+make install
