@@ -7,8 +7,11 @@
 # an MPI implementation other than OpenMPI, set the corresponding
 # environment variable instead.)
 #
-
+# You will need to export the following variable pointing to nvcc_wrapper found
+# in Trilinos sources.
 # export OMPI_CXX=/home/pkestene/install/trilinos/github/trilinos/packages/kokkos/config/nvcc_wrapper
+#
+#
 
 rm -rf CMake* Trilinos* packages Dart* Testing cmake_install.cmake MakeFile*
 EXTRA_ARGS=$@
@@ -116,7 +119,7 @@ cmake \
   -D Tpetra_ENABLE_KokkosCore=ON \
   -D Tpetra_ENABLE_Kokkos_DistObject=OFF \
   -D Tpetra_ENABLE_Kokkos_Refactor=ON \
-  -D Tpetra_ENABLE_TESTS=ON \
+  -D Tpetra_ENABLE_TESTS=OFF \
   -D Tpetra_ENABLE_EXAMPLES=ON \
   -D Tpetra_ENABLE_MPI_CUDA_RDMA:BOOL=ON \
   \

@@ -28,7 +28,8 @@
     \item \textbf{Get Trilinos sources:}\\
       \texttt{git clone https://github.com/trilinos/Trilinos.git;} \texttt{cd Trilinos; git checkout develop}
     \item \textbf{CMake configuration script:} Use the provided configuration file \texttt{configure\_tpetra\_kokkos\_cuda\_nvcc\_wrapper.sh} located in the provided archive (\texttt{doc/trilinos})\\
-      this script must be run is a build directory (not directly in trilinos sources).\\
+      this script needs slights changes (var \texttt{OMPI\_CXX} and install prefix)\\
+      this script must be run in a build directory (not directly in trilinos sources).\\
       this config will build kokkos with unit tests and examples.
     \item \textbf{Build:} \texttt{make -j; make install}
     \item \textbf{Build a sample project.}
@@ -42,4 +43,8 @@
 \begin{frame}
   \frametitle{Trilinos/Tpetra example project}
 
+  \begin{itemize}
+  \item Directory \texttt{doc/trilinos/tpetra\_example} contains a minimal example application for trilinos/tpetra. You just need to set env variable TRILINOS_PATH to install directory.
+  \end{itemize}
+  
 \end{frame}
