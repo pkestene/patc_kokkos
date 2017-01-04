@@ -7,16 +7,15 @@
   \item \textbf{Kokkos is still experimental, but moving fast}
   \item \textbf{1. Get sources, development branch}
     \begin{itemize}
-    \item \texttt{git clone https://github.com/kokkos/kokkos}
-    \item \texttt{git checkout develop}
     \item \textcolor{blue}{Practicals on \texttt{ouessant}:}\\
-      \texttt{mkdir \$HOME/kokkos-tutorial}\\
-      perform \texttt{git clone} operation from \texttt{\$HOME/kokkos-tutorial}\\
-      some tutorial examples are already configured for using that precise location.
+      \texttt{1. mkdir \$HOME/kokkos-tutorial; cd \$HOME/kokkos-tutorial}\\
+      some tutorial examples are already configured for using that precise location.\\
+      \texttt{2. git clone https://github.com/kokkos/kokkos}\\
+      \texttt{3. cd kokkos; git checkout develop}
     \end{itemize}
   \item \textbf{2. Build configuration}
     \begin{itemize}
-    \item \texttt{cd \$KOKKOS\_SOURCES; mkdir build; cd build}
+    \item \texttt{mkdir build; cd build}
     \item About build system, several ways to use Kokkos
       \begin{enumerate}
       \item Only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos}, \myhref{https://cmake.org/}{CMake} is used
@@ -37,6 +36,7 @@
   \begin{itemize}
   \item \textcolor{blue}{\textbf{Example build configurations}}
     \begin{itemize}
+    \item For \texttt{ouessant}, see file \texttt{doc/readme\_build\_kokkos\_ouessant} in the provided archive
     \item Serial (mostly for testing)\\
       \texttt{../generate\_makefile.bash --with-serial --prefix=\$HOME/local/kokkos\_serial}
     \item \textbf{OpenMP}\\
