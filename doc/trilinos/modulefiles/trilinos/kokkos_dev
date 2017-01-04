@@ -1,0 +1,28 @@
+#%Module1.0
+####################################################
+## Modulefile for Trilinos
+####################################################
+
+proc ModulesHelp { } {
+    puts stderr "Trilinos - sets the environment"
+}
+
+module-whatis "sets the environment for using Trilinos"
+
+conflict trilinos
+
+# for Tcl script use only
+set     version         kokkos_dev
+set     topdir          /home/pkestene/local/trilinos_$version
+
+prepend-path  PATH              $topdir/bin
+prepend-path  MANPATH           $topdir/share/man
+prepend-path  LD_LIBRARY_PATH   $topdir/lib
+
+setenv          TRILINOS_VERSION	   "$version"
+setenv          TRILINOS_ROOT_DIR          "$topdir"
+setenv          TRILINOS_PATH              "$topdir"
+setenv          TRILINOS_BIN_DIR           "$topdir/bin"
+setenv          TRILINOS_INC_DIR           "$topdir/include"
+setenv          TRILINOS_LIB_DIR           "$topdir/lib"
+

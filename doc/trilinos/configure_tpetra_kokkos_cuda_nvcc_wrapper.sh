@@ -26,15 +26,17 @@ CUDA_PATH="/usr/local/cuda-8.0/"
 # CUDA_NVCC_FLAGS, we must make sure that they are the same flags as
 # nvcc_wrapper passes to nvcc.
 #
-CUDA_NVCC_FLAGS="-gencode;arch=compute_50,code=sm_50;-I${MPI_PATH}/include"
-CUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS};-Xcompiler;-Wall,-ansi,-fopenmp"
-CUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS};-O3;-DKOKKOS_USE_CUDA_UVM"
+#CUDA_NVCC_FLAGS="-gencode;arch=compute_50,code=sm_50;--verbose;-I${MPI_PATH}/include"
+#CUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS};-Xcompiler;-Wall,-ansi,-fopenmp"
+#CUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS};-O3;-DKOKKOS_USE_CUDA_UVM"
 #CUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS};-O3"
+
+#CUDA_NVCC_FLAGS="-arch=sm_50 -Xcompiler -Wall,-ansi,-fopenmp -DKOKKOS_USE_CUDA_UVM -DKOKKOS_CUDA_USE_LAMBDA -expt-extended-lambda"
 
 cmake \
   -D CMAKE_INSTALL_PREFIX:PATH="/home/pkestene/local/trilinos_kokkos_dev" \
   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
-  -D CMAKE_CXX_FLAGS:STRING="-g -Wall" \
+  -D CMAKE_CXX_FLAGS:STRING="-g -Wall -std=c++11 -arch=sm_50 -Xcompiler -Wall,-ansi,-fopenmp,-std=c++11 -expt-extended-lambda -DKOKKOS_USE_CUDA_UVM -DKOKKOS_CUDA_USE_LAMBDA" \
   -D CMAKE_C_FLAGS:STRING="-g -Wall" \
   -D CMAKE_FORTRAN_FLAGS:STRING="" \
   -D CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS="" \
