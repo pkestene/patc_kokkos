@@ -9,15 +9,17 @@
     \begin{itemize}
     \item Introduction performance portability
     \item IBM Power8 + Nvidia Pascal P100 platform : short overview
-    \item Kokkos: features overview
-    \item Hands-on : retrieve Kokkos sources, how to build, how to run a \textit{helloworld} application, explore different configurations
-    \item Replay some tutorial slides from SC2016 for deeper Kokkos concepts
-    \item Simple example : the Mandelbrot set
-    \item Hands-On with exercice Laplace : with Kokkos, with Kokkos+ MPI + Hwloc
-    \item Hands-On with a miniApp from CSCS: Fisher equation solver\\
-      $\Rightarrow$ use Kokkos lambda
-    \item Another miniApp: CFD Euler solver\\
-      $\Rightarrow$ measure performance for several Kokkos backends (OpenMP, CUDA)
+    \item \textbf{Kokkos: features overview}
+    \item \textcolor{blue}{Hands-on:} retrieve Kokkos sources, how to build, how to run a \textit{helloworld} application, explore different configurations
+    \item \textbf{Replay some tutorial slides from SC2016 for deeper Kokkos concepts}
+    \item \textcolor{blue}{Hands-On:} Simple examples on \textbf{Finite Difference} +  \textbf{Mandelbrot set}\\
+      \textcolor{darkgreen}{$\Rightarrow$ 2D Kokkos::View + asynchronous execution}
+    \item \textcolor{blue}{Hands-On:} \textbf{Laplace exercice}\\
+      \textcolor{darkgreen}{$\Rightarrow$ pure Kokkos versus Kokkos + MPI + hwloc (multiGPU)}
+    \item \textcolor{blue}{Hands-On:} CSCS miniApp: \textbf{Fisher equation solver}\\
+      \textcolor{darkgreen}{$\Rightarrow$ use Kokkos lambda}
+    \item \textcolor{blue}{Hands-On:} CFD miniApp: \textbf{Euler solver}\\
+      \textcolor{darkgreen}{$\Rightarrow$ performance measurement for several Kokkos backends (OpenMP, CUDA)}
     \end{itemize}
   \end{itemize}
 
