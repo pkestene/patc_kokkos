@@ -1,0 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Kokkos - Laplace exercice}
+
+  Slightly adapted from Nvidia's OpenACC exercise:\\
+  \myhref{https://github.com/NVIDIA-OpenACC-Course/nvidia-advanced-openacc-course-sources}{nvidia-advanced-openacc-course-sources}
+
+  We will use code from \myurl{code/exercises/laplace_kokkos}, 4 different versions of the 2D Laplace solver:
+  \begin{itemize}
+  \item serial (no kokkos)
+  \item kokkos with 1D viewd (linearized index)
+  \item kokkos_v2 with 2D views
+  \item kokkos_mpi with MPI+CUDA and hwloc
+  \end{itemize}
+  
+\end{frame}

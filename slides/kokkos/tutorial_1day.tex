@@ -21,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{1Day Tutorial: SAXPY}
+  \frametitle{SAXPY from 1-Day-Tutorial}
 
   \begin{itemize}
   \item \textbf{Proposed activity}
@@ -44,9 +44,9 @@
     \item Make sure all available CPU cores were used ($1\times 160 \times 1$)
     \item Change the number of OpenMP threads created by kokkos, e.g. :\\
       \texttt{./saxpy.host  --threads=20}
-    \item We need to change \texttt{Makefile} and use hwloc\\
+    \item We need to change \texttt{Makefile} and use \textcolor{red}{\textbf{hwloc}}\\
       add \texttt{KOKKOS\_USE\_TPLS="hwloc"} right after \texttt{KOKKOS\_DEVICES} in \texttt{Makefile}\\
-      Rebuild and rerun, you should see that application uses the available numa domains, and increasee bandwidth use !
+      Rebuild and rerun, you should see that application uses \textbf{all the available numa domains}, and an increased bandwidth usage !
     \end{itemize}
   \end{itemize}
 
@@ -55,7 +55,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{1Day Tutorial: SAXPY}
+  \frametitle{SAXPY from 1-Day-Tutorial}
 
   \begin{itemize}
   \item \textbf{Proposed activity}
