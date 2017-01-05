@@ -9,6 +9,7 @@
 #BSUB -W 00:05
 
 module load gcc/4.8/ompi/1.10
+module load cuda/8.0
 
 # here setup env for kokkos
 
