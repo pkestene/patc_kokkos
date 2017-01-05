@@ -2,6 +2,7 @@
 #define DATA_CONTEXT_H_
 
 #include "common.h"
+#include "params.h"
 
 struct DataContext {
 
