@@ -187,4 +187,81 @@
 
 \input{schedule}
 
+\section{Performance portability}
+
+\begin{frame}
+  \frametitle{Content}
+  
+  {%\large
+    \begin{itemize}
+      % \item \textcolor{blue}{\textbf{Short historical view:} from graphics processor to GPU accelerator}
+    \item \textcolor{blue}{\textbf{Main HPC architectures and trends}}
+      multicore, manycore, GPU, FPGA, Power8/9, NVLink, ...
+    \item \textcolor{darkgreen}{\textbf{What is performance portability ?}}\\
+    \item \textcolor{orange}{\textbf{A good software abstraction / programing model(s) (?)}}
+      % say that C++ is more alive as ever !
+      
+      \begin{itemize}
+      \item \textbf{library, framework, programming models ?}
+      \item \textbf{Parallel programming patterns}
+      \item \textbf{Native language, directives, DSL ?}
+      \end{itemize}
+    \item \textcolor{red}{\textbf{As an example: a short overview of Kokkos: C++ library for performance portability}}\\
+      Node-level parallelism, parallel pattern and data containers.
+    \item A real life example: \textbf{\myhref{http://www.maisondelasimulation.fr/projects/RAMSES-GPU/html/}{code RamsesGPU} (high-Mach number turbulent MHD)} (partially) rewritten with \myhref{https://github.com/kokkos/kokkos}{Kokkos}.
+    \end{itemize}%
+  }
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{From low-level native to high-level programmning}
+
+  \textcolor{red}{\textbf{Revisiting ways}} to \textbf{develop software applications} not only for accelerators, but multiple architectures 
+  \begin{center}
+    \includegraphics[height=5.0cm]{images/ways_to_accelerate_app2}
+  \end{center}
+  
+  {\scriptsize reference: Axel Koehler, \myhref{http://www.hpcadvisorycouncil.com/events/2012/Switzerland-Workshop/Presentations/Day_2/6_NVIDIA.pdf}{NVIDIA, 2012}}
+
+  Find a good trade-off between \textcolor{blue}{\textit{ease of approach}} and \textcolor{blue}{\textit{good performance}} on \textcolor{red}{\textbf{multiple architectures}}.
+  
+\end{frame}
+
+%\input{hpc_software_engineer}
+
+%\section{Historical perspective}
+%\input{./historique_gpu_mini}
+\input{supercomputer}
+
+%\section{CUDA Hardware / Software}
+%\input{./cuda_hardware_mini}
+%\input{../cuda_example}
+
+\section{Performance Portability}
+
+\input{perf_portability}
+
+\subsection{Directives: OpenACC / OpenMP}
+
+\input{openacc_openmp}
+
+\subsection{(Active) libraries}
+
+\input{future_parallel_cpp}
+
+\section{Kokkos introduction}
+
+\subsection{Kokkos basics}
+
+\input{kokkos}
+
+%\subsection{Case study: RamsesGPU on Pascal P100}
+%\input{ramses_kokkos}
+
+\subsection{Additionnal slides}
+
+\input{recommended_links}
+\input{other_interesting_things}
+
 \end{document}
