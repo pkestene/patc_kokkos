@@ -5,24 +5,25 @@
 
   \begin{itemize}
   \item \textbf{Kokkos is still experimental, but moving fast}
-  \item \textbf{1. Get sources, development branch}
+  \item \textbf{1. Get Kokkos sources, development branch}
     \begin{itemize}
     \item \textcolor{blue}{Practicals on \texttt{ouessant}:}\\
       \texttt{1. mkdir \$HOME/kokkos-tutorial; cd \$HOME/kokkos-tutorial}\\
-      some tutorial examples are already configured for using that precise location.\\
+      some kokkos tutorial examples have a Makefile configured for using that precise location.\\
       \texttt{2. git clone https://github.com/kokkos/kokkos}\\
       \texttt{3. cd kokkos; git checkout develop}
     \end{itemize}
   \item \textbf{2. Build configuration}
     \begin{itemize}
-    \item \texttt{mkdir build; cd build}
-    \item About build system, several ways to use Kokkos
+    %\item \texttt{mkdir build; cd build}
+    \item About build system, several ways to use/build Kokkos
       \begin{enumerate}
-      \item Only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos}, \myhref{https://cmake.org/}{CMake} is used
-      \item Standalone utilization: use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}
-      \item Embedded Kokkos source files in your application.
+      \item \myhref{https://cmake.org/}{CMake}: only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos},
+      \item Regular standalone utilization: use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
+        Then use a \textit{modulefile} to configure the environment
+      \item Embedded Kokkos source files in your application - mostly usefull in tutorial.
       \end{enumerate}
-      % \item We will use 2. and 3.
+      \item We will use 2. and 3.
     \end{itemize}
   \end{itemize}
  
@@ -48,7 +49,7 @@
     \begin{itemize}
     \item There can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
     \end{itemize}
-  \item Important notices:
+  %\item Important notices:
   \end{itemize}
   
 \end{frame}
@@ -82,27 +83,29 @@
   \begin{itemize}
   \item \texttt{Kokkos::initialize / finalize}
     %// introspection on configuration options
-    \begin{minted}{c++}
-      #include <Kokkos_Macros.hpp>
-      #include <Kokkos_Core.hpp>
-      
-      int main(int argc, char* argv[]) {
-        // default: initialize the host exec space
-        // What exactly gets initialized depends on how kokkos
-        // was built, i.e. which options was passed to
-        // generate_makefile.bash
-        Kokkos::initialize();
-        ...
-        Kokkos::finalize();
-      }
-    \end{minted}
+    {\small\begin{minted}{c++}
+        #include <Kokkos_Macros.hpp>
+        #include <Kokkos_Core.hpp>
+        
+        int main(int argc, char* argv[]) {
+          // default: initialize the host exec space
+          // What exactly gets initialized depends on how kokkos
+          // was built, i.e. which options was passed to
+          // generate_makefile.bash
+          Kokkos::initialize();
+          ...
+          Kokkos::finalize();
+        }
+      \end{minted}
+    }
     %
   \item \textcolor{red}{\textbf{What's happening inside \texttt{Kokkos::initialize}}}
     \begin{itemize}
-    \item Defines \textcolor{blue}{\texttt{DefaultExecutionSpace}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Threads > Serial)\\
-      e.g. if \texttt{\-- \-- with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\-- \-- with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
+    \item Defines \textcolor{blue}{\texttt{DefaultExecutionSpace}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Pthreads > Serial)\\
+      e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
+    \item You can activated several execution spaces (recommended)
     \item Defines a \textcolor{blue}{default memory space}
-    \item all these will internally be used inside Kokkos sources as default (hidden) template parameters
+    \item all this information provided at compile time will internally be used inside Kokkos sources as default (hidden) template parameters
     \end{itemize}
     % 
   \end{itemize}
@@ -117,28 +120,30 @@
   \begin{itemize}
   \item \texttt{Kokkos::initialize / finalize} (most of the time OK)
     % // introspection on configuration options
-    \begin{minted}{c++}
-      #include <Kokkos_Macros.hpp>
-      #include <Kokkos_Core.hpp>
-      
-      int main(int argc, char* argv[]) {
+    {\small\begin{minted}{c++}
+        #include <Kokkos_Macros.hpp>
+        #include <Kokkos_Core.hpp>
         
-        // default initialization
-        Kokkos::initialize();
-        ...
-        Kokkos::finalize();
-        
-      }
-    \end{minted}
+        int main(int argc, char* argv[]) {
+          // default: initialize the host exec space
+          // What exactly gets initialized depends on how kokkos
+          // was built, i.e. which options was passed to
+          // generate_makefile.bash
+          Kokkos::initialize();
+          ...
+          Kokkos::finalize();
+        }
+      \end{minted}
+    }
     % 
   \item \textbf{Fine control of initialization:}
     \begin{itemize}
     \item \texttt{Kokkos::initialize(argc, argv);}\\
       User can change/fix e.g. number OpenMP threads on the application's command line
-    \item This is regular initialization. If available \textcolor{orange}{\textbf{\texttt{hwloc}}} is used to decide:
+    \item This is regular initialization. If available \textcolor{orange}{\textbf{\texttt{hwloc}}} is used to provide default hardware locality:
       \begin{itemize}
       \item For OpenMP exec space: number of threads (default is all CPU cores)\\
-        NB: usual envirinment variables (e.g. \texttt{OMP\_NUM\_THREADS} can be used
+        NB: usual environment variables (e.g. \texttt{OMP\_NUM\_THREADS}, \texttt{GOMP\_CPU\_AFFINITY} can (of course) also be used
       \item Mapping between GPUs and MPI task
       \end{itemize}
     \end{itemize}
@@ -174,7 +179,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos - initialize / finalize ith MPI}
+  \frametitle{Kokkos - initialize / finalize with MPI}
 
   \begin{itemize}
   \item \textcolor{red}{\textbf{Advanced initialization}} with \textcolor{blue}{\textbf{MPI + CUDA}}
