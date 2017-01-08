@@ -105,13 +105,30 @@
       \item You can if you like, still enforce memory layout yourself (just use 1D Views, and compute index yourself);\\
         We will see the 2 possibilities with the miniApp on the Fisher equation
       \end{itemize}
+    \item Which memory space ? The default one !\\
+      Want to enforce in which memory space lives the view ? Kokkos::View<..., Kokkos::CudaSpace>
     \end{itemize}
 
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (2)}
+
+  \begin{itemize}
+  \item A verbose example:
+    \begin{minted}{c++}
+      Kokkos::View<double*,Kokkos::LayoutLeft,Kokkos::CudaSpace> a;
+    \end{minted}
   \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
     see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
   \item \textcolor{blue}{\texttt{Kokkos::UnorderedMap<...>}}
+  \item Can also define \textbf{subview (array slicing, no deep copy)}. See exercice about Mandelbrot set.
   \end{itemize}
-
+  
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -129,6 +146,7 @@
           data(i) = 2*i;
         });
       \end{minted}
+      Here we do 2 things in 1 step: define the computation body (lambda func) and launch computation.
     \item \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}\\
       A functor is a class containing a function to execute in parallel.
       \begin{minted}{c++}
@@ -137,6 +155,9 @@
           KOKKOS_INLINE_FUNCTION
           void operator() ( const int i ) const ;
         };
+        ...
+        FunctorType func;
+        Kokkos::parallel_for (100, func);
       \end{minted}
     \end{enumerate}
   \end{itemize}
@@ -194,6 +215,8 @@
     \end{itemize}
   \end{itemize}
 
+  \textbf{see also slides from SC2016, page 42(74).}
+  
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

@@ -34,6 +34,26 @@
 \begin{frame}
   \frametitle{Build kokkos (2)}
 
+  \textbf{About Makefile variable for building on multiple architectures}
+
+  \begin{itemize}
+  \item The following variables are usefull when building some of the tutorial examples :
+    \begin{itemize}
+    \item \texttt{KOKKOS\_PATH}: path to Kokkos source dir
+    \item \texttt{KOKKOS\_DEVICES}: define possible execution spaces: CUDA, OpenMP, Pthreads, Serial, ...
+    \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ...
+    \end{itemize}
+  \item When build Kokkos aiming at an installed Kokkos, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
+    Just type \texttt{./generate\_makefile.bash --help} at top-level Kokkos sources
+  \end{itemize}
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Build kokkos (3)}
+
   \begin{itemize}
   \item \textcolor{blue}{\textbf{Example build configurations}}
     \begin{itemize}
