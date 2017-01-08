@@ -234,9 +234,9 @@
     \item \texttt{module load cuda/8.0}
     \end{itemize}
   \item Rebuild for K80, run on ouessant (front node):\\
-    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Kepler37,Power8"}
+    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Kepler37,Power8" KOKKOS\_USE\_TPLS="hwloc"}
   \item Rebuild for P100, run on compute node using \texttt{submit\_ouessant.sh} (should see a strong difference):\\
-    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Kepler60,Power8"}
+    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Pascal60,Power8" KOKKOS\_USE\_TPLS="hwloc"}
   \end{itemize}
 \end{frame}
 
