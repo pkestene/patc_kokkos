@@ -93,10 +93,10 @@
   \frametitle{Kokkos data Container}
 
   \begin{itemize}
-  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} replacement for \texttt{std::vector} with multidimensionnal feature and hardware adapted memory layout\\
+  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} replacement for \textcolor{red}{\texttt{std::vector}} with \textbf{multidimensionnal feature} and \textbf{hardware adapted memory layout}\\
     \begin{itemize}
     \item \texttt{Kokkos::View<double **> data("data",NX,NY);} : 2D array with sizes known at runtime
-    \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime (NX), and second known at compile time (3).
+    \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
     \item How do I access data ? $data(i,j)$ !
     \item Need to talk about \textbf{memory layout:}\\
       \begin{itemize}
@@ -105,10 +105,10 @@
       \item You can if you like, still enforce memory layout yourself (just use 1D Views, and compute index yourself);\\
         We will see the 2 possibilities with the miniApp on the Fisher equation
       \end{itemize}
-    \item Which memory space ? The default one !\\
-      Want to enforce in which memory space lives the view ? Kokkos::View<..., Kokkos::CudaSpace>
+    \item \textcolor{orange}{Which memory space ?} By default, the default device memory space !\\
+      Want to enforce in which memory space lives the view ? 
+      \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
     \end{itemize}
-
   \end{itemize}
 
 \end{frame}
