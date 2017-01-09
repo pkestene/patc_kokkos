@@ -5,8 +5,8 @@
 
   \begin{itemize}
   \item \myhref{https://github.com/kokkos/kokkos}{kokkos} is originally a subpackage of \myhref{https://trilinos.org/}{trilinos} (application framework for solving problems requiring parallel large distributed linear algebra solvers).
-  \item Kokkos is the performance portable layer, to allow running Trilinos as efficiently as possible on multiple architectures.
-  \item Kokkos can be build independently from Trilinos and used in other applications
+  \item \textcolor{red}{Kokkos is the performance portable layer}, to allow running Trilinos as efficiently as possible on multiple architectures.
+  \item \textbf{Kokkos can be build independently from Trilinos} and used in other applications
   \end{itemize}
 
   \begin{center}
@@ -21,6 +21,7 @@
   \frametitle{About Kokkos in Trilinos}
 
   \begin{itemize}
+  \item \textcolor{red}{\textbf{Don't do the following on \texttt{ouessant}, your home is too small}}, just keep the spirit to try on your own machine
   \item \textbf{Build a minimal featured Trilinos with Kokkos for GPU activated} : \textcolor{red}{Tpetra + kokkos + Cuda}
     \begin{enumerate}
     \item \textbf{Example config plateform:} Ubuntu 16.04 + openmpi + cuda 8.0\\

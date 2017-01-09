@@ -39,7 +39,7 @@
     \item \textbf{OpenMP build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=OpenMP} (off course, exact same information obtained)
     \item \textbf{CUDA/OpenMP build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=Cuda,OpenMP}; rerun and you should get information about the CPU+GPU configuration
     \end{enumerate}
-  \item Take some time to have a look at Makefile.\\
+  \item \textbf{Take some time to have a look at Makefile.}\\
     Note that latter when using an installed kokkos library, we won't need to set architecture or device related variables on the command line .
   \end{itemize}
 
@@ -119,15 +119,74 @@
   \frametitle{Kokkos data Container (2)}
 
   \begin{itemize}
-  \item A verbose example:
+  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} are reference-counted
+  \item By default do a \textcolor{orange}{\textbf{shallow copy}}
+    \begin{minted}{c++}
+      Kokkos::View<int *>("a",10);
+      Kokkos::View<int *>("b",10);
+      a = b; // a now points to b (ref counter incremented by 1)
+    \end{minted}
+  \item \textcolor{orange}{\textbf{Deep copy}} must by explicit:
+    \begin{minted}{c++}
+      Kokkos::deep_copy(dest,src);
+    \end{minted}
+    \begin{itemize}
+    \item \textbf{Usefull when copying data from one memory space to another}\\
+      e.g. \textcolor{red}{from HostSpace to CudaSpace}
+    \item When \texttt{dest} and \texttt{src} are in the same memory space, it does nothing ! (usefull for portability, see example in miniapps later)
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (3)}
+
+  \begin{itemize}
+  \item \textcolor{orange}{A verbose Kokkos::View declaration} example:
     \begin{minted}{c++}
       Kokkos::View<double*,Kokkos::LayoutLeft,Kokkos::CudaSpace> a;
     \end{minted}
+    \begin{itemize}
+    \item \textcolor{orange}{\textbf{What ?}} a data type
+    \item \textcolor{orange}{\textbf{How ?}} a memory layout
+    \item \textcolor{orange}{\textbf{Where ?}} a memory space
+    \item the last two template parameters are optionnal (have default values)
+    \end{itemize}
   \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
     see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
   \item \textcolor{blue}{\texttt{Kokkos::UnorderedMap<...>}}
   \item Can also define \textbf{subview (array slicing, no deep copy)}. See exercice about Mandelbrot set.
   \end{itemize}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (4)}
+
+  \begin{itemize}
+  \item \textcolor{red}{\textbf{What types of data may a View contain ?}}\\
+    C++ \myhref{http://en.cppreference.com/w/cpp/concept/PODType}{Plain Old Data} (POD), i.e. basically compatible with C language:
+    \begin{itemize}
+    \item Can be allocated with \texttt{std::malloc}
+    \item Can be copied with \texttt{std::memmove}
+    \end{itemize}
+  \item POD in C++11: 
+    \begin{itemize}
+    \item a trivial type (no virtual member functions, no virtual base class)
+    \item a standard layout type
+    \end{itemize}
+  \item C++11: How to check if a given class \texttt{A} is POD ?
+  \end{itemize}
+  \begin{minted}{c++}
+    #include <type_traits>
+    
+    class A { ... }
+    std::cout << "is class A POD ? " << std::is_pod<A>::value << "\n";
+  \end{minted}
   
 \end{frame}
 
@@ -259,7 +318,8 @@
   \item Rebuild for K80, run on ouessant (front node):\\
     \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Kepler37,Power8" KOKKOS\_USE\_TPLS="hwloc"}
   \item Rebuild for P100, run on compute node using \texttt{submit\_ouessant.sh} (should see a strong difference):\\
-    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Pascal60,Power8" KOKKOS\_USE\_TPLS="hwloc"}
+    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Pascal60,Power8" KOKKOS\_USE\_TPLS="hwloc"}\\
+    Please note that \textbf{maximun bandwith is 732 GB/s for Pascal P100}, you can retrieve this number by examining \texttt{deviceQuery} example in CUDA/SDK.
   \end{itemize}
 \end{frame}
 

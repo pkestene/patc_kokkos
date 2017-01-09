@@ -1,0 +1,35 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Using an installed Kokkos}
+
+  \begin{itemize}
+  \item As you will surely \textcolor{red}{\textbf{use multiple versions}} of Kokkos (OpenMP, Cuda, ...), with/without Lambda, UVM, different compilers, etc ... it will be very usefull to use some \textbf{modulefiles}.
+  \item A \textcolor{blue}{\textbf{module environment}} is not a tool specific to a super-computer, it can be used on a \textbf{Desktop/Laptop} to configure an execution environment.\\
+    e.g. \textcolor{blue}{\texttt{sudo apt-get install environment-modules}} (Debian/Ubuntu)
+  \item \textcolor{blue}{What is a modulefiles ?}
+    A simple way to set env variables to ease the use of a given software package.
+  \item You will find some examples modulefiles for Kokkos in \texttt{/pwrwork/workshops/patc-201701/kokkos/modulefiles/kokkos} you can easily adapt to your own platform.
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Using an installed Kokkos (2)}
+
+  \begin{itemize}
+  \item A simple modulefiles for Kokkos should at minimum set variable \textcolor{blue}{\texttt{KOKKOS\_PATH}} pointing to the installed directory (the one which contains \textcolor{blue}{\texttt{Makefile.kokkos}}
+  \item \textcolor{blue}{How to use your own modulefiles ?} Just use the following:
+    \begin{minted}{bash}
+      # Assuming you placed the module file in
+      # /somewhere_on_your_machince/modulefiles
+      module use /somewhere_on_your_machince/modulefiles
+      
+      # e.g. load Kokkos for GPU
+      module load kokkos/cuda80_gnu485_dev_k80
+    \end{minted}
+  \end{itemize}
+
+\end{frame}

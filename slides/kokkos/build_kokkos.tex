@@ -19,9 +19,9 @@
     \item About build system, several ways to use/build Kokkos
       \begin{enumerate}
       \item \myhref{https://cmake.org/}{CMake}: only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos},
-      \item Regular standalone utilization: use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
+      \item \textcolor{red}{\textbf{Regular standalone utilization (installed Kokkos):}} use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
         Then use a \textit{modulefile} to configure the environment
-      \item Embedded Kokkos source files in your application - mostly usefull in tutorial.
+      \item \textcolor{blue}{\textbf{Embedded Kokkos source files in your application}} - mostly usefull in tutorial.
       \end{enumerate}
       \item We will use 2. and 3.
     \end{itemize}
@@ -43,8 +43,10 @@
     \item \texttt{KOKKOS\_DEVICES}: define possible execution spaces: CUDA, OpenMP, Pthreads, Serial, ...
     \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ...
     \end{itemize}
-  \item When build Kokkos aiming at an installed Kokkos, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
+  \item When building for \textcolor{darkgreen}{CUDA device}, you'll need to use Kokkos' own compiler wrapper: \textcolor{darkgreen}{\texttt{nvcc\_wrapper}} (included in Kokkos sources)
+  \item \textcolor{red}{When build Kokkos aiming at an installed Kokkos}, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
     Just type \texttt{./generate\_makefile.bash --help} at top-level Kokkos sources
+  \item \textcolor{blue}{When using using Kokkos embedded in your application}, these variables must be set on the \texttt{make} command line.
   \end{itemize}
   
 \end{frame}
@@ -55,7 +57,7 @@
   \frametitle{Build kokkos (3)}
 
   \begin{itemize}
-  \item \textcolor{blue}{\textbf{Example build configurations}}
+  \item \textcolor{blue}{\textbf{Example build configurations (for an installed Kokkos)}}
     \begin{itemize}
     \item For \texttt{ouessant}, see file \texttt{doc/readme\_build\_kokkos\_ouessant} in the provided archive
     \item Serial (mostly for testing)\\
@@ -65,11 +67,12 @@
     \item \textbf{CUDA (+ OpenMP)}; typical configuration\\
       \texttt{../generate\_makefile.bash --with-cuda --arch=Pascal60 --prefix=\$HOME/local/kokkos\_cuda\_lambda\_openmp --with-cuda-options=enable\_lambda --with-openmp --with-hwloc=/usr}
     \end{itemize}
-  \item \textcolor{darkgreen}{\textbf{After installation}} (\texttt{make kokkoslib; make install;} the file \texttt{Makefile.kokkos} is created, and designed to be reused in the application build system.
+  \item \textcolor{darkgreen}{\textbf{After installation}} (\texttt{make kokkoslib; make install;}) the file \textbf{\texttt{Makefile.kokkos}} is created, and designed to be reused in your application build system.
+  \item \textbf{2 choices for integrating Kokkos in your app:}
     \begin{itemize}
-    \item There can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
+    \item Use an existing Makefile from Kokkos tutorial, examples, ...
+    \item Use your own build system: there can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
     \end{itemize}
-  %\item Important notices:
   \end{itemize}
   
 \end{frame}
@@ -121,10 +124,10 @@
     %
   \item \textcolor{red}{\textbf{What's happening inside \texttt{Kokkos::initialize}}}
     \begin{itemize}
-    \item Defines \textcolor{blue}{\texttt{DefaultExecutionSpace}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Pthreads > Serial)\\
+    \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Pthreads > Serial)\\
       e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
     \item You can activated several execution spaces (recommended)
-    \item Defines a \textcolor{blue}{default memory space}
+    %\item Defines a \textcolor{blue}{default memory space}
     \item all this information provided at compile time will internally be used inside Kokkos sources as default (hidden) template parameters
     \end{itemize}
     % 
