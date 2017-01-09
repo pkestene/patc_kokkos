@@ -65,10 +65,9 @@ int main(int argc, char* argv[]) {
 
   Constants constants = Constants();
 
-  // Allocate data array for Mandelbrot set computation
-  /* TODO 1 : allocate data buffer image and imagehost (host mirror of data)*/
-  /* DataArray     image     = ... */
-  /* DataArrayHost imageHost = ... */
+  // prepare data array for Mandelbrot set computation
+  DataArray     image     = DataArray("image", constants.WIDTH*constants.HEIGHT);
+  DataArrayHost imageHost = Kokkos::create_mirror_view(image);
 
   /*
    * Actual computation (GPU with CUDA or CPU with OpenMP)
@@ -83,7 +82,7 @@ int main(int argc, char* argv[]) {
   printf("Time: %lf seconds.\n", timer.elapsed());
 
   // copy back results from device to host
-  /* TODO 2 : deep copy image to imageHost */
+  Kokkos::deep_copy(imageHost,image);
   
   // print aesthetically, dont read this part
   int xmax=80;
