@@ -185,23 +185,46 @@
   \titlepage
 \end{frame}
 
-\section{Introduction}
-\input{introduction}
+\input{../intro/schedule}
 
-\section{Build Kokkos}
+\section{Introduction - Kokkos concepts}
+\input{introduction}
+\input{kokkos_concepts}
+
+\subsection{Build Kokkos}
 \input{build_kokkos}
 
-\section{Tutorial Kokkos}
-\input{tutorial_1day}
+% device query
+\input{hands_on_1}
 
-\subsection{Hands-on exercice - Laplace solver}
+\section{Kokkos - data containers and threads dispatch}
+\input{kokkos_containers}
+\input{kokkos_thread_dispatch}
+
+% saxpy
+\input{hands_on_2}
+
+\section{Hands-on exercises}
+
+\subsection{Mandelbrot set}
+% hands-on 3 : 1D Kokkos::View + linearized index (+ async exec)
+\input{mandelbrot_set}
+
+\subsection{Stencil / Finite Difference}
+% hands-on 4 : 2D Kokkos::View
+\input{finite_difference}
+
+\subsection{Laplace solver}
+% hands-on 5 : pure Kokkos versus Kokkos + MPI + hwloc
 \input{kokkos_laplace}
 
-\subsection{Hands-on using miniApp - Kokkos lambda}
+\subsection{MiniApp - Kokkos lambda}
+% hands-on 6
 \input{kokkos_cscs}
 
-\subsection{Hands-On using miniApp - Performance}
-%\input{kokkos_euler}
+\subsection{MiniApp - Performance}
+% hands-on 7
+\input{kokkos_euler}
 
 \section{Additionnal Kokkos material}
 

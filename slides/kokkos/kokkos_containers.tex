@@ -1,0 +1,102 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container}
+
+  \begin{itemize}
+  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} replacement for \textcolor{red}{\texttt{std::vector}} with \textbf{multidimensionnal feature} and \textbf{hardware adapted memory layout}\\
+    \begin{itemize}
+    \item \texttt{Kokkos::View<double **> data("data",NX,NY);} : 2D array with sizes known at runtime
+    \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
+    \item How do I access data ? $data(i,j)$ !
+    \item Need to talk about \textbf{memory layout:}\\
+      \begin{itemize}
+      \item \textbf{LayoutLeft}: $data(i,j,k)$ uses linearized index as $i + NX*j + NX*NY * k$ (column-major order)
+      \item \textbf{LayoutRight}: $data(i,j,k)$ uses linearized index as $k + NZ*j + NZ*NY * i$ (raw-major order)
+      \item You can if you like, still enforce memory layout yourself (just use 1D Views, and compute index yourself);\\
+        We will see the 2 possibilities with the miniApp on the Fisher equation
+      \end{itemize}
+    \item \textcolor{orange}{Which memory space ?} By default, the default device memory space !\\
+      Want to enforce in which memory space lives the view ? 
+      \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (2)}
+
+  \begin{itemize}
+  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} are reference-counted
+  \item By default do a \textcolor{orange}{\textbf{shallow copy}}
+    \begin{minted}{c++}
+      Kokkos::View<int *>("a",10);
+      Kokkos::View<int *>("b",10);
+      a = b; // a now points to b (ref counter incremented by 1)
+    \end{minted}
+  \item \textcolor{orange}{\textbf{Deep copy}} must by explicit:
+    \begin{minted}{c++}
+      Kokkos::deep_copy(dest,src);
+    \end{minted}
+    \begin{itemize}
+    \item \textbf{Usefull when copying data from one memory space to another}\\
+      e.g. \textcolor{red}{from HostSpace to CudaSpace}
+    \item When \texttt{dest} and \texttt{src} are in the same memory space, it does nothing ! (usefull for portability, see example in miniapps later)
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (3)}
+
+  \begin{itemize}
+  \item \textcolor{orange}{A verbose Kokkos::View declaration} example:
+    \begin{minted}{c++}
+      Kokkos::View<double*,Kokkos::LayoutLeft,Kokkos::CudaSpace> a;
+    \end{minted}
+    \begin{itemize}
+    \item \textcolor{orange}{\textbf{What ?}} a data type
+    \item \textcolor{orange}{\textbf{How ?}} a memory layout
+    \item \textcolor{orange}{\textbf{Where ?}} a memory space
+    \item the last two template parameters are optionnal (have default values)
+    \end{itemize}
+  \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
+    see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
+  \item \textcolor{blue}{\texttt{Kokkos::UnorderedMap<...>}}
+  \item Can also define \textbf{subview (array slicing, no deep copy)}. See exercice about Mandelbrot set.
+  \end{itemize}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (4)}
+
+  \begin{itemize}
+  \item \textcolor{red}{\textbf{What types of data may a View contain ?}}\\
+    C++ \myhref{http://en.cppreference.com/w/cpp/concept/PODType}{Plain Old Data} (POD), i.e. basically compatible with C language:
+    \begin{itemize}
+    \item Can be allocated with \texttt{std::malloc}
+    \item Can be copied with \texttt{std::memmove}
+    \end{itemize}
+  \item POD in C++11: 
+    \begin{itemize}
+    \item a trivial type (no virtual member functions, no virtual base class)
+    \item a standard layout type
+    \end{itemize}
+  \item C++11: How to check if a given class \texttt{A} is POD ?
+  \end{itemize}
+  \begin{minted}{c++}
+    #include <type_traits>
+    
+    class A { ... }
+    std::cout << "is class A POD ? " << std::is_pod<A>::value << "\n";
+  \end{minted}
+  
+\end{frame}

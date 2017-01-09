@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Hands-On 2 : SAXPY}
+
+  {\large \textcolor{red}{\textbf{Purpose:}} The simplest computing kernel in Kokkos, importance of hwloc}
+
+  \begin{itemize}
+  \item There 5 differents versions
+  \item \textbf{1. Serial : no Kokkos)}
+  \item \textbf{2. OpenMP : no Kokkos)}
+  \item 3. Kokkos-Lambda-CPU : Kokkos with lambda for threads dispatch
+  \item \textbf{4. Kokkos-Lambda : Kokkos with lambda for threads dispatch and data buffer (Kokkos::View)}
+  \item 5. Kokkos-Functor-CPU : Kokkos with functor for threads dispatch only
+  \end{itemize}
+  
+  \begin{itemize}
+  %\item \textbf{Proposed activity}
+  \item \textcolor{red}{\textbf{Saxpy serial (reference executable on Power8)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Serial}
+    \item \texttt{make KOKKOS\_ARCH=Power8}
+    \item Alternatively, we could have modify \texttt{Makefile} and change \texttt{SNB} into \texttt{Power8}
+    \end{itemize}
+  \item \textcolor{orange}{\textbf{Saxpy regular OpenMP (on Power8)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/OpenMP}
+    \item Rebuild: \texttt{make KOKKOS\_ARCH=Power8}; and observe performance
+    \end{itemize}
+  \end{itemize}
+
+  \textbf{see also slides from SC2016, page 42(74).}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Hands-On 2 : SAXPY}
+
+  \begin{itemize}
+  \item \textcolor{violet}{\textbf{Saxpy Kokkos OpenMP (on Power8)}}    
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Kokkos-Lambda}
+    \item Add 3 lines in \texttt{saxpy.cpp} right after Kokkos initialization
+      \begin{minted}{c++}
+        std::ostringstream msg;
+        Kokkos::OpenMP::print_configuration( msg );
+        std::cout << msg.str();
+      \end{minted}
+    \item \texttt{make KOKKOS\_ARCH=Power8}
+    \item Make sure all available CPU cores were used ($1\times 160 \times 1$)
+    \item Change the number of OpenMP threads created by kokkos, e.g. :\\
+      \texttt{./saxpy.host  --threads=20}
+    \item Add again \texttt{KOKKOS\_USE\_TPLS="hwloc"} on the command line\\
+      Rebuild and rerun, you should see that application uses \textbf{all the available numa domains}, and a strongly increased bandwidth usage !
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Hands-On 2 : SAXPY}
+
+  \begin{itemize}
+  \item \textcolor{darkgreen}{\textbf{Saxpy CUDA (on Power8 + Nvidia K80/P100)}}
+    \begin{itemize}
+    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/1-Day-Tutorial/Exercises/01\_AXPY/Kokkos-Lambda}
+    \item \texttt{module load cuda/8.0}
+    \end{itemize}
+  \item Rebuild for K80, run on ouessant (front node):\\
+    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Kepler37,Power8" KOKKOS\_USE\_TPLS="hwloc"}
+  \item Rebuild for P100, run on compute node using \texttt{submit\_ouessant.sh} (should see a strong difference):\\
+    \texttt{make KOKKOS\_DEVICES="Cuda,OpenMP" KOKKOS\_ARCH="Pascal60,Power8" KOKKOS\_USE\_TPLS="hwloc"}\\
+    Please note that \textbf{maximun bandwith is 732 GB/s for Pascal P100}, you can retrieve this number by examining \texttt{deviceQuery} example in CUDA/SDK.
+  \end{itemize}
+\end{frame}
+
