@@ -6,10 +6,16 @@
 #BSUB -q compute
 #BSUB -R "affinity[core(1):cpubind=core:distribute=pack]"
 #BSUB -R "span[ptile=10]"
+#BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"
 #BSUB -W 00:05
 
 module load gcc/4.8/ompi/1.10
 module load cuda/8.0
+
+# This variable is normally set by the job scheduler
+# As of January, 9th 2017, we enforce its value here
+# to make sure all GPU devices can be used by our job.
+CUDA_VISIBLE_DEVICES=0,1,2,3
 
 # here setup env for kokkos
 
