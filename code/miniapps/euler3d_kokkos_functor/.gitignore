@@ -1,4 +1,0 @@
-*.o
-euler3d.cuda
-euler3d.omp
-*.vti
