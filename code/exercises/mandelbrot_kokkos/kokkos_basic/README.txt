@@ -1,5 +1,5 @@
 Just edit :
 - main.cpp
-- ...
+- mandelbrot.h
 
-fill the blanks /* TODO */
+fill the blanks marked with /* TODO */

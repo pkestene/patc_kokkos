@@ -26,27 +26,16 @@ public:
   unsigned char mandelbrot(int Px, int Py) const
   {
 
-    float x0=xmin+Px*dx;
-    float y0=ymin+Py*dy;
-    float x=0.0;
-    float y=0.0;
-    int i;
-    for(i=0;x*x+y*y<4.0 && i<MAX_ITERS;i++) {
-      float xtemp=x*x-y*y+x0;
-      y=2*x*y+y0;
-      x=xtemp;
-    }
-    return (float) MAX_COLOR*i/MAX_ITERS;
+    /* TODO : mandelbrot computation (import from main.cpp) */
+
   }
 
   KOKKOS_INLINE_FUNCTION
   void operator()(const int& index) const
   {
-    int i,j;
-    index2coord(index,i,j,WIDTH,HEIGHT);
 
-    image(index)=mandelbrot(i,j);
-
+    /* TODO : computation body (import from serial/main.cpp) */
+    
   }
 
   DataArray image;
