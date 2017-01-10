@@ -1,25 +1,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container}
-
+  \frametitle{Kokkos data Container (1)}
+  
+  {\large \textcolor{blue}{\texttt{Kokkos::View<...>}} is \textbf{multidimensionnal data container} with \textbf{hardware adapted memory layout}}
   \begin{itemize}
-  \item \textcolor{blue}{\texttt{Kokkos::View<...>}} replacement for \textcolor{red}{\texttt{std::vector}} with \textbf{multidimensionnal feature} and \textbf{hardware adapted memory layout}\\
+  \item \texttt{Kokkos::View<double **> data("data",NX,NY);} : 2D array with sizes known at runtime
+  \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
+  \item How do I access data ? $data(i,j)$ !
+  \item \textcolor{orange}{Which memory space ?} By default, the default device memory space !\\
+    Want to enforce in which memory space lives the view ? 
+    \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
+  \item \texttt{Kokkos::View} are \textbf{small}, designed as reference to allocated memory buffer
     \begin{itemize}
-    \item \texttt{Kokkos::View<double **> data("data",NX,NY);} : 2D array with sizes known at runtime
-    \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
-    \item How do I access data ? $data(i,j)$ !
-    \item Need to talk about \textbf{memory layout:}\\
-      \begin{itemize}
-      \item \textbf{LayoutLeft}: $data(i,j,k)$ uses linearized index as $i + NX*j + NX*NY * k$ (column-major order)
-      \item \textbf{LayoutRight}: $data(i,j,k)$ uses linearized index as $k + NZ*j + NZ*NY * i$ (raw-major order)
-      \item You can if you like, still enforce memory layout yourself (just use 1D Views, and compute index yourself);\\
-        We will see the 2 possibilities with the miniApp on the Fisher equation
-      \end{itemize}
-    \item \textcolor{orange}{Which memory space ?} By default, the default device memory space !\\
-      Want to enforce in which memory space lives the view ? 
-      \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
+    \item \textcolor{orange}{View = pointer to data + array shape}
+    \item assignment is fast (shallow copy + increment ref counter)~\footnote{NB: same behaviour as in python for example}
     \end{itemize}
+  \item \texttt{Kokkos::View} are designed to be pass by value to a function.
   \end{itemize}
 
 \end{frame}
@@ -28,6 +25,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (2)}
+
+  \begin{itemize}
+  \item Concept of \textbf{memory layout:}
+  \item \textbf{Memory layout is crucial for performance:}
+    \begin{itemize}
+    \item \textcolor{blue}{\textbf{LayoutLeft}}: $data(i,j,k)$ uses linearized index as $i + NX*j + NX*NY * k$ (column-major order)
+    \item \textcolor{red}{\textbf{LayoutRight}}: $data(i,j,k)$ uses linearized index as $k + NZ*j + NZ*NY * i$ (raw-major order)
+    \end{itemize}
+  \item \textcolor{red}{\texttt{Kokkos::View<int**, Kokkos::OpenMP>} defaults with LayoutRight}; a single thread access contiguous entries of the array. Better for cache and avoid sharing cache lines between threads.
+  \item \textcolor{blue}{\texttt{Kokkos::View<int**, Kokkos::Cuda>} defaults LayoutLeft} so that consecutive threads in the same warp access consecutive entries in memory; try to ensure memory coalescence constraint
+  \item You can if you like, still enforce memory layout yourself (or just use 1D Views, and compute index yourself);\\
+    We will see the 2 possibilities with the miniApp on the Fisher equation
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (3)}
 
   \begin{itemize}
   \item \textcolor{blue}{\texttt{Kokkos::View<...>}} are reference-counted
@@ -52,10 +69,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (3)}
+  \frametitle{Kokkos data Container (4)}
 
   \begin{itemize}
-  \item \textcolor{orange}{A verbose Kokkos::View declaration} example:
+  \item A verbose  \textcolor{orange}{\textbf{Kokkos::View}} declaration example:
     \begin{minted}{c++}
       Kokkos::View<double*,Kokkos::LayoutLeft,Kokkos::CudaSpace> a;
     \end{minted}
@@ -64,6 +81,7 @@
     \item \textcolor{orange}{\textbf{How ?}} a memory layout
     \item \textcolor{orange}{\textbf{Where ?}} a memory space
     \item the last two template parameters are optionnal (have default values)
+    \item There is actually a 4th template parameter for Memory traits (e.g. atomic access)
     \end{itemize}
   \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
     see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
@@ -76,7 +94,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (4)}
+  \frametitle{Kokkos data Container (5)}
 
   \begin{itemize}
   \item \textcolor{red}{\textbf{What types of data may a View contain ?}}\\
@@ -99,4 +117,20 @@
     std::cout << "is class A POD ? " << std::is_pod<A>::value << "\n";
   \end{minted}
   
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (6)}
+
+  {\Large \bf Interoperability}
+
+  \begin{itemize}
+  \item \textbf{With a legacy API} \texttt{void legacyFunction(int * data, int size)}\\
+    how to retrieve a raw pointer from a \texttt{Kokkos::View<int *> data}:\\
+    \texttt{int *raw\_ptr = data.ptr\_on\_device()} \\
+    This is not recommended. No more reference counting.
+  \end{itemize}
+
 \end{frame}
