@@ -1,12 +1,49 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
-  \frametitle{Kokkos MiniApp - Reaction-Diffusion Fisher equation}
+  \frametitle{Hands-On 6 - Reaction-Diffusion Fisher equation (1)}
 
   \begin{itemize}
-  \item See file \myurl{code/miniapps/SummerSchool2016/readme.md} to know how
-    to download the code
-  \item Fill the TODO with Kokkos LAMBDA kernels
+  \item \textcolor{red}{\textbf{SETUP}}: we will use git to download this miniApp code designed at \myhref{http://www.cscs.ch/index.html}{CSCS} for HPC teaching purpose.
+    % See file \myurl{code/miniapps/SummerSchool2016/readme.md} to know how
+    % to download the code 
+    \begin{itemize}
+    \item \texttt{cd \$HOME/patc\_kokkos/code/miniapps/SummerSchool2016}
+    \item \texttt{git clone https://github.com/pkestene/SummerSchool2016.git}
+    \item \texttt{cd Summerschool2016; git checkout kokkos}
+    \end{itemize}
+  \item \textbf{This material contains multiple versions} of a \textcolor{violet}{\textbf{Reaction-Diffusion PDE solver (Fisher equation)}}. We will contribute 2 Kokkos versions of this solver.
+    $$ \frac{\partial s}{\partial t} = D \left( \frac{\partial^2 s}{\partial x^2} + \frac{\partial^2 s}{\partial y^2} \right) + R s (1-s) = 0$$
   \end{itemize}
   
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Hands-On 6 - Reaction-Diffusion Fisher equation (2)}
+
+  \begin{enumerate}
+  \item \textbf{Explore/Read slides about the Fisher solver:}\\
+    {\footnotesize \texttt{\$HOME/patc\_kokkos/code/miniapps/SummerSchool2016/miniapp/kokkos/serial/miniapp.pdf}}
+    \begin{itemize}
+    \item Explore the \textcolor{red}{serial} version of the Fisher solver.
+    \end{itemize}
+  \item These \textbf{Kokkos exercises} are routed to use the \textcolor{darkgreen}{\textbf{modulefiles}}:
+    \begin{itemize}
+    \item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
+    \item \texttt{module load kokkos/openmp\_gnu485\_dev}
+    \item \texttt{make}
+    \end{itemize}
+  \item \textcolor{blue}{\textbf{Kokkos version 1}} / Exercice with \texttt{KOKKOS\_LAMBDA} / Already pre-filled, some TODOs
+    \begin{itemize}
+    \item Open and read file \texttt{miniapp/kokkos/cxx/readme.txt}
+    \item Fill the TODO with Kokkos LAMBDA kernels
+    \end{itemize}
+  \item \textcolor{blue}{\textbf{Kokkos version 2}} : already done
+    \begin{itemize}
+    \item The main difference between version 1 and 2 is how the c++ class \texttt{DataWareHouse} is designed
+    \item Just build and compare performance with version 1, with Kokkos device OpenMP(Power8) and then Cuda
+    \end{itemize}
+  \end{enumerate}
 \end{frame}
