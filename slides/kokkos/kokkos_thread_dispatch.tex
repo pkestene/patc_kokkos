@@ -140,10 +140,21 @@
     no prescription of order of execution nor concurrency; allows to adapt to the actual hardware; e.g. a GPU has some level of hardware parallelism (Streaming Multiprocessor) and some levels of concurrency (warps and block of threads).
   \item \textcolor{blue}{Team policy:} for hierarchical parallelism
     \begin{itemize}
-    \item threads team $$
-    \item threads inside a team
+    \item threads team %$\Longleftrightarrow$ thread block (in CUDA)
+    \item threads inside a team %$\Longleftrightarrow$ thread (in CUDA)
     \item vector lanes
     \end{itemize}
+  \item 
+    {\small
+      \begin{minted}{c++}
+        // Using default execution space and launching
+        // a league with league_size teams with team_size threads each
+        Kokkos::TeamPolicy <>
+        policy( league_size , team_size );
+      \end{minted}
+    }
+    equivalent to launching in CUDA a 1D grid of 1D blocks of threads.\\
+    Team scratch pad memory $\Longleftrightarrow$ CUDA shared memory
   \end{itemize}
 
 \end{frame}
@@ -156,7 +167,10 @@
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
   \begin{itemize}
-  \item Experimental features: task parallelism
+  \item OpenMP: League of Teams of Threads
+  \item Cuda: Grid of Blocks of Threads
+  \item Experimental features: task parallelism\\
+    {\small see slides by C. Edwards at GTC2016 \myhref{https://cfwebprod.sandia.gov/cfdocs/CompResearch/docs/2016-04-GTC-Kokkos-Task.pdf}{2016-04-GTC-Kokkos-Task.pdf}}
   \end{itemize}
   
 \end{frame}
