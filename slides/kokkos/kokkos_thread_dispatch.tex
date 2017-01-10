@@ -15,6 +15,7 @@
     \item \textcolor{red}{\textbf{an execution policy:}} e.g. a range (can simply be an integer), team of threads, ...
     \item \textbf{a body:} specified as a lambda function or a functor
     \end{itemize}
+  \item Very important: launching a kernel (thread dispatching) is by default asynchronous
   \end{itemize}
 
 \end{frame}
@@ -135,8 +136,14 @@
 
   \begin{itemize}
   \item Remember that an execution policy specifies \textbf{how} a parallel dispatch is done by the device
-  \item \textcolor{darkgreen}{Range policy:}
-  \item \textcolor{blue}{Team policy:}
+  \item \textcolor{darkgreen}{Range policy:} from...to\\
+    no prescription of order of execution nor concurrency; allows to adapt to the actual hardware; e.g. a GPU has some level of hardware parallelism (Streaming Multiprocessor) and some levels of concurrency (warps and block of threads).
+  \item \textcolor{blue}{Team policy:} for hierarchical parallelism
+    \begin{itemize}
+    \item threads team $$
+    \item threads inside a team
+    \item vector lanes
+    \end{itemize}
   \end{itemize}
 
 \end{frame}
@@ -146,6 +153,10 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
   
-  {\Large \textcolor{violet}{\textbf{Hierarchical parallelisme (advanced)}}}
+  {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
+  \begin{itemize}
+  \item Experimental features: task parallelism
+  \end{itemize}
+  
 \end{frame}
