@@ -1,22 +1,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{MPI + Kokkos on Ouessant}
+  \frametitle{MPI + Kokkos on Ouessant (1)}
 
   \begin{itemize}
-  \item Perform distributed computing on a cluster of Power8 nodes with 4 GPU each
-  \item How to build application when \texttt{KOKKOS\_DEVICE} is Cuda ?
+  \item \textcolor{violet}{Perform \textbf{distributed computing}} on a cluster of \textbf{Power8 nodes (4 GPU/node)}
+  \item \textcolor{red}{\bf How to build application when \texttt{KOKKOS\_DEVICE} is Cuda ?}
     \begin{itemize}
     \item Solution 1: Use \texttt{mpicxx} and pass env variable \texttt{OMPI\_CXX=nvcc\_wrapper}~\footnote{Use MPICH\_CXX is your MPI implementation is MPICH.}
     \item Solution 2: Use \texttt{nvcc\_wrapper} as the compiler, but modify \texttt{CXX\_FLAGS} / \texttt{LDFLAGS} to add MPI specific flags.
     \end{itemize}
-  \item How to make sure everything is ok regarding hardware affinity ? 
-    \textcolor{red}{\textbf{Cross-check at all possible level !}} (so many ways to go wrong)
+  \item \textcolor{red}{\bf How to make sure everything is ok regarding hardware affinity ? }
+    \textcolor{darkgreen}{\textbf{Cross-check at all possible level !}} (so many ways to go wrong)
     \begin{itemize}
     \item Use \texttt{mpirun \--\--report-bindings} to cross-check afterwards how the job scheduler mapped the MPI task to core/host.
     \item Use either \texttt{Kokkos::OpenMP::print\_configuration} / \texttt{Kokkos::Cuda::print\_configuration}
-    \item Check MPI task - GPU binding is what you expect it to be.
-      {\small
+    \item {\bf Check MPI task - GPU binding is what you expect it to be in the application.}
+      {\scriptsize
         \begin{minted}{c++}
           int cudaDeviceId;
           cudaGetDevice(&cudaDeviceId);
@@ -24,6 +24,100 @@
         \end{minted}
       }
     \end{itemize} 
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{MPI + Kokkos on Ouessant (2)}
+
+  {\Large Simple job script for using \textbf{MPI+Kokkos/OpenMP}}
+
+  {\small
+    \begin{minted}{bash}
+      #!/bin/bash
+      #BSUB -x
+      #BSUB -J test_mpi_kokkos_openmp            # Job name
+      #BSUB -n 4                                 # total number of MPI task
+      #BSUB -o test_mpi_kokkos_openmp.%J.out     # stdout filename
+      #BSUB -q compute                           # queue name
+      #BSUB -R "affinity[core(10):cpubind=core]" # affinity
+      #BSUB -R 'span[ptile=2]'                   # tile : number of MPI task/node
+      #BSUB -W 00:05                             # maximum runtime
+            
+      module load gcc/4.8/ompi/1.10
+      
+      # number of OpenMP thread per MPI task
+      OMP_NUM_THREADS=20
+      
+      # report bindings for cross-checking
+      mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./test_mpi_kokkos.omp
+    \end{minted}
+  }
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{MPI + Kokkos on Ouessant (3)}
+
+  {\Large Simple job script for using \textbf{MPI + Kokkos/Cuda}}
+
+  {\scriptsize
+    \begin{minted}{bash}
+      #!/bin/bash
+      #BSUB -x
+      #BSUB -J test_mpi_kokkos_cuda              # Job name
+      #BSUB -n 8                                # number of MPI tasks
+      #BSUB -o test_mpi_kokkos_cuda.%J.out       # stdout filename
+      #BSUB -q compute                          # queue name
+      #BSUB -R "affinity[core(5):cpubind=core]"  # nb cores per MPI task
+      #BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"  # activate GPU usage
+      #BSUB -W 00:05                            # max runtime
+            
+      module load gcc/4.8/ompi/1.10 cuda/8.0
+      
+      CUDA_VISIBLE_DEVICES=0,1,2,3      
+      GPUS_PER_NODES=4
+      
+      # Each mpi tasks are binded to a different GPU
+      mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./test_mpi_kokkos.cuda --ndevices=$GPUS_PER_NODES
+      
+    \end{minted}
+  }
+  \begin{itemize}
+    \item This script requests 2 nodes, i.e. $2\times4=8$ GPUs
+  \item \texttt{core(5)}: just to be sure that each Power8 will receive 2 MPI tasks
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{MPI + Kokkos on Ouessant (4) - Hands-On}
+
+  {\Large \bf About LSF (job scheduler)}
+  
+  \begin{itemize}
+  \item Use code in \textcolor{violet}{\texttt{code/exercices/mpi\_kokkos}}; This application just reports bindings
+  \item {\bf Try to build this application against an installed version of Kokkos}, i.e. either OpenMP / Cuda
+    \begin{itemize}
+    \item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
+    \item OpenMP: \texttt{module load kokkos/cuda80\_gnu485\_dev\_k80}
+    \item Cuda:   \texttt{module load cuda/8.0 kokkos/cuda80\_gnu485\_dev\_k80}
+    \item \texttt{make}
+    \item This will build either \texttt{test\_mpi\_kokkos.omp} or \texttt{test\_mpi\_kokkos.cuda}
+    \end{itemize}
+  \item Open and read \texttt{submit\_ouessant\_cpu.sh} / \texttt{submit\_ouessant\_gpu.sh}
+  \item {\bf \textcolor{darkgreen}{Submit a job, read the output and check everything is what is expected}}
+  \item LSF commands to know:
+    \begin{itemize}
+    \item {\bf submit:} \texttt{bsub < submit\_ouessant\_cpu.sh}
+    \item {\bf info/status:} \texttt{bjobs}
+    \item {\bf cancel/kill:} \texttt{bkill}
+    \end{itemize}
   \end{itemize}
 
 \end{frame}
