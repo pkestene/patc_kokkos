@@ -6,7 +6,9 @@
 #include <mpi.h>
 #include "kokkos_shared.h"
 
+#ifdef CUDA
 #include <cuda.h>
+#endif
 
 // #ifdef CUDA
 // #include "CudaTimer.h"
@@ -62,10 +64,12 @@ int main(int argc, char* argv[]) {
     std::cout << "##########################\n";
   }
 
+#ifdef CUDA
   int cudaDeviceId;
   cudaGetDevice(&cudaDeviceId);
   std::cout << "I'm MPI task #" << rank << " pinned to GPU #" << cudaDeviceId << "\n";
-  
+#endif  
+
   Kokkos::finalize();
 
   MPI_Finalize();
