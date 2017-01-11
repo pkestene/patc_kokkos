@@ -3,13 +3,13 @@
 \begin{frame}
   \frametitle{Hands-On 5 : Laplace solver with KOKKOS + MPI}
 
-  Slightly adapted from Nvidia's OpenACC exercise:\\
+  \textbf{Slightly adapted/refactored from Nvidia's OpenACC exercise:}\\
   \myhref{https://github.com/NVIDIA-OpenACC-Course/nvidia-advanced-openacc-course-sources}{nvidia-advanced-openacc-course-sources}
 
   We will use code from \myurl{code/exercises/laplace_kokkos}, 4 different versions of the 2D Laplace solver:
   \begin{itemize}
   \item serial (no kokkos)
-  \item kokkos with 1D viewd (linearized index)
+  \item \textcolor{violet}{\textbf{kokkos with 1D view}} (linearized index)
   \item kokkos\_v2 with 2D views
   \item kokkos\_mpi with MPI+CUDA and hwloc
   \end{itemize}

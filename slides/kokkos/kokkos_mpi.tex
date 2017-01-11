@@ -1,0 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{MPI + Kokkos on Ouessant}
+
+  \begin{itemize}
+  \item Perform distributed computing on a cluster of Power8 nodes with 4 GPU each
+  \item How to build application when \texttt{KOKKOS\_DEVICE} is Cuda ?
+    \begin{itemize}
+    \item Solution 1: Use \texttt{mpicxx} and pass env variable \texttt{OMPI\_CXX=nvcc\_wrapper}~\footnote{Use MPICH\_CXX is your MPI implementation is MPICH.}
+    \item Solution 2: Use \texttt{nvcc\_wrapper} as the compiler, but modify \texttt{CXX\_FLAGS} / \texttt{LDFLAGS} to add MPI specific flags.
+    \end{itemize}
+  \item How to make sure everything is ok regarding hardware affinity ? 
+    \textcolor{red}{\textbf{Cross-check at all possible level !}} (so many ways to go wrong)
+    \begin{itemize}
+    \item Use \texttt{mpirun \--\--report-bindings} to cross-check afterwards how the job scheduler mapped the MPI task to core/host.
+    \item Use either \texttt{Kokkos::OpenMP::print\_configuration} / \texttt{Kokkos::Cuda::print\_configuration}
+    \item Check MPI task - GPU binding is what you expect it to be.
+      {\small
+        \begin{minted}{c++}
+          int cudaDeviceId;
+          cudaGetDevice(&cudaDeviceId);
+          std::cout << "I'm MPI task #" << rank << " pinned to GPU #" << cudaDeviceId << "\n";
+        \end{minted}
+      }
+    \end{itemize} 
+  \end{itemize}
+
+\end{frame}

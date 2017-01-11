@@ -205,21 +205,35 @@
   \frametitle{Kokkos - initialize / finalize with MPI}
 
   \begin{itemize}
-  \item \textcolor{red}{\textbf{Advanced initialization}} with \textcolor{blue}{\textbf{MPI + CUDA}}
+  \item \textcolor{red}{\textbf{Advanced initialization}} with \textcolor{blue}{\textbf{MPI + Kokkos/CUDA}} \textcolor{violet}{\textbf{version 1 : implicit mapping}}\\
+    Don't do anything special, let Kokkos through hwloc chose the GPU
+    {\scriptsize
+      \begin{minted}{c++}
+        // Just checking how Kokkos+hwloc performed
+        // the MPI rank - GPU mapping 
+        int cudaDeviceId;
+        cudaGetDevice(&cudaDeviceId);
+        std::cout << "I'm MPI task #" << rank << " pinned to GPU #" << cudaDeviceId << "\n";
+      \end{minted} 
+    }
+  \item \textcolor{red}{\textbf{Advanced initialization}} with \textcolor{blue}{\textbf{MPI + Kokkos/CUDA}} \textcolor{violet}{\textbf{version 2 : explicit mapping}}
     (we will come back into that with example code)
-    \begin{minted}{c++}
-
-      // MPI initialized above
-
-      // probe the number of CUDA device (i.e. GPUs)
-      const int ngpu = Kokkos::Cuda::detect_device_count();
-
-      // provide a mapping 1 MPI task <-> 1 GPU
-      const int cuda_device_rank = pre_mpi_local_rank % ngpu ;
-
-      // each MPI task initialize the selected device id
-      Kokkos::Cuda::initialize(
-              Kokkos::Cuda::SelectDevice( cuda_device_rank ) );
-    \end{minted}
+    {\scriptsize
+      \begin{minted}{c++}
+        
+        // MPI initialized above
+        
+        // probe the number of CUDA device (i.e. GPUs)
+        const int ngpu = Kokkos::Cuda::detect_device_count();
+        
+        // provide a mapping 1 MPI task <-> 1 GPU
+        const int cuda_device_rank = pre_mpi_local_rank % ngpu ;
+        
+        // each MPI task initialize the selected device id
+        Kokkos::Cuda::initialize(
+        Kokkos::Cuda::SelectDevice( cuda_device_rank ) );
+      \end{minted}
+    }
+  \item In any case, cross-check this information with the job scheduler, e.g. \texttt{mpirun \--\--report-bindings}
   \end{itemize}
 \end{frame}
