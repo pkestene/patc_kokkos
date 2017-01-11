@@ -3,7 +3,7 @@
 KOKKOS_PATH ?= .
 include $(KOKKOS_PATH)/Makefile.kokkos
 
-EXE_PREFIX=test_mpi
+EXE_PREFIX=test_mpi_kokkos
 
 # assuming OpenMPI
 MPI_CXXFLAGS = $(shell mpicxx -showme:compile)
