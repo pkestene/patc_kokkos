@@ -1,0 +1,41 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos profiling interface (1)}
+
+  \begin{itemize}
+  \item Kokkos provides by default a \textcolor{violet}{profiling interface} through a {\bf plugin mechanism}
+  \item {\bf Usage: \textcolor{darkgreen}{profiling / monitoring / instrumenting}}
+  \item From an application point of view, there is nothing to do, just provide a plugin (shared library), e.g.
+    \begin{minted}{bash}
+      # define path to the plugin
+      export KOKKOS_PROFILE_LIBRARY=/somewhere/kp_kernel_logger.so
+      # run as usal Kokkos application
+    \end{minted}
+  \item Examples of Kokkos profile plugins can be found at\\
+    \myurl{https://github.com/kokkos/kokkos-tools}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos profiling interface (2)}
+
+  \begin{itemize}
+  \item A Kokkos profile plugin must provide implementation for callback routines
+    \begin{itemize}
+    \item \texttt{kokkosp\_init\_library}
+    \item \texttt{kokkosp\_finalize\_library}
+    \end{itemize}
+  \item A Kokkos profile interface can provide implementation for callback routines specific to a type a parallel construct, e.g. \texttt{Kokkos::parallel\_for}
+    \begin{itemize}
+    \item \texttt{kokkosp\_begin\_parallel\_for}
+    \item \texttt{kokkosp\_end\_parallel\_for}
+    \end{itemize}
+    which are called every time application enters / exits this construct.
+    \item see file \texttt{core/src/impl/Kokkos\_Profiling\_Interface.cpp} for a detailed list of possible callbacks.
+  \end{itemize}
+  
+\end{frame}
