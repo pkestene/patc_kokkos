@@ -5,7 +5,7 @@
 
 double dot(vector x, vector y) {
   
-  double sum=0;
+  double sum=0.0;
   unsigned int n=x.n;
 
   Kokkos::parallel_reduce(n, KOKKOS_LAMBDA(const int i, double &local_sum) {
