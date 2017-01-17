@@ -9,7 +9,7 @@
 #BSUB -W 00:05
 
 
-module load gcc/4.8/ompi/1.10
+module load gcc/4.8 ompi/1.10
 module load cuda/8.0
 
 # This variable is normally set by the job scheduler
@@ -23,7 +23,7 @@ EXE_NAME=test_mpi_kokkos.cuda
 
 
 # Default behaviour : all mpi tasks are binded to the same GPU
-mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./$EXE_NAME
+mpirun --report-bindings ./$EXE_NAME
 
 echo " "
 echo "##############################################"
@@ -32,4 +32,4 @@ echo "##############################################"
 echo " "
 
 # Nominal bahavior: each mpi task binded to a different GPU
-mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./$EXE_NAME --ndevices=$NUMBER_OF_GPUS_PER_NODES
+mpirun --report-bindings ./$EXE_NAME --ndevices=$NUMBER_OF_GPUS_PER_NODES

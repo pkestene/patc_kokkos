@@ -9,7 +9,7 @@
 #BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"
 #BSUB -W 00:05
 
-module load gcc/4.8/ompi/1.10
+module load gcc/4.8 ompi/1.10
 module load cuda/8.0
 
 # This variable is normally set by the job scheduler
@@ -17,11 +17,8 @@ module load cuda/8.0
 # to make sure all GPU devices can be used by our job.
 CUDA_VISIBLE_DEVICES=0,1,2,3
 
-# here setup env for kokkos
+# init the name of your executable
+EXE_NAME=
 
-MY_HOME=/pwrhome/rech/mhb/rmhb001/
-
-EXE_NAME=.....
-
-mpirun -rf ${LSB_RANK_HOSTFILE} $EXE_NAME
+mpirun $EXE_NAME
 

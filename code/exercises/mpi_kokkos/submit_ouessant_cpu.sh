@@ -9,7 +9,7 @@
 #BSUB -W 00:05
 
 
-module load gcc/4.8/ompi/1.10
+module load gcc/4.8 ompi/1.10
 
 # number of OpenMP thread per MPI task
 OMP_NUM_THREADS=20
@@ -17,4 +17,4 @@ OMP_NUM_THREADS=20
 EXE_NAME=test_mpi_kokkos.omp
 
 # report bindings for cross-checking
-mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./$EXE_NAME
+mpirun --report-bindings ./$EXE_NAME
