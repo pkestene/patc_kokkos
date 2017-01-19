@@ -100,6 +100,26 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (5)}
 
+  {\large \textcolor{violet}{\textbf{About Kokkos::parallel\_reduce with lambda}}}
+
+  \begin{itemize}
+  \item As for \texttt{parallel\_for}, loop body can be specified as a lambda, or a functor; here is the lambda way when reduce operation is \texttt{sum}:
+  \end{itemize}
+  {\small
+    \begin{minted}{c++}
+      Kokkos::parallel_reduce (100, KOKKOS_LAMBDA (const int i, int &local_sum) {
+        local_sum += data(i);
+      }, sum);
+    \end{minted}
+  }
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (6)}
+
   {\large \textcolor{violet}{\textbf{About Kokkos::parallel\_reduce functor}}}
 
   \begin{itemize}
@@ -130,15 +150,39 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (6)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
   
   {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
 
   \begin{itemize}
   \item Remember that an execution policy specifies \textbf{how} a parallel dispatch is done by the device
-  \item \textcolor{darkgreen}{Range policy:} from...to\\
+  \item \textcolor{darkgreen}{\bf Range policy:} from...to\\
     no prescription of order of execution nor concurrency; allows to adapt to the actual hardware; e.g. a GPU has some level of hardware parallelism (Streaming Multiprocessor) and some levels of concurrency (warps and block of threads).
-  \item \textcolor{blue}{Team policy:} for hierarchical parallelism
+  \item \textcolor{orange}{\bf Multidimensional range:} still experimental (as of January 2017), mapping a higher than 1D range of iteration.
+  \end{itemize}
+  {\small
+    \begin{minted}{c++}
+      // create the MDrangePolicy object
+      using namespace Kokkos::Experimental;
+      using range_type = MDRangePolicy< Rank<2>, Kokkos::IndexType<int> >;
+      range_type range( {0,0}, {N0,N1} );
+      
+      // use a special multidimensional parallel for launcher
+      md_parallel_for(range, functor);
+    \end{minted}
+  }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (8)}
+  
+  {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
+
+  \begin{itemize}
+  \item \textcolor{blue}{\bf Team policy:} for {\bf hierarchical parallelism}
     \begin{itemize}
     \item threads team %$\Longleftrightarrow$ thread block (in CUDA)
     \item threads inside a team %$\Longleftrightarrow$ thread (in CUDA)
@@ -156,13 +200,12 @@
     equivalent to launching in CUDA a 1D grid of 1D blocks of threads.\\
     Team scratch pad memory $\Longleftrightarrow$ CUDA shared memory
   \end{itemize}
-
 \end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (9)}
   
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
