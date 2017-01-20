@@ -47,9 +47,6 @@ int main(int argc, char *argv[]) {
   double normr, rtrans, oldtrans, p_ap_dot , alpha, beta;
   int iter=0;
 
-  // number of thread teams
-  int num_teams = 4;
-  
   // init matrix
   A.init();
   
@@ -60,7 +57,7 @@ int main(int argc, char *argv[]) {
   b.init(1.0);
   
   waxpby(one, x, zero, x, p);
-  matvec(A,p,Ap, num_teams);
+  matvec(A,p,Ap);
   waxpby(one, b, -one, Ap, r);
   
   rtrans = dot(r,r);
@@ -79,7 +76,7 @@ int main(int argc, char *argv[]) {
     
     normr=sqrt(rtrans);
   
-    matvec(A,p,Ap,num_teams);
+    matvec(A,p,Ap);
     p_ap_dot = dot(Ap,p);
 
     alpha = rtrans/p_ap_dot;
