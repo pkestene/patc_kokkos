@@ -58,7 +58,7 @@ void matvec(matrix A, vector x, vector y) {
   
   // the total number of threads will be
   // num_teams * team_policy_t::team_size_max( functor )
-  team_policy_t policy( num_teams, 2 /*team_policy_t::team_size_max( functor ) */);
+  team_policy_t policy( num_teams, 32 + 0*team_policy_t::team_size_max( functor ) );
 
   // run the parallel loop
   Kokkos::parallel_for(policy, functor);
