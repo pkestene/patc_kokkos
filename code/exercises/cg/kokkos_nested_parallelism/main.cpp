@@ -8,7 +8,7 @@
 #include "matrix.h"
 #include "matrix_functions.h"
 
-#define N 200
+#define N 100
 #define MAX_ITERS 100
 #define TOL 1e-12
 
