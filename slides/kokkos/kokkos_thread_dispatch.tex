@@ -64,7 +64,7 @@
   \begin{itemize}
   \item \textcolor{blue}{\texttt{KOKKOS\_LAMBA}} is a macro which provides a compiler-portable way of specifying a lambda function with \textbf{capture-by-value closure}.
     \begin{itemize}
-    \item \textcolor{blue}{\texttt{KOKKOS\_LAMBA}} must be used at the most outer parallel loop; inside a lambda one can all another lambda
+    \item \textcolor{blue}{\texttt{KOKKOS\_LAMBA}} must be used at the most outer parallel loop; inside a lambda one can call another lambda
     \end{itemize}
   \item \textcolor{darkgreen}{\texttt{KOKKOS\_INLINE\_FUNCTION}} \texttt{void operator() (...) const;}\\
     this macro helps providing the necessary compiler specific \textit{decorators}, e.g. \texttt{\_\_device\_\_} for Cuda to make sure the body can be turns into a Cuda kernel.

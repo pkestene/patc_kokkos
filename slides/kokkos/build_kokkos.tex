@@ -44,9 +44,9 @@
     \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ...
     \end{itemize}
   \item When building for \textcolor{darkgreen}{CUDA device}, you'll need to use Kokkos' own compiler wrapper: \textcolor{darkgreen}{\texttt{nvcc\_wrapper}} (included in Kokkos sources)
-  \item \textcolor{red}{When build Kokkos aiming at an installed Kokkos}, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
+  \item \textcolor{red}{When building Kokkos and aiming at an installed Kokkos}, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
     Just type \texttt{./generate\_makefile.bash --help} at top-level Kokkos sources
-  \item \textcolor{blue}{When using using Kokkos embedded in your application}, these variables must be set on the \texttt{make} command line.
+  \item \textcolor{blue}{When using Kokkos embedded in your application}, these variables must be set on the \texttt{make} command line.
   \end{itemize}
   
 \end{frame}
@@ -126,7 +126,7 @@
     \begin{itemize}
     \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Pthreads > Serial)\\
       e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
-    \item You can activated several execution spaces (recommended)
+    \item You can activate several execution spaces (recommended)
     %\item Defines a \textcolor{blue}{default memory space}
     \item all this information provided at compile time will internally be used inside Kokkos sources as default (hidden) template parameters
     \end{itemize}
