@@ -190,12 +190,5 @@ struct HydroParams {
   
 }; // struct HydroParams
 
-/*
- * build an hydroParams structure from a ConfigMap object.
- */
-// void hydroParams_setup(HydroParams& params, ConfigMap& map);
-
-// void hydroParams_init(HydroParams& params);
-// void hydroParams_print(HydroParams& params);
 
 #endif // HYDRO_PARAMS_H_

@@ -1212,7 +1212,7 @@ public:
   
   DataArray Udata;
   
-}; // InitImplodeFunctor
+}; // InitBlastFunctor
   
 
 /*************************************************/
