@@ -60,8 +60,8 @@ public:
   void make_boundaries(DataArray Udata);
 
   // host routines (initialization)
-  void init_implode(DataArrayHost Udata);
-  void init_blast(DataArrayHost Udata);
+  void init_implode(DataArray Udata);
+  void init_blast(DataArray Udata);
 
   // host routines (save data to file, device data are copied into host
   // inside this routine)

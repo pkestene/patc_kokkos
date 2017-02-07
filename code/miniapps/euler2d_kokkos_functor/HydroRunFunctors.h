@@ -1103,6 +1103,121 @@ public:
 /*************************************************/
 /*************************************************/
 /*************************************************/
+class InitImplodeFunctor : public HydroBaseFunctor {
+
+public:
+  InitImplodeFunctor(HydroParams params,
+		     DataArray Udata) :
+    HydroBaseFunctor(params), Udata(Udata)  {};
+  
+  KOKKOS_INLINE_FUNCTION
+  void operator()(const int& index) const
+  {
+
+    const int isize = params.isize;
+    const int jsize = params.jsize;
+    const int ghostWidth = params.ghostWidth;
+    
+    const real_t xmin = params.xmin;
+    const real_t ymin = params.ymin;
+    const real_t dx = params.dx;
+    const real_t dy = params.dy;
+    
+    const real_t gamma0 = params.settings.gamma0;
+    
+    int i,j;
+    index2coord(index,i,j,isize,jsize);
+    
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
+    
+    real_t tmp = x+y;
+    if (tmp > 0.5 && tmp < 1.5) {
+      Udata(index , ID) = 1.0;
+      Udata(index , IP) = 1.0/(gamma0-1.0);
+      Udata(index , IU) = 0.0;
+      Udata(index , IV) = 0.0;
+    } else {
+      Udata(index , ID) = 0.125;
+      Udata(index , IP) = 0.14/(gamma0-1.0);
+      Udata(index , IU) = 0.0;
+      Udata(index , IV) = 0.0;
+    }
+    
+  } // end operator ()
+
+  DataArray Udata;
+
+}; // InitImplodeFunctor
+  
+/*************************************************/
+/*************************************************/
+/*************************************************/
+class InitBlastFunctor : public HydroBaseFunctor {
+
+public:
+  InitBlastFunctor(HydroParams params,
+		   DataArray Udata) :
+    HydroBaseFunctor(params), Udata(Udata)  {};
+  
+  KOKKOS_INLINE_FUNCTION
+  void operator()(const int& index) const
+  {
+
+    const int isize = params.isize;
+    const int jsize = params.jsize;
+    const int ghostWidth = params.ghostWidth;
+    
+    const real_t xmin = params.xmin;
+    const real_t ymin = params.ymin;
+    const real_t dx = params.dx;
+    const real_t dy = params.dy;
+    
+    const real_t gamma0 = params.settings.gamma0;
+
+    // blast problem parameters
+    const real_t blast_radius      = params.blast_radius;
+    const real_t radius2           = blast_radius*blast_radius;
+    const real_t blast_center_x    = params.blast_center_x;
+    const real_t blast_center_y    = params.blast_center_y;
+    const real_t blast_density_in  = params.blast_density_in;
+    const real_t blast_density_out = params.blast_density_out;
+    const real_t blast_pressure_in = params.blast_pressure_in;
+    const real_t blast_pressure_out= params.blast_pressure_out;
+  
+
+    int i,j;
+    index2coord(index,i,j,isize,jsize);
+    
+    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
+    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
+
+    real_t d2 = 
+      (x-blast_center_x)*(x-blast_center_x)+
+      (y-blast_center_y)*(y-blast_center_y);    
+    
+    if (d2 < radius2) {
+      Udata(index , ID) = blast_density_in;
+      Udata(index , IP) = blast_pressure_in/(gamma0-1.0);
+      Udata(index , IU) = 0.0;
+      Udata(index , IV) = 0.0;
+    } else {
+      Udata(index , ID) = blast_density_out;
+      Udata(index , IP) = blast_pressure_out/(gamma0-1.0);
+      Udata(index , IU) = 0.0;
+      Udata(index , IV) = 0.0;
+    }
+    
+  } // end operator ()
+  
+  DataArray Udata;
+  
+}; // InitImplodeFunctor
+  
+
+/*************************************************/
+/*************************************************/
+/*************************************************/
  template <FaceIdType faceId>
  class MakeBoundariesFunctor : public HydroBaseFunctor {
 

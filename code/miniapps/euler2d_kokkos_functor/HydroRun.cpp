@@ -72,11 +72,11 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
    */
   if ( params.problemType == PROBLEM_IMPLODE) {
 
-    init_implode(Uhost);
+    init_implode(U);
 
   } else if (params.problemType == PROBLEM_BLAST) {
 
-    init_blast(Uhost);
+    init_blast(U);
 
   } else {
 
@@ -84,13 +84,12 @@ HydroRun::HydroRun(HydroParams& params, ConfigMap& configMap) :
 	      << " is not recognized / implemented in initHydroRun."
 	      << std::endl;
     std::cout <<  "Use default - implode" << std::endl;
-    init_implode(Uhost);
+    init_implode(U);
 
   }
 
-  // upload Uhost to device
-  Kokkos::deep_copy(U, Uhost);
-  Kokkos::deep_copy(U2,Uhost);
+  // copy U into U2
+  Kokkos::deep_copy(U2,U);
 
 } // HydroRun::HydroRun
 
@@ -296,38 +295,11 @@ void HydroRun::make_boundaries(DataArray Udata)
  * Hydrodynamical Implosion Test.
  * http://www.astro.princeton.edu/~jstone/Athena/tests/implode/Implode.html
  */
-void HydroRun::init_implode(DataArrayHost Udata)
+void HydroRun::init_implode(DataArray Udata)
 {
 
-  const int ghostWidth = params.ghostWidth;
-  
-  const real_t xmin = params.xmin;
-  const real_t ymin = params.ymin;
-  const real_t dx = params.dx;
-  const real_t dy = params.dy;
-  
-  const real_t gamma0 = params.settings.gamma0;
-  
-  for (int index=0; index<ijsize; ++index) {
-    int i,j;
-    index2coord(index,i,j,isize,jsize);
-
-    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
-    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
-    
-    real_t tmp = x+y;
-    if (tmp > 0.5 && tmp < 1.5) {
-      Udata(index , ID) = 1.0;
-      Udata(index , IP) = 1.0/(gamma0-1.0);
-      Udata(index , IU) = 0.0;
-      Udata(index , IV) = 0.0;
-    } else {
-      Udata(index , ID) = 0.125;
-      Udata(index , IP) = 0.14/(gamma0-1.0);
-      Udata(index , IU) = 0.0;
-      Udata(index , IV) = 0.0;
-    }
-  }
+  InitImplodeFunctor functor(params, Udata);
+  Kokkos::parallel_for(ijsize, functor);
   
 } // init_implode
 
@@ -337,50 +309,11 @@ void HydroRun::init_implode(DataArrayHost Udata)
  * Hydrodynamical blast Test.
  * http://www.astro.princeton.edu/~jstone/Athena/tests/blast/blast.html
  */
-void HydroRun::init_blast(DataArrayHost Udata)
+void HydroRun::init_blast(DataArray Udata)
 {
 
-  real_t gamma0 = params.settings.gamma0;
-
-  const int ghostWidth = params.ghostWidth;
-  const real_t xmin = params.xmin;
-  const real_t ymin = params.ymin;
-  const real_t dx = params.dx;
-  const real_t dy = params.dy;
-
-  // blast problem parameters
-  real_t blast_radius      = params.blast_radius;
-  real_t radius2           = blast_radius*blast_radius;
-  real_t blast_center_x    = params.blast_center_x;
-  real_t blast_center_y    = params.blast_center_y;
-  real_t blast_density_in  = params.blast_density_in;
-  real_t blast_density_out = params.blast_density_out;
-  real_t blast_pressure_in = params.blast_pressure_in;
-  real_t blast_pressure_out= params.blast_pressure_out;
-  
-  for (int index=0; index<ijsize; ++index) {
-    int i,j;
-    index2coord(index,i,j,isize,jsize);
-    
-    real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
-    real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
-
-    real_t d2 = 
-      (x-blast_center_x)*(x-blast_center_x)+
-      (y-blast_center_y)*(y-blast_center_y);    
-    
-    if (d2 < radius2) {
-      Udata(index , ID) = blast_density_in;
-      Udata(index , IP) = blast_pressure_in/(gamma0-1.0);
-      Udata(index , IU) = 0.0;
-      Udata(index , IV) = 0.0;
-    } else {
-      Udata(index , ID) = blast_density_out;
-      Udata(index , IP) = blast_pressure_out/(gamma0-1.0);
-      Udata(index , IU) = 0.0;
-      Udata(index , IV) = 0.0;
-    }
-  }
+  InitBlastFunctor functor(params, Udata);
+  Kokkos::parallel_for(ijsize, functor);
 
 } // HydroRun::init_blast
 
