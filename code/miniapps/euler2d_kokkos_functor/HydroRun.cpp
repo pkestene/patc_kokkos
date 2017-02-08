@@ -322,6 +322,8 @@ void HydroRun::init_blast(DataArray Udata)
 // ///////////////////////////////////////////////////////
 // output routine (VTK file format, ASCII, VtkImageData)
 // Take care that VTK uses row major (i+j*nx)
+// To make sure OpenMP and CUDA version give the same
+// results, we transpose the OpenMP data.
 // ///////////////////////////////////////////////////////
 void HydroRun::saveVTK(DataArray Udata,
 		       int iStep,
@@ -373,7 +375,6 @@ void HydroRun::saveVTK(DataArray Udata,
   }
 
   // write mesh extent
-#ifdef CUDA
   outFile << "  <ImageData WholeExtent=\""
 	  << 0 << " " << nx << " "
 	  << 0 << " " << ny << " "
@@ -384,18 +385,6 @@ void HydroRun::saveVTK(DataArray Udata,
 	  << 0 << " " << ny << " "
 	  << 0 << " " << 1  << " "    
 	  << "\">\n";
-#else
-  outFile << "  <ImageData WholeExtent=\""
-	  << 0 << " " << ny << " "
-	  << 0 << " " << nx << " "
-	  << 0 << " " << 0  << " "
-	  <<  "\" Origin=\"0 0 0\" Spacing=\"1 1 1\">\n";
-  outFile << "  <Piece Extent=\""
-	  << 0 << " " << ny << " "
-	  << 0 << " " << nx << " "
-	  << 0 << " " << 1  << " "    
-	  << "\">\n";  
-#endif
   
   outFile << "    <PointData>\n";
   outFile << "    </PointData>\n";
@@ -411,10 +400,21 @@ void HydroRun::saveVTK(DataArray Udata,
     outFile << "\" Name=\"" << varNames[iVar] << "\" format=\"ascii\" >\n";
 
     for (int index=0; index<ijsize; ++index) {
-      index2coord(index,i,j,isize,jsize);
+      //index2coord(index,i,j,isize,jsize);
+
+      // enforce the use of left layout (Ok for CUDA)
+      // but for OpenMP, we will need to transpose
+      j = index / isize;
+      i = index - j*isize;
+
       if (j>=jmin+ghostWidth and j<=jmax-ghostWidth and
 	  i>=imin+ghostWidth and i<=imax-ghostWidth) {
+#ifdef CUDA
     	outFile << Uhost(index , iVar) << " ";
+#else
+	int index2 = j+jsize*i;
+    	outFile << Uhost(index2 , iVar) << " ";
+#endif
       }
     }
     outFile << "\n    </DataArray>\n";

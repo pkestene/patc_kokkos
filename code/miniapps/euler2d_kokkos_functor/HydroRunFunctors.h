@@ -1131,7 +1131,7 @@ public:
     real_t x = xmin + dx/2 + (i-ghostWidth)*dx;
     real_t y = ymin + dy/2 + (j-ghostWidth)*dy;
     
-    real_t tmp = x+y;
+    real_t tmp = x+y*y;
     if (tmp > 0.5 && tmp < 1.5) {
       Udata(index , ID) = 1.0;
       Udata(index , IP) = 1.0/(gamma0-1.0);
