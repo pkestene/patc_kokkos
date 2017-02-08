@@ -116,32 +116,32 @@ struct HydroParams {
   bool   enableOutput; /*!< enable output file write. */
   
   // geometry parameters
-  int nx=0;     /*!< logical size along X (without ghost cells).*/
-  int ny=0;     /*!< logical size along Y (without ghost cells).*/
-  int ghostWidth=2;  
-  int imin=0;   /*!< index minimum at X border*/
-  int imax=0;   /*!< index maximum at X border*/
-  int jmin=0;   /*!< index minimum at Y border*/
-  int jmax=0;   /*!< index maximum at Y border*/
+  int nx;     /*!< logical size along X (without ghost cells).*/
+  int ny;     /*!< logical size along Y (without ghost cells).*/
+  int ghostWidth;  
+  int imin;   /*!< index minimum at X border*/
+  int imax;   /*!< index maximum at X border*/
+  int jmin;   /*!< index minimum at Y border*/
+  int jmax;   /*!< index maximum at Y border*/
   
-  int isize=0;  /*!< total size (in cell unit) along X direction with ghosts.*/
-  int jsize=0;  /*!< total size (in cell unit) along Y direction with ghosts.*/
+  int isize;  /*!< total size (in cell unit) along X direction with ghosts.*/
+  int jsize;  /*!< total size (in cell unit) along Y direction with ghosts.*/
   
-  real_t xmin=0.0;
-  real_t xmax=1.0;
-  real_t ymin=0.0;
-  real_t ymax=1.0;
+  real_t xmin;
+  real_t xmax;
+  real_t ymin;
+  real_t ymax;
   real_t dx;       /*!< x resolution */
   real_t dy;       /*!< y resolution */
   
-  int boundary_type_xmin=1;
-  int boundary_type_xmax=1;
-  int boundary_type_ymin=1;
-  int boundary_type_ymax=1;
+  int boundary_type_xmin;
+  int boundary_type_xmax;
+  int boundary_type_ymin;
+  int boundary_type_ymax;
   
   // IO parameters
-  bool ioVTK=true;    /*!< enable VTK  output file format (using VTI).*/
-  bool ioHDF5=false;  /*!< enable HDF5 output file format.*/
+  bool ioVTK;    /*!< enable VTK  output file format (using VTI).*/
+  bool ioHDF5;  /*!< enable HDF5 output file format.*/
   
   // hydro settings (will be passed to device functions)
   HydroSettings settings;
@@ -152,16 +152,15 @@ struct HydroParams {
   int problemType;
   
   // blast problem parameters
-  real_t blast_radius=10.0;
-  real_t blast_center_x=0.0;
-  real_t blast_center_y=0.0;
-  real_t blast_density_in=1.0;
-  real_t blast_density_out=1.2;
-  real_t blast_pressure_in=10.0;
-  real_t blast_pressure_out=0.1;
+  real_t blast_radius;
+  real_t blast_center_x;
+  real_t blast_center_y;
+  real_t blast_density_in;
+  real_t blast_density_out;
+  real_t blast_pressure_in;
+  real_t blast_pressure_out;
   
   // other parameters
-  //int nbVar=4;  /*!< number of fields in simulation (density, energy, vx, vy)*/
   int implementationVersion=0; /*!< triggers which implementation to use (currently 3 versions)*/
 
   HydroParams() :
