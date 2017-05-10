@@ -409,7 +409,7 @@ void HydroRun::saveVTK(DataArray Udata,
 
       if (j>=jmin+ghostWidth and j<=jmax-ghostWidth and
 	  i>=imin+ghostWidth and i<=imax-ghostWidth) {
-#ifdef CUDA
+#ifdef KOKKOS_ENABLE_CUDA
     	outFile << Uhost(index , iVar) << " ";
 #else
 	int index2 = j+jsize*i;
