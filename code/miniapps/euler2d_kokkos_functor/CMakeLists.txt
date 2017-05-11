@@ -13,7 +13,7 @@ endif()
 
 option (USE_DOUBLE "build with double precision" ON)
 if (USE_DOUBLE)
-  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKOKKOS_ENABLE_CUDA" )
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_DOUBLE" )
 endif()
 
 add_executable(euler2d
