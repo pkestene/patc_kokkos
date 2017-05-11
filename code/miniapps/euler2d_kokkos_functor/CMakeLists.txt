@@ -11,6 +11,11 @@ if(KOKKOS_ENABLE_CUDA)
   set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKOKKOS_ENABLE_CUDA" )
 endif()
 
+option (USE_DOUBLE "build with double precision" ON)
+if (USE_DOUBLE)
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKOKKOS_ENABLE_CUDA" )
+endif()
+
 add_executable(euler2d
   config/inih/ini.cpp
   config/inih/INIReader.cpp
