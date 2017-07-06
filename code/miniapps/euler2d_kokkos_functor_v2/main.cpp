@@ -16,14 +16,14 @@
 #include "HydroRun.h"    // memory allocation for hydro arrays
 #include "Timer.h"  // for timer
 
-#ifdef KOKKOS_ENABLE_CUDA
+#ifdef CUDA
 #include "CudaTimer.h"
 #endif
 
 int main(int argc, char *argv[])
 {
 
-#ifdef KOKKOS_ENABLE_CUDA
+#ifdef CUDA
   // Initialize Host mirror device
   Kokkos::HostSpace::execution_space::initialize(1);
   const unsigned device_count = Kokkos::Cuda::detect_device_count();
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
           << "] )"
           << std::endl ;
     }
-#if defined( KOKKOS_ENABLE_CUDA )
+#if defined( CUDA )
     Kokkos::Cuda::print_configuration( msg );
 #else
     Kokkos::OpenMP::print_configuration( msg );
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 
   delete hydro;
 
-#ifdef KOKKOS_ENABLE_CUDA
+#ifdef CUDA
   Kokkos::Cuda::finalize();
   Kokkos::HostSpace::execution_space::finalize();
 #else
