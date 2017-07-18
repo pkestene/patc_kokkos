@@ -18,7 +18,7 @@
 #endif
 
 #ifndef DEVICE
-# define DEVICE Kokkos::OpenMP
+# define DEVICE Kokkos::Serial
 #endif
 
 // first index is space localtion, second is hydro variable

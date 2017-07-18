@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     }
 #if defined( CUDA )
     Kokkos::Cuda::print_configuration( msg );
-#else
+#elif defined (OPENMP)
     Kokkos::OpenMP::print_configuration( msg );
 #endif
     std::cout << msg.str();
