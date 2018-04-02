@@ -1,0 +1,14 @@
+# Choses à améliorer
+
+- introduction de Kokkos::View
+  citer les alternatives de tableaux multi-D (mais CPU only):
+  https://github.com/dwwork/FortCpp
+  ndarray
+  Blitz++
+  Boost::MultiArray
+  Eigen
+
+# Choses à ajouter
+
+- utiliser incremental-fluid-kokkos
+- un mini-exemple Trilinos - résolution de système lineaire 
