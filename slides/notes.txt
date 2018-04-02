@@ -12,3 +12,6 @@
 
 - utiliser incremental-fluid-kokkos
 - un mini-exemple Trilinos - résolution de système lineaire 
+- update de la machine Titan vers Summit à ORNL
+https://www.nextplatform.com/2018/03/28/a-first-look-at-summit-supercomputer-application-performance/
+- applications utilsants Kokkos : Lammps, Sparta, trilinos, QmcPack (mini)
