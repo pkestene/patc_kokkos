@@ -7,7 +7,7 @@
   \item \textcolor{violet}{Perform \textbf{distributed computing}} on a cluster of \textbf{Power8 nodes (4 GPU/node)}
   \item \textcolor{red}{\bf How to build application when \texttt{KOKKOS\_DEVICE} is Cuda ?}
     \begin{itemize}
-    \item Solution 1: Use \texttt{mpicxx} and pass env variable \texttt{OMPI\_CXX=nvcc\_wrapper}~\footnote{Use MPICH\_CXX is your MPI implementation is MPICH.}
+    \item Solution 1: Use \texttt{mpicxx} and pass env variable \texttt{OMPI\_CXX=nvcc\_wrapper}~\footnote{Use MPICH\_CXX if your MPI implementation is MPICH.}
     \item Solution 2: Use \texttt{nvcc\_wrapper} as the compiler, but modify \texttt{CXX\_FLAGS} / \texttt{LDFLAGS} to add MPI specific flags.
     \end{itemize}
   \item \textcolor{red}{\bf How to make sure everything is ok regarding hardware affinity ? }
