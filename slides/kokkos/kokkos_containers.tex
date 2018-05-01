@@ -124,13 +124,14 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (6)}
 
-  {\Large \bf Interoperability}
+  {\Large \bf Interoperability with a legacy C++ API} (pointer based)
 
   \begin{itemize}
-  \item \textbf{With a legacy API} \texttt{void legacyFunction(int * data, int size)}\\
+  \item \texttt{void legacyFunction(int * data, int size);}\\
     how to retrieve a raw pointer from a \texttt{Kokkos::View<int *> data}:\\
     \texttt{int *raw\_ptr = data.ptr\_on\_device()} \\
-    This is not recommended. No more reference counting.
+    This is not recommended. Only if you must (e.g. pass data to CuBLAS, ...).\\
+    No more reference counting. Kokkos::View's are reference-counted
   \end{itemize}
 
 \end{frame}

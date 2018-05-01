@@ -81,14 +81,14 @@
     \item Each execution space is equipped with a \texttt{fence}: \texttt{Kokkos::Cuda::fence()}
     \end{itemize}
   \item \textcolor{blue}{\textbf{Memory space:}} Where / how data are allocated in memory (HostSpace, CudaSpace, CudaUVMSpace, CudaHostPinnedSpace, HBWSpace, ...)
-  \item \textcolor{blue}{\textbf{Memory layout}} (come back later on that)
+  \item \textcolor{blue}{\textbf{Memory layout}} (we will come back later on that)
   \item Other concepts:
     \begin{itemize}
     \item Execution policy: used to modify a parallel thread dispatch
     \end{itemize}
   \item \textcolor{red}{Multiple execution / memory space} can be used in a single application\\
     See for example in Kokkos sources \texttt{example/tutorial/Advanced\_View/07\_Overlapping\_DeepCopy}\\
-    Though, take care that currently, Cuda stream are not completely mapped into Kokkos API~\footnote{Will be implemented in the coming months}; meanwhile Cuda streams can be used directly (but looses portability); 
+    Though, take care that currently, Cuda stream are not completely mapped into Kokkos API~\footnote{To be implemented.}; meanwhile Cuda streams can be used directly (but looses portability); 
   \end{itemize}
 
 \end{frame}

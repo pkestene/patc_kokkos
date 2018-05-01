@@ -13,18 +13,18 @@
       \textcolor{darkgreen}{\texttt{2. git clone https://github.com/kokkos/kokkos}}\\
       \textcolor{darkgreen}{\texttt{3. cd kokkos; git checkout develop}}
     \end{itemize}
-  \item \textbf{2. Build configuration}
-    \begin{itemize}
-    %\item \texttt{mkdir build; cd build}
-    \item About build system, several ways to use/build Kokkos
+  \item \textbf{2. How to build and use}
+    \begin{enumerate}
+    \item Kokkos by design has {\bf many different configurations possible} (hardware adaptability) $\Rightarrow$ better be compiled as part as the target application
+    \item \textcolor{red}{\textbf{Regular standalone Makefile (installed Kokkos):}} use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
+      Then use a \textit{modulefile} to configure the environment\\
+      Kokkos examples (inside source) can be built that way, as well as \myhref{https://github.com/kokkos/kokkos-tutorials}{Kokkos-tutorials}
+    \item \textcolor{blue}{\textbf{Embedded Kokkos source files in your application}} and use \myhref{https://cmake.org/}{CMake}:
       \begin{enumerate}
-      \item \myhref{https://cmake.org/}{CMake}: only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos},
-      \item \textcolor{red}{\textbf{Regular standalone utilization (installed Kokkos):}} use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
-        Then use a \textit{modulefile} to configure the environment
-      \item \textcolor{blue}{\textbf{Embedded Kokkos source files in your application}} - mostly usefull in tutorial.
+      \item \textcolor{darkgreen}{\bf (recommended) standalone cmake + kokkos sources embedded in your application}
+      \item cmake+Tribits: only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos}
       \end{enumerate}
-      \item We will use 2. and 3.
-    \end{itemize}
+    \end{enumerate}
   \end{itemize}
  
 \end{frame}
@@ -34,7 +34,7 @@
 \begin{frame}
   \frametitle{Hands-On 0: Build kokkos (2)}
 
-  \textbf{About Makefile variable for building on multiple architectures}
+  {\bf About standalone Makefile and environment variables settings for building on multiple architectures}
 
   \begin{itemize}
   \item The following variables are usefull when building some of the tutorial examples :
@@ -43,9 +43,9 @@
     \item \texttt{KOKKOS\_DEVICES}: define possible execution spaces: CUDA, OpenMP, Pthreads, Serial, ...
     \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ...
     \end{itemize}
-  \item When building for \textcolor{darkgreen}{CUDA device}, you'll need to use Kokkos' own compiler wrapper: \textcolor{darkgreen}{\texttt{nvcc\_wrapper}} (included in Kokkos sources)
+  \item When building for \textcolor{darkgreen}{\bf CUDA device}, you'll need to use Kokkos' own compiler wrapper: \textcolor{darkgreen}{\texttt{\bf nvcc\_wrapper}} (included in Kokkos sources), not just \texttt{nvcc}
   \item \textcolor{red}{When building Kokkos and aiming at an installed Kokkos}, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
-    Just type \texttt{./generate\_makefile.bash --help} at top-level Kokkos sources
+    Just type \texttt{./generate\_makefile.bash \--\--help} at top-level Kokkos sources
   \item \textcolor{blue}{When using Kokkos embedded in your application}, these variables must be set on the \texttt{make} command line.
   \end{itemize}
   
@@ -68,10 +68,10 @@
       \texttt{../generate\_makefile.bash --with-cuda --arch=Pascal60 --prefix=\$HOME/local/kokkos\_cuda\_lambda\_openmp --with-cuda-options=enable\_lambda --with-openmp --with-hwloc=/usr}
     \end{itemize}
   \item \textcolor{darkgreen}{\textbf{After installation}} (\texttt{make kokkoslib; make install;}) the file \textbf{\texttt{Makefile.kokkos}} is created, and designed to be reused in your application build system.
-  \item \textbf{2 choices for integrating Kokkos in your app:}
+  \item \textbf{Two choices for integrating Kokkos in your app:}
     \begin{itemize}
     \item Use an existing Makefile from Kokkos tutorial, examples, ...
-    \item Use your own build system: there can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
+    \item Use your own build system ({\bf cmake recommended}): there can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
     \end{itemize}
   \end{itemize}
   
@@ -124,7 +124,7 @@
     %
   \item \textcolor{red}{\textbf{What's happening inside \texttt{Kokkos::initialize}}}
     \begin{itemize}
-    \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} (as specified when kokkos itself was built, by order of priority: Cuda > OpenMP > Pthreads > Serial)\\
+    \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} (as specified when kokkos itself was built, by order of {\bf priority}: Cuda > OpenMP > Pthreads > Serial)\\
       e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
     \item You can activate several execution spaces (recommended)
     %\item Defines a \textcolor{blue}{default memory space}
@@ -161,9 +161,9 @@
     % 
   \item \textbf{Fine control of initialization:}
     \begin{itemize}
-    \item \texttt{Kokkos::initialize(argc, argv);}\\
+    \item \texttt{\bf Kokkos::initialize(argc, argv);}\\
       User can change/fix e.g. number OpenMP threads on the application's command line
-    \item This is regular initialization. If available \textcolor{orange}{\textbf{\texttt{hwloc}}} is used to provide default hardware locality:
+    \item This is regular initialization. If available \textcolor{orange}{\textbf{\texttt{hwloc}}} library is available and activated, it provides default hardware locality:
       \begin{itemize}
       \item For OpenMP exec space: number of threads (default is all CPU cores)\\
         NB: usual environment variables (e.g. \texttt{OMP\_NUM\_THREADS}, \texttt{GOMP\_CPU\_AFFINITY} can (of course) also be used
@@ -234,6 +234,6 @@
         Kokkos::Cuda::SelectDevice( cuda_device_rank ) );
       \end{minted}
     }
-  \item In any case, cross-check this information with the job scheduler, e.g. \texttt{mpirun \--\--report-bindings}
+  \item In any case, \textcolor{darkgreen}{\bf cross-check this information} with the job scheduler, e.g. \texttt{mpirun \--\--report-bindings}
   \end{itemize}
 \end{frame}
