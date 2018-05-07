@@ -109,10 +109,11 @@
       {\small
         \begin{minted}{c++}
           #if defined( KOKKOS_ENABLE_CUDA )
-            Kokkos::Cuda::print_configuration( msg );
+          Kokkos::Cuda::print_configuration( msg );
           #else
-            Kokkos::OpenMP::print_configuration( msg );
+          Kokkos::OpenMP::print_configuration( msg );
           #endif
+          //Kokkos::print_configuration( msg ); // how this app was build
         \end{minted}
       }
     \end{enumerate}
@@ -131,7 +132,8 @@
     %     Kokkos::OpenMP KOKKOS_HAVE_OPENMP hwloc[2x10x4] hwloc_binding_enabled thread_pool_topology[ 2 x 10 x 4 ]      
     %   \end{minted}
     % }
-    \item As already said: processor affinity is crucial to performance; Kokkos expects you properly set OpenMP env variables for that purpose.
+  \item add \texttt{Kokkos::print\_configuration} to cross-check at run-time executable was built with the right options
+  \item As already said: processor affinity is crucial to performance; Kokkos expects you properly set OpenMP env variables for that purpose.
   \end{itemize}
 
 \end{frame}
