@@ -27,7 +27,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
-  \frametitle{Hands-On 1b : Kokkos query\_device}
+  \frametitle{Hands-On 1b : Kokkos query\_device with hwloc}
 
   {\large\textcolor{red}{\textbf{Purpose:} just cross-checking Kokkos/Hwloc is working OK}}
 
@@ -49,7 +49,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Hands-On 1b : Kokkos query\_device}
+  \frametitle{Hands-On 1b : Kokkos query\_device with hwloc}
 
   {\large\textcolor{red}{\textbf{Purpose:}}}
   \begin{itemize}
@@ -61,15 +61,7 @@
   \begin{itemize}
   \item Kokkos sources will be built by the application Makefile
   \item \texttt{cd \$HOME/kokkos-tutorial/kokkos/example/query\_device}
-  \item open \texttt{query\_device.cpp}; no computations, it just prints hardware information
-  \item 
-    \begin{enumerate}
-    \item \textbf{Default serial build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc"}\\
-      How many NUMA / Cores / Hyperthreads on power8 CPU ?\\
-      What is the current SMT mode on a ouessant login node ? (use command \texttt{ppc64\_cpu \--\--smt} or \texttt{ppc64\_cpu --info})
-    \item \textbf{OpenMP build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=OpenMP} (off course, exact same information obtained)
-    \item \textbf{CUDA/OpenMP build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=Cuda,OpenMP}; rerun and you should get information about the CPU+GPU configuration
-    \end{enumerate}
+  \item open \texttt{query\_device.cpp} to have a look; no computations, it just prints hardware information
   \item \textbf{Take some time to have a look at the Makefile.}\\
     Note that latter when using an installed kokkos library, we won't need to set architecture or device related variables on the command line .
   \end{itemize}
@@ -79,20 +71,44 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Hands-On 1b : query\_device}
+  \frametitle{Hands-On 1b : Kokkos query\_device with hwloc}
 
-  {\large\textcolor{red}{\textbf{Purpose:} just cross-checking Kokkos/Hwloc is working OK}}
+  \begin{enumerate}
+  \item \textbf{Default serial build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc"}\\
+    How many NUMA / Cores / Hyperthreads on power8 CPU ?\\
+    What is the current SMT mode on a \texttt{ouessant} login node ?
+    \begin{itemize}
+    \item \texttt{ppc64\_cpu \--\--smt}
+    \item \texttt{ppc64\_cpu --info} 
+    \end{itemize}
+  \item environment: \texttt{module load at/10.0 cuda/9.0}
+  \item \textbf{OpenMP build (with hwloc):}\\
+    \fbox{\texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=OpenMP}} (off course, exact same information obtained as with serial execution)
+  \item \textbf{CUDA/OpenMP build (with hwloc):}\\
+    \fbox{\texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=Cuda,OpenMP}} rerun and you should get information about the CPU+GPU configuration
+  \end{enumerate}
+  
+\end{frame}
+
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Hands-On 1b : Kokkos query\_device without hwloc}
+
+  {\large\textcolor{orange}{\bf Question: What happens if hwloc is not activated ?}}
 
   \begin{itemize}
-  \item \textcolor{orange}{\textbf{What happens if hwloc is not activated ?}}
   \item Edit file \texttt{query\_device.cpp} and do the following modification:
     \begin{enumerate}
     \item Add \texttt{Kokkos::initialize(argc, argv);} after \texttt{MPI\_Init}
     \item Add \texttt{Kokkos::finalize();} before \texttt{MPI\_Finalize}
+    \item Rebuild and run \texttt{./query\_device.host \--\--help}
+    \item run \texttt{./query\_device.host \--\--kokkos-threads=12} (alternatively, you can use regular OpenMP environment variables)
     \item change\\
       {\small
         \begin{minted}{c++}
-          #if defined( KOKKOS_HAVE_CUDA )
+          #if defined( KOKKOS_ENABLE_CUDA )
             Kokkos::Cuda::print_configuration( msg );
           #else
             Kokkos::OpenMP::print_configuration( msg );
@@ -100,20 +116,22 @@
         \end{minted}
       }
     \end{enumerate}
-  \item {\small Rebuild 1 \textcolor{red}{without HWLOC:} \texttt{make KOKKOS\_DEVICES=OpenMP}}
-    {\small
-      \begin{minted}{bash}
-        Kokkos::OpenMP KOKKOS_HAVE_OPENMP thread_pool_topology[ 1 x 80 x 1 ]
-      \end{minted}
-    }
-  \item {\small Rebuild 2 \textcolor{darkgreen}{with HWLOC:} \texttt{make KOKKOS\_DEVICES=OpenMP KOKKOS\_USE\_TPLS="hwloc"}}
-    {\small 
-      \begin{minted}{bash}
-        hwloc( NUMA[2] x CORE[10] x HT[4] )
-        Kokkos::OpenMP KOKKOS_HAVE_OPENMP hwloc[2x10x4] hwloc_binding_enabled thread_pool_topology[ 2 x 10 x 4 ]      
-      \end{minted}
-    }
-    \item As already said: processor affinity is crucial to performance
+  \item {\small Rebuild 1 \textcolor{red}{without HWLOC:}\\
+      \texttt{make KOKKOS\_DEVICES=OpenMP}}
+    % {\small
+    %   \begin{minted}{bash}
+    %     Kokkos::OpenMP KOKKOS_HAVE_OPENMP thread_pool_topology[ 1 x 80 x 1 ]
+    %   \end{minted}
+    % }
+  \item {\small Rebuild 2 \textcolor{darkgreen}{with HWLOC:}\\
+      \texttt{make KOKKOS\_DEVICES=OpenMP KOKKOS\_USE\_TPLS="hwloc"}}
+    % {\small 
+    %   \begin{minted}{bash}
+    %     hwloc( NUMA[2] x CORE[10] x HT[4] )
+    %     Kokkos::OpenMP KOKKOS_HAVE_OPENMP hwloc[2x10x4] hwloc_binding_enabled thread_pool_topology[ 2 x 10 x 4 ]      
+    %   \end{minted}
+    % }
+    \item As already said: processor affinity is crucial to performance; Kokkos expects you properly set OpenMP env variables for that purpose.
   \end{itemize}
 
 \end{frame}
