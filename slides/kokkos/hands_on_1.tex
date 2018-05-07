@@ -1,7 +1,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
-  \frametitle{Hands-On 1 : query\_device}
+  \frametitle{Hands-On 1a : Cuda device\_query - job submission}
+
+  {\large\textcolor{red}{\textbf{Purpose:} just make sure you are able to launch a job on Ouessant}}
+
+  \begin{itemize}
+  \item We will use a cuda sample
+  \item In your home on \texttt{ouessant}: 
+    \begin{itemize}
+    \item \texttt{cp -a /usr/local/cuda-9.0/samples .}
+    \item \texttt{cd samples/1\_Utilities/deviceQuery}
+    \item \texttt{module load at/10.0 cuda/9.0}
+    \item \texttt{make}
+    \item You have an executable named \texttt{deviceQuery}
+    \item You can run it on a \textcolor{red}{\bf Ouessant login node:} \fbox{\texttt{./deviceQuery}}
+    \item You can run it on a \textcolor{darkgreen}{\bf Ouessant compute node} using the script \texttt{submit\_ouessant.sh} launched like this:\\
+      \fbox{\texttt{bsub < submit\_ouessant.sh}}\\
+      The submission script is located in the training archive (\texttt{code/handson/1a/submit\_ouessant.sh})
+    \item What differences can you see between the two executions ?
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Hands-On 1b : Kokkos query\_device}
 
   {\large\textcolor{red}{\textbf{Purpose:} just cross-checking Kokkos/Hwloc is working OK}}
 
@@ -23,7 +49,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Hands-On 1 : query\_device}
+  \frametitle{Hands-On 1b : Kokkos query\_device}
 
   {\large\textcolor{red}{\textbf{Purpose:} just cross-checking Kokkos/Hwloc is working OK}}
 
@@ -48,7 +74,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Hands-On 1 : query\_device}
+  \frametitle{Hands-On 1b : query\_device}
 
   {\large\textcolor{red}{\textbf{Purpose:} just cross-checking Kokkos/Hwloc is working OK}}
 

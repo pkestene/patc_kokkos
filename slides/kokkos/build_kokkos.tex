@@ -1,32 +1,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
-  \frametitle{Hands-On 0: Build kokkos}
-
+  \frametitle{Hands-On 0: Build kokkos (1)}
+  
+  \textbf{0. Kokkos is still experimental, but moving fast: use git sources}
+  
+  \textbf{1. Get Kokkos sources, development branch - don't try to build yet !}
   \begin{itemize}
-  \item \textbf{Kokkos is still experimental, but moving fast}
-  \item \textbf{1. Get Kokkos sources, development branch}
-    \begin{itemize}
-    \item \textcolor{blue}{Practicals on \texttt{ouessant}:}\\
-      \textcolor{darkgreen}{\texttt{1. mkdir \$HOME/kokkos-tutorial; cd \$HOME/kokkos-tutorial}}\\
-      some kokkos tutorial examples have a Makefile configured for using that precise location.\\
-      \textcolor{darkgreen}{\texttt{2. git clone https://github.com/kokkos/kokkos}}\\
-      \textcolor{darkgreen}{\texttt{3. cd kokkos; git checkout develop}}
-    \end{itemize}
-  \item \textbf{2. How to build and use}
-    \begin{enumerate}
-    \item Kokkos by design has {\bf many different configurations possible} (hardware adaptability) $\Rightarrow$ better be compiled as part as the target application
-    \item \textcolor{red}{\textbf{Regular standalone Makefile (installed Kokkos):}} use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
-      Then use a \textit{modulefile} to configure the environment\\
-      Kokkos examples (inside source) can be built that way, as well as \myhref{https://github.com/kokkos/kokkos-tutorials}{Kokkos-tutorials}
-    \item \textcolor{blue}{\textbf{Embedded Kokkos source files in your application}} and use \myhref{https://cmake.org/}{CMake}:
-      \begin{enumerate}
-      \item \textcolor{darkgreen}{\bf (recommended) standalone cmake + kokkos sources embedded in your application}
-      \item cmake+Tribits: only when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos}
-      \end{enumerate}
-    \end{enumerate}
+  \item \textcolor{blue}{Practicals on \texttt{ouessant}:}\\
+    \textcolor{darkgreen}{\texttt{1. mkdir \$HOME/kokkos-tutorial; cd \$HOME/kokkos-tutorial}}\\
+    some kokkos tutorial examples have a Makefile configured for using that precise location.\\
+    \textcolor{darkgreen}{\texttt{2. git clone https://github.com/kokkos/kokkos}}\\
+    \textcolor{darkgreen}{\texttt{3. cd kokkos; git checkout develop}}
   \end{itemize}
- 
+  
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -34,14 +21,41 @@
 \begin{frame}
   \frametitle{Hands-On 0: Build kokkos (2)}
 
-  {\bf About standalone Makefile and environment variables settings for building on multiple architectures}
+  \textbf{2. How to build and use}
+  \begin{enumerate}
+  \item \textcolor{red}{\textbf{As a regular library (standalone Makefile, installed library):}} \\
+    \begin{itemize}
+    \item {\bf not recommended} for production level (see below), {\bf OK for testing and building examples}
+    \item use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
+      Then use a \textit{modulefile} to configure the environment\\
+      Kokkos examples (inside source) can be built that way, as well as \myhref{https://github.com/kokkos/kokkos-tutorials}{Kokkos-tutorials}
+    \end{itemize}
+  \item \textcolor{blue}{\textbf{Embedded Kokkos source files in your application}}
+    \begin{itemize}
+    \item Why ?
+    \item $\Rightarrow$ Kokkos by design has {\bf many different configurations possible} (hardware adaptability, heavily relies on C++ metaprograming - compile timing )
+    \item $\Rightarrow$ best practice advice : better compile kokkos as part as the target application (same flags, same compiler, etc...)
+    \item $\Rightarrow$ \textcolor{blue}{\bf recommended use}:
+    \textcolor{darkgreen}{\bf standalone \myhref{https://cmake.org/}{cmake} + kokkos sources embedded in your application} (we'll see a skeleton app)
+    \end{itemize}
+  \item There exists another cmake-based build sytem, but relies on a third-party tools \myhref{https://tribits.org/}{TriBITS}. Right now this can only be used used when Kokkos is build inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos} (heterogeneous distributed sparse and dense linear algebra package).
+  \end{enumerate}
+ 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Hands-On 0: Build kokkos (3)}
+
+  {\bf \textcolor{red}{About standalone Makefile} and environment variables settings for building on multiple architectures}
 
   \begin{itemize}
   \item The following variables are usefull when building some of the tutorial examples :
     \begin{itemize}
     \item \texttt{KOKKOS\_PATH}: path to Kokkos source dir
     \item \texttt{KOKKOS\_DEVICES}: define possible execution spaces: CUDA, OpenMP, Pthreads, Serial, ...
-    \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ...
+    \item \texttt{KOKKOS\_ARCH}: used to customize compiler flags; e.g. Power8, Kepler35, SNB, KNL, ARMv80, ROCm, ...
     \end{itemize}
   \item When building for \textcolor{darkgreen}{\bf CUDA device}, you'll need to use Kokkos' own compiler wrapper: \textcolor{darkgreen}{\texttt{\bf nvcc\_wrapper}} (included in Kokkos sources), not just \texttt{nvcc}
   \item \textcolor{red}{When building Kokkos and aiming at an installed Kokkos}, the same information (in a different form) is passed to script \texttt{generate\_makefile.bash}\\
@@ -54,7 +68,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
-  \frametitle{Hands-On 0: Build kokkos (3)}
+  \frametitle{Hands-On 0: Build kokkos (4)}
 
   \begin{itemize}
   \item \textcolor{blue}{\textbf{Example build configurations (for an installed Kokkos)}}
