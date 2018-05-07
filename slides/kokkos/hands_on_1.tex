@@ -121,7 +121,7 @@
       \texttt{make KOKKOS\_DEVICES=OpenMP}}
     % {\small
     %   \begin{minted}{bash}
-    %     Kokkos::OpenMP KOKKOS_HAVE_OPENMP thread_pool_topology[ 1 x 80 x 1 ]
+    %     Kokkos::OpenMP thread_pool_topology[ 1 x 80 x 1 ]
     %   \end{minted}
     % }
   \item {\small Rebuild 2 \textcolor{darkgreen}{with HWLOC:}\\
@@ -129,7 +129,7 @@
     % {\small 
     %   \begin{minted}{bash}
     %     hwloc( NUMA[2] x CORE[10] x HT[4] )
-    %     Kokkos::OpenMP KOKKOS_HAVE_OPENMP hwloc[2x10x4] hwloc_binding_enabled thread_pool_topology[ 2 x 10 x 4 ]      
+    %     Kokkos::OpenMP hwloc[2x10x4] hwloc_binding_enabled thread_pool_topology[ 2 x 10 x 4 ]      
     %   \end{minted}
     % }
   \item add \texttt{Kokkos::print\_configuration} to cross-check at run-time executable was built with the right options
