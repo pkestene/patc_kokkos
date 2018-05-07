@@ -1,0 +1,9 @@
+Provide a minimal script to launch an executable (no MPI, just access a GPU)
+on a compute node of ouessant.
+
+- Copy this script (submit_ouessant.sh) in nvidia samples (samples/1_Utility/deviceQuery)
+- run:
+  bsub < submit_ouessant.sh
+
+- when finished, you should see the job output written in a file like this : test_device_query.????.out
+  where question mark are replaced by the actual job id.
