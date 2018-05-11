@@ -27,3 +27,4 @@ step 1: How to build ?
   * make
 
 step 2: Open src/compute_pi.cpp and try to fill the holes.
+        Just find the locations of TODO.

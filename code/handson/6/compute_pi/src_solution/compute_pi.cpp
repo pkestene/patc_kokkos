@@ -49,7 +49,7 @@ struct compute_pi_functor {
   // define some type alias
 
   // type for hold the random generator state
-  using rnd_t = typename GeneratorPool::generator_type;
+  using rng_state_t = typename GeneratorPool::generator_type;
 
   // which execution space ? OpenMP, Cuda, ...
   using device_t = typename GeneratorPool::device_type;
@@ -99,12 +99,12 @@ struct compute_pi_functor {
 
     uint32_t local_count = 0;
     
-    rnd_t rand_gen = rand_pool.get_state();
+    rng_state_t rand_gen = rand_pool.get_state();
     for (int k = 0; k < nrepeat; ++k) {
 
       // draw a point (in square [0,1]^2)
-      const double x = Kokkos::rand<rnd_t,double>::draw(rand_gen);
-      const double y = Kokkos::rand<rnd_t,double>::draw(rand_gen);
+      const double x = Kokkos::rand<rng_state_t,double>::draw(rand_gen);
+      const double y = Kokkos::rand<rng_state_t,double>::draw(rand_gen);
 
       double r2 = x*x+y*y;
       if (r2<1.0)

@@ -49,7 +49,7 @@ struct compute_pi_functor {
   // define some type alias
 
   // type for hold the random generator state
-  using rnd_t = typename GeneratorPool::generator_type;
+  using rng_state_t = typename GeneratorPool::generator_type;
 
   // which execution space ? OpenMP, Cuda, ...
   using device_t = typename GeneratorPool::device_type;
@@ -85,8 +85,9 @@ struct compute_pi_functor {
     // initialize the reduce variable
     uint64_t nb_pt_inside=0;
 
-    // perform computation
-    Kokkos::parallel_reduce(niter_, functor, nb_pt_inside);
+    // TODO perform computation : execute functor
+    // which one ? parallel_for / reduce / scan ?
+    //Kokkos::parallel_?????(niter_, functor, nb_pt_inside);
 
     // final results
     double pi = 4.0*nb_pt_inside/(niter_*nrepeat_);
@@ -98,13 +99,15 @@ struct compute_pi_functor {
   void operator() (int i, uint64_t& count) const {
 
     uint32_t local_count = 0;
-    
-    rnd_t rand_gen = rand_pool.get_state();
+
+    // TODO : get a random generator state from the pool
+    // rng_state_t rand_gen = ...;
     for (int k = 0; k < nrepeat; ++k) {
 
       // draw a point (in square [0,1]^2)
-      const double x = Kokkos::rand<rnd_t,double>::draw(rand_gen);
-      const double y = Kokkos::rand<rnd_t,double>::draw(rand_gen);
+      // TODO : use Kokkos::rand<rng_state_t,double>::draw to get x and y
+      //const double x = ...
+      //const double y = ...
 
       double r2 = x*x+y*y;
       if (r2<1.0)
@@ -114,7 +117,8 @@ struct compute_pi_functor {
     count += local_count;
 
     // free random gen state, so that it can used by other threads later.
-    rand_pool.free_state(rand_gen);
+    // TODO : free the random number generator state
+    // rand_gen ???
 
   } // operator ()
   

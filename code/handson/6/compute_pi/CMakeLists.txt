@@ -17,5 +17,5 @@ add_subdirectory(kokkos)
 include_directories(${Kokkos_INCLUDE_DIRS_RET})
 
 # build the miniapp
-add_subdirectory(src)
-#add_subdirectory(solution)
+#add_subdirectory(src)
+add_subdirectory(src_solution)
