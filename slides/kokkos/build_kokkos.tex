@@ -210,6 +210,9 @@
     Kokkos::Threads::initialize(teams*num_threads);
     #endif
   \end{minted}
+  \begin{itemize}
+  \item {\bf May not be needed} if you run on a supercomputer where the job scheduler sets for you OpenMP env variables or GPU/task mapping.
+  \end{itemize}
 \end{frame}
 
 
