@@ -1,5 +1,10 @@
 A minimalistic kokkos example to compute Mandelbrot set and illustrate asynchronous memory copy (i.e. overlap between a computationnal functor and a deep copy operation).
 
+A reference serial version is proposed.
+
+Before trying to do a kokkos version, make a symbolic to kokkos source (where you performed git clone of kokkos sources), e.g. something like:
+       ln -s $HOME/kokkos .
+
 Three versions provided:
 
 * basic : Mandelbrot set is computed in a single Kokkos functor. Can be used
