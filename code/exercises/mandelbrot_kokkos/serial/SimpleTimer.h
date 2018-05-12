@@ -1,29 +1,32 @@
 /**
- * \file OpenMPTimer.h
+ * \file SimpleTimer.h
  * \brief A simple timer class.
  *
  * \author Pierre Kestener
  * \date 29 Oct 2010
  *
  */
-#ifndef OPENMP_TIMER_H_
-#define OPENMP_TIMER_H_
+#ifndef SIMPLE_TIMER_H_
+#define SIMPLE_TIMER_H_
 
-#include <omp.h>
+#include <time.h>
+#include <sys/time.h> // for gettimeofday and struct timeval
+
+typedef struct timeval timeval_t;
 
 /**
  * \brief a simple Timer class.
  * If MPI is enabled, should we use MPI_WTime instead of gettimeofday (?!?)
  */
-class OpenMPTimer
+class SimpleTimer
 {
 public:
   /** default constructor, timing starts rightaway */
-  OpenMPTimer();
+  SimpleTimer();
     
-  OpenMPTimer(double t);
-  OpenMPTimer(OpenMPTimer const& aTimer);
-  virtual ~OpenMPTimer();
+  SimpleTimer(double t);
+  SimpleTimer(SimpleTimer const& aTimer);
+  virtual ~SimpleTimer();
 
   /** start time measure */
   virtual void start();
@@ -40,7 +43,7 @@ protected:
   /** store total accumulated timings */
   double    total_time;
 
-}; // class OpenMPTimer
+}; // class SimpleTimer
 
 
-#endif // OPENMP_TIMER_H_
+#endif // SIMPLE_TIMER_H_

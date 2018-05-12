@@ -1,5 +1,5 @@
 /**
- * \file OpenMPTimer.cpp
+ * \file SimpleTimer.cpp
  * \brief a simpe Timer class implementation.
  * 
  * \author Pierre Kestener
@@ -7,68 +7,81 @@
  *
  */
 
-#include "OpenMPTimer.h"
+#include "SimpleTimer.h"
 
 #include <stdexcept>
 
 ////////////////////////////////////////////////////////////////////////////////
-// OpenMPTimer class methods body
+// SimpleTimer class methods body
 ////////////////////////////////////////////////////////////////////////////////
 
 // =======================================================
 // =======================================================
-OpenMPTimer::OpenMPTimer() {
+SimpleTimer::SimpleTimer() {
   start_time = 0.0;
   total_time = 0.0;
   start();
-} // OpenMPTimer::OpenMPTimer
+} // SimpleTimer::SimpleTimer
 
 // =======================================================
 // =======================================================
-OpenMPTimer::OpenMPTimer(double t) 
+SimpleTimer::SimpleTimer(double t) 
 {
     
+  //start_time.tv_sec = time_t(t);
+  //start_time.tv_usec = (t - start_time.tv_sec) * 1e6;
+  // start_time.tv_sec = 0;
+  // start_time.tv_usec = 0;
   start_time = 0;
   total_time = t;
     
-} // OpenMPTimer::OpenMPTimer
+} // SimpleTimer::SimpleTimer
 
   // =======================================================
   // =======================================================
-OpenMPTimer::OpenMPTimer(OpenMPTimer const& aTimer) : start_time(aTimer.start_time), total_time(aTimer.total_time)
+SimpleTimer::SimpleTimer(SimpleTimer const& aTimer) : start_time(aTimer.start_time), total_time(aTimer.total_time)
 {
-} // OpenMPTimer::OpenMPTimer
+} // SimpleTimer::SimpleTimer
 
   // =======================================================
   // =======================================================
-OpenMPTimer::~OpenMPTimer()
+SimpleTimer::~SimpleTimer()
 {
-} // OpenMPTimer::~OpenMPTimer
+} // SimpleTimer::~SimpleTimer
 
   // =======================================================
   // =======================================================
-void OpenMPTimer::start() 
+void SimpleTimer::start() 
 {
 
-  start_time = omp_get_wtime();
+  timeval_t now;
+  if (-1 == gettimeofday(&now, 0))
+    throw std::runtime_error("SimpleTimer: Couldn't initialize start_time time");
+
+  start_time = double(now.tv_sec) +  (double(now.tv_usec) * 1e-6);
   
-} // OpenMPTimer::start
+} // SimpleTimer::start
   
   // =======================================================
   // =======================================================
-void OpenMPTimer::stop()
+void SimpleTimer::stop()
 {
-  double now = omp_get_wtime();
+  double now_d;
+  timeval_t now;
+  if (-1 == gettimeofday(&now, 0))
+    throw std::runtime_error("Couldn't get current time");
+    
+  now_d = double(now.tv_sec) + (double(now.tv_usec) * 1e-6);
   
-  total_time += (now-start_time);
+  total_time += (now_d-start_time);
 
-} // OpenMPTimer::stop
+} // SimpleTimer::stop
 
   // =======================================================
   // =======================================================
-double OpenMPTimer::elapsed() const
+double SimpleTimer::elapsed() const
 {
 
   return total_time;
 
-} // OpenMPTimer::elapsed
+} // SimpleTimer::elapsed
