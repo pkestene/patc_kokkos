@@ -18,54 +18,21 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
-
-  /*
-   * Initialize kokkos (host + device)
-   */
-#ifdef CUDA
-  // Initialize Host mirror device
-  Kokkos::HostSpace::execution_space::initialize(1);
-  //const unsigned device_count = Kokkos::Cuda::detect_device_count();
-
-  // Use the first device:
-  Kokkos::Cuda::initialize( Kokkos::Cuda::SelectDevice(0) );
-#else // OpenMP CPU
-  Kokkos::initialize(argc, argv);
-#endif
-
-  {
-    std::cout << "##########################\n";
-    std::cout << "KOKKOS CONFIG             \n";
-    std::cout << "##########################\n";
-    
-    std::ostringstream msg;
-    std::cout << "Kokkos configuration" << std::endl;
-    if ( Kokkos::hwloc::available() ) {
-      msg << "hwloc( NUMA[" << Kokkos::hwloc::get_available_numa_count()
-          << "] x CORE["    << Kokkos::hwloc::get_available_cores_per_numa()
-          << "] x HT["      << Kokkos::hwloc::get_available_threads_per_core()
-          << "] )"
-          << std::endl ;
-    }
-#if defined( CUDA )
-    Kokkos::Cuda::print_configuration( msg );
-#else
-    Kokkos::OpenMP::print_configuration( msg );
-#endif
-    std::cout << msg.str();
-    std::cout << "##########################\n";
-  }
+void compute_mandelbrot(int argc, char* argv[])
+{
 
 #ifdef CUDA
   CudaTimer timer;
 #else
   OpenMPTimer timer;
 #endif
+  
+  int default_size = 1024;
+  if (argc>1)
+    default_size = std::atoi(argv[1]);
+  Constants constants = Constants(default_size);
 
-  Constants constants = Constants();
-
-  // prepare data array for Mandelbrot set computation
+  // Allocate data array for Mandelbrot set computation
   DataArray     image     = DataArray("image", constants.WIDTH,constants.HEIGHT);
   DataArrayHost imageHost = Kokkos::create_mirror_view(image);
 
@@ -133,7 +100,49 @@ int main(int argc, char* argv[]) {
 
     fclose(myfile);
   }
-  
+
+} // compute_mandelbrot
+
+int main(int argc, char* argv[]) {
+
+  /*
+   * Initialize kokkos (host + device)
+   */
+#ifdef CUDA
+  // Initialize Host mirror device
+  Kokkos::HostSpace::execution_space::initialize(1);
+  //const unsigned device_count = Kokkos::Cuda::detect_device_count();
+
+  // Use the first device:
+  Kokkos::Cuda::initialize( Kokkos::Cuda::SelectDevice(0) );
+#else // OpenMP CPU
+  Kokkos::initialize(argc, argv);
+#endif
+
+  {
+    std::cout << "##########################\n";
+    std::cout << "KOKKOS CONFIG             \n";
+    std::cout << "##########################\n";
+    
+    std::ostringstream msg;
+    std::cout << "Kokkos configuration" << std::endl;
+    if ( Kokkos::hwloc::available() ) {
+      msg << "hwloc( NUMA[" << Kokkos::hwloc::get_available_numa_count()
+          << "] x CORE["    << Kokkos::hwloc::get_available_cores_per_numa()
+          << "] x HT["      << Kokkos::hwloc::get_available_threads_per_core()
+          << "] )"
+          << std::endl ;
+    }
+#if defined( CUDA )
+    Kokkos::Cuda::print_configuration( msg );
+#else
+    Kokkos::OpenMP::print_configuration( msg );
+#endif
+    std::cout << msg.str();
+    std::cout << "##########################\n";
+  }
+
+  compute_mandelbrot(argc,argv);
    
 #ifdef CUDA
   Kokkos::Cuda::finalize();
