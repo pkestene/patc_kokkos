@@ -14,9 +14,9 @@ struct Constants {
   double dx;
   double dy;
   
-  Constants() : 
-    WIDTH(2048), HEIGHT(2048),
-    MAX_ITERS(100), MAX_COLOR(255),
+  Constants(int default_size=2048) : 
+    WIDTH(default_size), HEIGHT(default_size),
+    MAX_ITERS(4000), MAX_COLOR(255),
     xmin(-1.7), xmax(.5), ymin(-1.2), ymax(1.2),
     dx(0.0), dy(0.0)
   {
