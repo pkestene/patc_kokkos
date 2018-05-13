@@ -130,7 +130,7 @@ cmake \
   -D Trilinos_ENABLE_Amesos=OFF \
   -D Trilinos_ENABLE_Amesos2=OFF \
   -D Trilinos_ENABLE_Ifpack=OFF \
-  -D Trilinos_ENABLE_Ifpack2=OFF \
+  -D Trilinos_ENABLE_Ifpack2=ON \
   -D Trilinos_ENABLE_Epetra=OFF \
   -D Trilinos_ENABLE_EpetraExt=OFF \
   -D Trilinos_ENABLE_Zoltan=OFF \
