@@ -22,35 +22,42 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile=singleslide]
+\begin{frame}[fragile]
   \frametitle{Kokkos compute Kernels - parallel dispatch (2)}
 
-  {\large \textcolor{violet}{How to specify a compute kernel in Kokkos ?}}
-  \begin{enumerate}
-  \item \textcolor{blue}{\textbf{Use Lambda functions.}}\\
+  \begin{onlyenv}<1-2>
+    {\large \textcolor{violet}{How to specify a compute kernel in Kokkos ?}}\\
+    {\large 1. \textcolor{blue}{\textbf{Use Lambda functions.}}}\\
     NB: a lambda in c++11 is an unnamed function object capable of capturing variables in scope.
-    \begin{minted}{c++}
-      Kokkos::parallel_for (100, KOKKOS_LAMBDA (const int i) {
-        data(i) = 2*i;
-      });
-    \end{minted}
-    \textbf{Here we do 2 things in 1 step: define the computation body (lambda func) and launch computation.}
-  \item \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}\\
-    A functor is a class containing a function to execute in parallel.
     {\small
       \begin{minted}{c++}
-        class FunctorType {
-          public:
-          KOKKOS_INLINE_FUNCTION
-          void operator() ( const int i ) const ;
-        };
-        ...
-        FunctorType func;
-        Kokkos::parallel_for (100, func);
+        // Note: here we use the simplest way to specify an execution policy
+        // i.e. the first parameter (100)
+        Kokkos::parallel_for (100, KOKKOS_LAMBDA (const int i) {
+          data(i) = 2*i;
+        });
+        
+        // is equivalent to the following serial code
+        for(int i = 0; i<100; ++i) {
+          data[i] = 2*i;
+        }
       \end{minted}
     }
-    \textbf{Note: 100 here is the simplest way to specify an execution policy}
-  \end{enumerate}
+  \end{onlyenv}
+  \only<1>{
+    \texttt{KOKKOS\_LAMBDA} is a preprocessor macro specifying the {\bf capture close}
+    \begin{itemize}
+    \item by default \textcolor{blue}{\texttt{KOKKOS\_LAMBDA}} is aliased to \textcolor{darkgreen}{$[=]$} to capture variables of sur\-rounding scope \textcolor{darkgreen}{\bf by value}
+    \item \textcolor{blue}{\texttt{KOKKOS\_LAMBDA}} has a special definition is CUDA is enabled
+    \end{itemize}
+  }
+  \only<2>{
+    Using lambda's means 2 things in 1:
+    \begin{itemize}
+    \item define the computation body (lambda func)
+    \item launch computation.
+    \end{itemize}
+  }
 
 \end{frame}
 
@@ -58,6 +65,36 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (3)}
+
+  {\large \textcolor{violet}{How to specify a compute kernel in Kokkos ?}}\\
+  {\large 2. \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}}\\
+  A functor is a class containing a function to execute in parallel, usually it is an \texttt{operator ()}
+  {\small
+    \begin{minted}{c++}
+      class FunctorType {
+        public:
+        // constructor : pass data
+        FunctorType(Kokkos::View<...> data);
+        
+        KOKKOS_INLINE_FUNCTION
+        void operator() ( const int i ) const
+        { data(i) = 2*i; };
+      };
+      ...
+      FunctorType func; // create a functor instance
+      Kokkos::parallel_for (100, func); // launch computation
+    \end{minted}
+    \begin{itemize}
+    \item \texttt{KOKKOS\_INLINE\_FUNCTION} is a macro with different meaning depending on target (e.g. it contains \texttt{\_\_device\_\_} for cuda)
+    \end{itemize}
+  }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (4)}
 
   {\Large \textcolor{violet}{Notes on macros defined in \texttt{core/src/Kokkos\_Macros.hpp}}}
 
@@ -78,7 +115,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (4)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (5)}
 
 
   \textbf{Lambda or Functor: which one to use in Kokkos ? Both !}
@@ -90,7 +127,7 @@
     \end{itemize}
   \item \textcolor{darkgreen}{\textbf{Use a C++ functor class.}}\\
     \begin{itemize}
-    \item More flexible, allow to design more complex kernel
+    \item More flexible, allow to design more complex kernels
     \end{itemize}
   \end{enumerate}
 \end{frame}
@@ -98,19 +135,30 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (5)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (6)}
 
   {\large \textcolor{violet}{\textbf{About Kokkos::parallel\_reduce with lambda}}}
 
   \begin{itemize}
-  \item As for \texttt{parallel\_for}, loop body can be specified as a lambda, or a functor; here is the lambda way when reduce operation is \texttt{sum}:
+  \item As for \texttt{parallel\_for}, loop body can be specified as a \textcolor{blue}{\bf lambda}, or a \textcolor{darkgreen}{\bf functor}; here is the lambda way when reduce operation is \texttt{sum}:
   \end{itemize}
   {\small
     \begin{minted}{c++}
-      Kokkos::parallel_reduce (100, KOKKOS_LAMBDA (const int i, int &local_sum) {
-        local_sum += data(i);
-      }, sum);
-    \end{minted}
+      // - local_sum is a temporary variable to transfer intermediate result
+      //   between threads (or block of threads)
+      // - sum contains the final reduced result
+      Kokkos::parallel_reduce (100,
+         KOKKOS_LAMBDA (const int i, int &local_sum) {
+           local_sum += data(i);
+         },
+         sum);
+       \end{minted}
+       \begin{itemize}
+       \item Important note: using \texttt{parallel\_reduce} with lambda is only really usefull if the reduce operation $'+'$
+       \item If the reduce operation is something else, you need to specify:\\
+         - how the local result is initialized (default 0)\\
+         - how the different intermediate results are {\it joined}
+       \end{itemize}
   }
   
 \end{frame}
@@ -118,16 +166,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (6)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
 
-  {\large \textcolor{violet}{\textbf{About Kokkos::parallel\_reduce functor}}}
+  {\large \textcolor{violet}{\textbf{About Kokkos::parallel\_reduce with a functor}}}
 
   \begin{itemize}
   \item Kokkos supplies a default \texttt{init} / \texttt{join} operator which is \texttt{operator+}
   \item If the reduce operator is not trivial (i.e. not a sum) $\Rightarrow$ you need to define methods \texttt{init} and \texttt{join}
   \end{itemize}
 
-  {\small
+  {\footnotesize
     \begin{minted}{c++}
       class ReduceFunctor {
         public:
@@ -144,13 +192,14 @@
         init(const volatile data_t &dst) const {...}
       }
       \end{minted}
+      This is useful when the reduced variable is complex (e.g. a multi-field structure)
     }
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (8)}
   
   {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
 
@@ -177,7 +226,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (8)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (9)}
   
   {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
 
@@ -205,7 +254,7 @@
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos compute Kernels - parallel dispatch (9)}
+  \frametitle{Kokkos compute Kernels - parallel dispatch (10)}
   
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 

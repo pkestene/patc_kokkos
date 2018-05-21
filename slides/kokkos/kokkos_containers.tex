@@ -5,18 +5,18 @@
   
   {\large \textcolor{blue}{\texttt{Kokkos::View<...>}} is \textbf{multidimensionnal data container} with \textbf{hardware adapted memory layout}}
   \begin{itemize}
-  \item \texttt{Kokkos::View<double **> data("data",NX,NY);} : 2D array with sizes known at runtime
-  \item \texttt{Kokkos::View<double *[3]> data("data",NX);} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
-  \item How do I access data ? $data(i,j)$ !
-  \item \textcolor{orange}{Which memory space ?} By default, the default device memory space !\\
+  \item \textcolor{blue}{\texttt{Kokkos::View<double **> data("data",NX,NY);}} : 2D array with sizes known at runtime
+  \item \textcolor{blue}{\texttt{Kokkos::View<double *[3]> data("data",NX);}} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
+  \item \fbox{How do I access data ? $data(i,j)$ !} {\it a la Fortran}
+  \item \textcolor{orange}{\bf Which memory space ?} By default, the default device memory space !\\
     Want to enforce in which memory space lives the view ? 
     \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
   \item \texttt{Kokkos::View} are \textbf{small}, designed as reference to allocated memory buffer
     \begin{itemize}
-    \item \textcolor{orange}{View = pointer to data + array shape}
+    \item \textcolor{orange}{View = pointer to data + metadata(array shape, layout, ... )}
     \item assignment is fast (shallow copy + increment ref counter)~\footnote{NB: same behaviour as in python for example}
     \end{itemize}
-  \item \texttt{Kokkos::View} are designed to be pass by value to a function.
+  \item \texttt{Kokkos::View} are designed to be pass by value to a function ({\bf no hard copy}).
   \end{itemize}
 
 \end{frame}
@@ -48,19 +48,22 @@
 
   \begin{itemize}
   \item \textcolor{blue}{\texttt{Kokkos::View<...>}} are reference-counted
-  \item By default do a \textcolor{orange}{\textbf{shallow copy}}
+  \item \textcolor{orange}{\textbf{shallow copy}} is default behavior
     \begin{minted}{c++}
       Kokkos::View<int *>("a",10);
       Kokkos::View<int *>("b",10);
       a = b; // a now points to b (ref counter incremented by 1)
+      // a destructor (memory deallocation) only actually happen
+      // when ref counter reaches zero.
     \end{minted}
   \item \textcolor{orange}{\textbf{Deep copy}} must by explicit:
     \begin{minted}{c++}
       Kokkos::deep_copy(dest,src);
     \end{minted}
     \begin{itemize}
-    \item \textbf{Usefull when copying data from one memory space to another}\\
-      e.g. \textcolor{red}{from HostSpace to CudaSpace}
+    \item \textbf{Usefull when copying data from a memory space to another}\\
+      e.g. \textcolor{red}{from HostSpace to CudaSpace} replacing \texttt{cudaMemcpy}\\
+      $\Rightarrow$ one API for all targets
     \item When \texttt{dest} and \texttt{src} are in the same memory space, it does nothing ! (usefull for portability, see example in miniapps later)
     \end{itemize}
   \end{itemize}
@@ -72,14 +75,14 @@
   \frametitle{Kokkos data Container (4)}
 
   \begin{itemize}
-  \item A verbose  \textcolor{orange}{\textbf{Kokkos::View}} declaration example:
-    \begin{minted}{c++}
-      Kokkos::View<double*,Kokkos::LayoutLeft,Kokkos::CudaSpace> a;
-    \end{minted}
+  \item A verbose \textcolor{black}{\textbf{Kokkos::View}} declaration example of a 1D array of doubles:\\
+    %\begin{minted}{c++}
+    \textcolor{black}{\texttt{Kokkos::View}}<\textcolor{red}{double*},\textcolor{darkgreen}{Kokkos::LayoutLeft},\textcolor{magenta}{Kokkos::CudaSpace}> a;
+    %\end{minted}
     \begin{itemize}
-    \item \textcolor{orange}{\textbf{What ?}} a data type
-    \item \textcolor{orange}{\textbf{How ?}} a memory layout
-    \item \textcolor{orange}{\textbf{Where ?}} a memory space
+    \item \textcolor{red}{\textbf{What ?}} a data type
+    \item \textcolor{darkgreen}{\textbf{How ?}} a memory layout
+    \item \textcolor{magenta}{\textbf{Where ?}} a memory space
     \item the last two template parameters are optionnal (have default values)
     \item There is actually a 4th template parameter for Memory traits (e.g. atomic access)
     \end{itemize}
@@ -123,6 +126,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (6)}
+
+  {\Large \bf Other interesting types}
+  \begin{itemize}
+  \item static \texttt{Kokkos::Array} (equivalent to \texttt{std::array})
+  \item can be used inside a Kokkos kernel
+  \item example
+    \begin{minted}{c++}
+      using vec = Kokkos::Array<double,3>;
+    \end{minted}
+  \end{itemize}
 
   {\Large \bf Interoperability with a legacy C++ API} (pointer based)
 
