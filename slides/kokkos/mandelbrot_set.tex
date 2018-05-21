@@ -7,7 +7,7 @@
   \item \textcolor{darkgreen}{\textbf{Illustrate Functor class + 1D \texttt{Kokkos::View} + linearized index}}
   \item the original \textcolor{red}{serial code} use 1D \texttt{std::vector<unsigned char>} data with linearized index, i.e. $index = i + Nx * j$
   %\item Read carefully the original \texttt{serial/main.cpp} (notice the use of global variables)
-  \item See \textcolor{red}{serial code} from \texttt{code/exercises/mandelbrot\_kokkos/serial} (also read \textcolor{red}{\texttt{main.cpp}})
+  \item See \textcolor{red}{serial code} from \texttt{code/handson/3/mandelbrot\_kokkos/serial} (also read \textcolor{red}{\texttt{main.cpp}})
     {\small
       \begin{minted}{c++}
         for(int index=0; index<WIDTH*HEIGHT; ++index) {
