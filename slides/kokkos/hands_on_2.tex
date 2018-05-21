@@ -3,7 +3,7 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Hands-On 2 : SAXPY}
 
-  {\large \textcolor{red}{\textbf{Purpose:}} The simplest computing kernel in Kokkos, importance of hwloc}
+  {\large \textcolor{red}{\bf Purpose:} The simplest computing kernel in Kokkos, importance of hwloc}
 
   \begin{itemize}
   \item There 5 differents versions
@@ -13,14 +13,33 @@
   \item \textbf{4. Kokkos-Lambda : Kokkos with lambda for threads dispatch and data buffer (Kokkos::View)}
   \item 5. Kokkos-Functor-CPU : Kokkos with functor for threads dispatch only
   \end{itemize}
+
+  {\large \textcolor{red}{\bf Proposed activity (get the sources):}}
+  {\small
+    \begin{enumerate}
+    \item First, make sure you cloned kokkos sources inside \texttt{\${HOME}/kokkos-tutorial}:\\
+      \textcolor{magenta}{\texttt{mkdir -p \${HOME}/kokkos-tutorial; cd \${HOME}/kokkos-tutorial}}\\
+      \textcolor{magenta}{\texttt{git clone  https://github.com/kokkos/kokkos.git}}
+    \item Download \texttt{kokkos-tutorials} sources (anywhere in \texttt{\${HOME}}):\\
+      \textcolor{magenta}{\texttt{git clone https://github.com/kokkos/kokkos-tutorials.git}}
+    \item \textcolor{magenta}{\texttt{cd kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY}}
+    \end{enumerate}
+  }
   
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Hands-On 2 : SAXPY}
+
+  {\large \textcolor{red}{\bf Proposed activity:}}
   \begin{itemize}
-  %\item \textbf{Proposed activity}
   \item \textcolor{red}{\textbf{Saxpy serial (reference executable on Power8)}}
     \begin{itemize}
     \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY/Serial}
     \item \texttt{make KOKKOS\_ARCH=Power8}
-    \item Alternatively, we could have modify \texttt{Makefile} and change \texttt{SNB} into \texttt{Power8}
+    \item Alternatively, we could have modified \texttt{Makefile} and changed \texttt{SNB} into \texttt{Power8}
     \end{itemize}
   \item \textcolor{orange}{\textbf{Saxpy regular OpenMP (on Power8)}}
     \begin{itemize}
