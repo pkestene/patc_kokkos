@@ -8,23 +8,15 @@
 #include "real_type.h"
 #include "hydro_common.h"
 
-#ifdef KOKKOS_ENABLE_CUDA
-# define DEVICE Kokkos::Cuda
-#include <cuda.h>
-#endif
-
-#ifdef OPENMP
-# define DEVICE Kokkos::OpenMP
-#endif
-
-#ifndef DEVICE
-# define DEVICE Kokkos::OpenMP
-#endif
+using Device = Kokkos::DefaultExecutionSpace;
 
 // first index is space localtion, second is hydro variable
 // number of hydro variables is 4 in 2D, 5 in 3D
-typedef Kokkos::View<real_t*[NBVAR], DEVICE> DataArray;
-typedef DataArray::HostMirror                DataArrayHost;
+typedef Kokkos::View<real_t**[NBVAR], Device> DataArray;
+typedef DataArray::HostMirror                 DataArrayHost;
+
+/// a POD data structure to store local conservative / primitive variables
+using HydroState = Kokkos::Array<real_t,NBVAR>;
 
 /**
  * Retrieve cartesian coordinate from index, using memory layout information.
@@ -52,6 +44,5 @@ int coord2index(int i, int j, int Nx, int Ny) {
   return j + Ny*i; // right layout
 #endif
 }
-
 
 #endif // KOKKOS_SHARED_H_
