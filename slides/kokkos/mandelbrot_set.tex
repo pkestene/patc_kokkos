@@ -54,18 +54,24 @@
   \frametitle{Hands-On 3 : Mandelbrot set}
 
   \begin{itemize}
-  \item The provided \texttt{Makefile} is designed to be used with kokkos environment from a modulefile
+    % \item The provided \texttt{Makefile} is designed to be used with kokkos environment from a modulefile
+  \item Use code from directory \texttt{code/handson/3}; it is designed to work with cmake
   \item Build the \textcolor{blue}{\texttt{kokkos\_basic}} version
   \item \textcolor{violet}{\textbf{OpenMP}}
     \begin{itemize}
-    \item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
-    \item \texttt{module load kokkos/openmp\_gnu485\_dev}
-    \item \texttt{make}
+    %\item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
+    %\item \texttt{module load kokkos/openmp\_gnu485\_dev}
+    \item \texttt{mkdir build\_openmp; cd build\_openmp}
+    \item \texttt{cmake -DKOKKOS\_ENABLE\_OPENMP=ON ..; make}
     \end{itemize}
   \item \textcolor{violet}{\textbf{Cuda}}
     \begin{itemize}
-    \item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
-    \item \texttt{module load cuda/8.0 kokkos/cuda80\_gnu485\_dev\_k80}
+    %\item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
+    %\item \texttt{module load cuda/8.0 kokkos/cuda80\_gnu485\_dev\_k80}
+    \item \texttt{mkdir build\_cuda; cd build\_cuda\_kepler37}
+    \item \texttt{export CXX=/full/path/to/nvcc\_wrapper}
+    \item \texttt{cmake -DKOKKOS\_ENABLE\_CUDA=ON -DKOKKOS\_ARCH=Kepler37 ..}
+    \item you also add \texttt{-DKOKKOS\_ENABLE\_CUDA\_LAMBDA=ON}; you can also build again for architecture Pascal60
     \item \texttt{make}
     \end{itemize}
   \item \textbf{Compare performance} for a large Mandelbrot set $8192\times 8192$ : OpenMP versus Cuda
