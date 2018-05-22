@@ -1,0 +1,48 @@
+# ######## GNU ########
+CXX = g++
+CXXFLAGS = -g -O3 -I. -Wall -std=c++11 -DUSE_DOUBLE
+#CFLAGS = -g -O0 -I. -Wall -std=c99 -DUSE_DOUBLE
+LDFLAGS =
+
+# ######## Intel ########
+# CXX = icpc
+# CXXFLAGS = -O3 -Wall -std=c99 -DUSE_DOUBLE
+# #CFLAGS = -g -O0 -Wall -std=c99 -DUSE_DOUBLE
+# LDFLAGS =
+
+######## PGI ########
+# CXX = pgc++
+# CXXFLAGS = -Minform=warn -fast -Mvect=simd -Minfo -std=c++11 -DUSE_DOUBLE
+# #CFLAGS = -Minform=warn -g -DUSE_DOUBLE
+# LDFLAGS =
+
+SRCDIR = $(shell pwd)
+SRC = \
+	config/inih/ini.cpp \
+	config/inih/INIReader.cpp \
+	config/ConfigMap.cpp \
+	src/HydroParams.cpp \
+	src/Timer.cpp \
+	src/HydroRun.cpp \
+	src/main.cpp
+
+TMP_OBJ = $(SRC:.c=.o)
+OBJ     = $(TMP_OBJ:.cpp=.o)
+
+euler2d : $(OBJ)
+	echo $@
+	$(CXX) $(LDFLAGS) $(OBJ) -o $@ -lm
+
+clean:
+	rm -f $(OBJ) euler2d
+
+cleandata:
+	rm -f *.vti
+
+cleanall: clean
+	rm -f *.vti
+
+%.o:    %.c
+	$(CXX) $(CXXFLAGS)  -c $< -o $@
+%.o:    %.cpp
+	$(CXX) $(CXXFLAGS)  -c $< -o $@

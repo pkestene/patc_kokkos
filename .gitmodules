@@ -1,12 +1,4 @@
 [submodule "code/miniapps/euler2d_kokkos_functor/kokkos"]
-	path = code/miniapps/euler2d_kokkos_functor/external/kokkos
-	url = https://github.com/kokkos/kokkos
-	branch = develop
-[submodule "code/miniapps/euler2d_kokkos_functor_v2/kokkos"]
-	path = code/miniapps/euler2d_kokkos_functor_v2/kokkos
-	url = https://github.com/kokkos/kokkos
-	branch = develop
-[submodule "code/miniapps/euler2d_kokkos_functor_v3/kokkos"]
-	path = code/miniapps/euler2d_kokkos_functor_v3/kokkos
+	path = code/miniapps/euler2d/euler2d_kokkos_solution/external/kokkos
 	url = https://github.com/kokkos/kokkos
 	branch = develop
