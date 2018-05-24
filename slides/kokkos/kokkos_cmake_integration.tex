@@ -87,7 +87,40 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Hands-On 3a}
 
-  Use the template project
+  {\large \bf Activity: Use the template cmake / kokkos project}
 
+  \begin{itemize}
+  \item \textcolor{red}{\bf Clone the template project:}
+  \end{itemize}
+  {\small
+    \begin{minted}{shell}
+      git clone --recursive https://github.com/pkestene/kokkos-proj-tmpl.git
+    \end{minted}
+  }
+  %
+  \begin{itemize}
+  \item \textcolor{blue}{Build the sample application (saxpy)}: use \texttt{ccmake} interface to setup the Kokkos OpenMP target; then try to setup the CUDA target (for arch Kepler37)
+  \end{itemize}
+  {\small
+    \begin{minted}{shell}
+      mkdir build_openmp; cd build_openmp; ccmake ..
+      # set KOKKOS_ENABLE_OPENMP to ON
+      make
+    \end{minted}
+  }
+  % 
+  \begin{itemize}
+  \item \textcolor{blue}{Build the sample application (saxpy)}: repeat as above to setup the Kokkos CUDA target (for arch Kepler37)
+  \end{itemize}
+  %
+  {\small
+    \begin{minted}{shell}
+      # don't forget to set environment variable CXX
+      # export CXX="full path to nvcc_wrapper"
+      mkdir build_cuda_kepler37; cd build_openmp; ccmake ..
+      # set KOKKOS_ENABLE_CUDA to ON; set KOKKOS_ARCH
+      make
+    \end{minted}
+  }
 \end{frame}
 
