@@ -9,14 +9,14 @@
 #BSUB -R "span[ptile=10]"
 #BSUB -W 00:05
 
-#module load gcc/4.8/ompi/2.1
-#module load cuda/9.0
+# module load gcc/4.8/ompi/2.1
+# module load cuda/9.0
 
 # here we ask
 # 20 threads per (MPI) task, only 1 task
 # SMT is 8
 # all 8 logical core can be used
-# remember that SMT must be larger than cpus_per_core
+# remember that cpus_per_core must be smaller than SMT
 
 ./saxpy.host
 
