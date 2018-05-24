@@ -26,7 +26,7 @@
 
 // ========================================================================
 // ========================================================================
-void test_laplace(int NX, int NY)
+void test_laplace(int NX, int NY, int iter_max)
 {
 
   int rank, nRanks;
@@ -36,7 +36,6 @@ void test_laplace(int NX, int NY)
   /*
    * Inititalize some parameters.
    */
-  int iter_max = 1000;
 
 #ifdef USE_DOUBLE
   real_t tol = 1e-5;
@@ -86,7 +85,7 @@ void test_laplace(int NX, int NY)
       rhs[iy*NX+ix] = expr(-10.0*(x*x + y*y));
     }
   }
-  
+
   // serial computation
   OpenMPTimer timer;
   timer.start();
@@ -195,7 +194,20 @@ int main(int argc, char* argv[])
   cudaGetDevice(&cudaDeviceId);
   std::cout << "I'm MPI task #" << rank << " pinned to GPU #" << cudaDeviceId << "\n";
 #endif // KOKKOS_ENABLE_CUDA
+
+  int NX = 512;
+  int NY = 512;
+  int iter_max = 1000;
+
+  if (argc > 1) {
+    NX = atoi(argv[1]);
+    NY = atoi(argv[1]);
+  }
+
+  if (argc > 2)
+    iter_max = atoi(argv[2]);
   
+  test_laplace(NX,NY,iter_max);
   
   Kokkos::finalize();
 

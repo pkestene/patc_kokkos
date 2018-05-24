@@ -9,6 +9,9 @@
 #include "DataContextKokkos.h"
 
 #include "OpenMPTimer.h"
+#ifdef KOKKOS_ENABLE_CUDA
+#include "CudaTimer.h"
+#endif // KOKKOS_ENABLE_CUDA
 
 #include "laplace2d_serial_kernel.h"
 #include "laplace2d_kokkos_kernel.h"

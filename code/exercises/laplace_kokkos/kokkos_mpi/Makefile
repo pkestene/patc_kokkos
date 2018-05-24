@@ -13,7 +13,7 @@ MPI_LDFLAGS  = $(shell mpicxx -showme:link)
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
-CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA -O3 $(MPI_CXXFLAGS)
+CXXFLAGS = -ccbin g++ -I. -Wall -O3 $(MPI_CXXFLAGS)
 LDFLAGS = -lgomp $(MPI_LDFLAGS)
 EXE = $(EXE_PREFIX).cuda
 KOKKOS_DEVICES = "Cuda,OpenMP"
@@ -21,7 +21,7 @@ KOKKOS_CUDA_OPTIONS += "enable_lambda"
 else
 # Use either GNU or XLC compiler (for Power8)
 CXX = mpicxx
-CXXFLAGS = -g -O3 -I. -Wall --std=c++11
+CXXFLAGS = -O3 -I. -Wall --std=c++11
 #CXX = xlc++
 #CXXFLAGS = -O5 -I. -qarch=pwr8 -qsmp=omp -std=c++11
 EXE = $(EXE_PREFIX).omp
