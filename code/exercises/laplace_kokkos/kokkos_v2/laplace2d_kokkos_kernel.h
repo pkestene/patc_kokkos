@@ -24,10 +24,11 @@ public:
   void operator()(const int& index, real_t &error) const
   {
     int i,j;
-    index2coord(index,i,j,params.NX,params.NY);
 
     const int NX = params.NX;
     const int NY = params.NY;
+
+    index2coord(index,i,j,NX,NY);
     
     if ( j >= 1 and j < NY-1 and
 	 i >= 1 and i < NX-1 ) {
