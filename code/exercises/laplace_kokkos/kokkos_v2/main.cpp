@@ -17,10 +17,8 @@
 
 // ========================================================================
 // ========================================================================
-void test_laplace(int NX, int NY)
+void test_laplace(int NX, int NY, int iter_max)
 {
-
-  int iter_max = 100;
 
 #ifdef USE_DOUBLE
   real_t tol = 1e-5;
@@ -40,9 +38,6 @@ void test_laplace(int NX, int NY)
   
   // allocate data context
   DataContext context(params);
-
-  memset(context.A,    0, NY * NX * sizeof(real_t));
-  memset(context.Aref, 0, NY * NX * sizeof(real_t));
 
   real_t *rhs = context.rhs;
   
@@ -108,7 +103,7 @@ int main(int argc, char* argv[])
    * Initialize kokkos (host + device)
    */
   Kokkos::initialize(argc, argv);
-
+  
   {
     std::cout << "##########################\n";
     std::cout << "KOKKOS CONFIG             \n";
@@ -128,7 +123,19 @@ int main(int argc, char* argv[])
     std::cout << "##########################\n";
   }
 
-  test_laplace(4096,4096);
+  int NX = 512;
+  int NY = 512;
+  int iter_max = 1000;
+
+  if (argc > 1) {
+    NX = atoi(argv[1]);
+    NY = atoi(argv[1]);
+  }
+
+  if (argc > 2)
+    iter_max = atoi(argv[2]);
+  
+  test_laplace(NX,NY,iter_max);
 
   Kokkos::finalize();
   
