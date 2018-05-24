@@ -13,10 +13,9 @@
 
 // ========================================================================
 // ========================================================================
-void test_laplace(int NX, int NY)
+void test_laplace(int NX, int NY, int iter_max)
 {
 
-  int iter_max = 1000;
   real_t tol = 1e-5;
   Params params(NX, NY, iter_max, tol);
 
@@ -56,7 +55,19 @@ void test_laplace(int NX, int NY)
 int main(int argc, char* argv[])
 {
 
-  test_laplace(512,512);
+  int NX = 512;
+  int NY = 512;
+  int iter_max = 1000;
+
+  if (argc > 1) {
+    NX = atoi(argv[1]);
+    NY = atoi(argv[1]);
+  }
+
+  if (argc > 2)
+    iter_max = atoi(argv[2]);
+  
+  test_laplace(NX,NY,iter_max);
   
   return 0;
 
