@@ -1,15 +1,15 @@
 #!/bin/bash
 #BSUB -x
-#BSUB -J poisson_kokkos                   # Job name
+#BSUB -J laplace2d_kokkos                 # Job name
 #BSUB -n 10                               # total number of MPI tasks
-#BSUB -o poisson_kokkos.%J.out            # stdout filename
+#BSUB -o laplace2d_kokkos.%J.out          # stdout filename
 #BSUB -q compute                          # queue name
 #BSUB -R "affinity[core(1):cpubind=core]" # affinity
 #BSUB -W 00:05                            # maximum runtime
 
-module load gcc/4.8/ompi/1.10 
-moudle load cuda/8.0
-module load kokkos/openmp_gnu485_dev
+module load at/10.0
+module load gcc/4.8/ompi/2.1
+module load cuda/9.0
 
 OMP_DISPLAY_ENV=true
 
