@@ -15,50 +15,12 @@
 
 #include "check_results.h"
 
-int main(int argc, char* argv[])
+// ========================================================================
+// ========================================================================
+void test_laplace(int NX, int NY)
 {
 
-  /*
-   * Initialize kokkos (host + device)
-   */
-#ifdef CUDA
-  // Initialize Host mirror device
-  Kokkos::HostSpace::execution_space::initialize();
-  //const unsigned device_count = Kokkos::Cuda::detect_device_count();
-
-  // Use the first device:
-  Kokkos::Cuda::initialize( Kokkos::Cuda::SelectDevice(0) );
-#else // OpenMP CPU
-  Kokkos::initialize(argc, argv);
-#endif
-
-  {
-    std::cout << "##########################\n";
-    std::cout << "KOKKOS CONFIG             \n";
-    std::cout << "##########################\n";
-    
-    std::ostringstream msg;
-    std::cout << "Kokkos configuration" << std::endl;
-    if ( Kokkos::hwloc::available() ) {
-      msg << "hwloc( NUMA[" << Kokkos::hwloc::get_available_numa_count()
-          << "] x CORE["    << Kokkos::hwloc::get_available_cores_per_numa()
-          << "] x HT["      << Kokkos::hwloc::get_available_threads_per_core()
-          << "] )"
-          << std::endl ;
-    }
-#if defined( CUDA )
-    Kokkos::Cuda::print_configuration( msg );
-#else
-    Kokkos::OpenMP::print_configuration( msg );
-#endif
-    std::cout << msg.str();
-    std::cout << "##########################\n";
-  }
-
-
-  int NX = 1024;
-  int NY = 1024;
-  int iter_max = 1000;
+  int iter_max = 200;
 
 #ifdef USE_DOUBLE
   real_t tol = 1e-5;
@@ -78,10 +40,7 @@ int main(int argc, char* argv[])
   
   // allocate data context
   DataContext context(params);
-
-  memset(context.A,    0, NY * NX * sizeof(real_t));
-  memset(context.Aref, 0, NY * NX * sizeof(real_t));
-
+  
   real_t *rhs = context.rhs;
   
   // set rhs
@@ -133,12 +92,41 @@ int main(int argc, char* argv[])
   printf("serial %dx%d: %8.4f secondes\n",NX,NY,runtime_serial);
   printf("kokkos %dx%d: %8.4f secondes\n",NX,NY,runtime_kokkos);
 
-#ifdef CUDA
-  Kokkos::Cuda::finalize();
-  Kokkos::HostSpace::execution_space::finalize();
-#else
+} // test_laplace
+
+// ========================================================================
+// ========================================================================
+int main(int argc, char* argv[])
+{
+
+  /*
+   * Initialize kokkos (host + device)
+   */
+  Kokkos::initialize(argc, argv);
+  
+  {
+    std::cout << "##########################\n";
+    std::cout << "KOKKOS CONFIG             \n";
+    std::cout << "##########################\n";
+    
+    std::ostringstream msg;
+    std::cout << "Kokkos configuration" << std::endl;
+    if ( Kokkos::hwloc::available() ) {
+      msg << "hwloc( NUMA[" << Kokkos::hwloc::get_available_numa_count()
+          << "] x CORE["    << Kokkos::hwloc::get_available_cores_per_numa()
+          << "] x HT["      << Kokkos::hwloc::get_available_threads_per_core()
+          << "] )"
+          << std::endl ;
+    }
+    Kokkos::print_configuration( msg );
+    std::cout << msg.str();
+    std::cout << "##########################\n";
+  }
+
+  //test_laplace(512, 512);
+  test_laplace(2048, 2048);
+
   Kokkos::finalize();
-#endif
   
   return 0;
 
