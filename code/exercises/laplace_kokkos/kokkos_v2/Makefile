@@ -1,22 +1,27 @@
 # KOKKOS setup (OpenMP or CUDA backend)
-# here we assume KOKKOS_PATH is setup by "module load kokkos"
+# here we assume KOKKOS_PATH is setup by an environment variable
 KOKKOS_PATH ?= .
-include $(KOKKOS_PATH)/Makefile.kokkos
+
+default: build
+	echo "Start Build"
 
 EXE_PREFIX=laplace2d_kokkos
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
-CXXFLAGS = -ccbin g++ -I. -Wall -DCUDA -O3
+CXXFLAGS = -ccbin g++ -I. -Wall -O3
 LDFLAGS = -lgomp
 EXE = $(EXE_PREFIX).cuda
+KOKKOS_DEVICES = "Cuda,OpenMP"
+KOKKOS_CUDA_OPTIONS += "enable_lambda"
 else
 # Use either GNU or XLC compiler (for Power8)
 CXX = g++
-CXXFLAGS = -g -O3 -I. -Wall --std=c++11
+CXXFLAGS = -O3 -I. -Wall --std=c++11
 #CXX = xlc++
 #CXXFLAGS = -O5 -I. -qarch=pwr8 -qsmp=omp -std=c++11
 EXE = $(EXE_PREFIX).omp
+KOKKOS_DEVICES = "OpenMP"
 endif
 
 SRCDIR = $(shell pwd)
@@ -34,15 +39,17 @@ HEADERS = common.h kokkos_shared.h \
 TMP_OBJ = $(SRC:.c=.o)
 OBJ     = $(TMP_OBJ:.cpp=.o)
 
-.DEFAULT_GOAL=$(EXE)
-
 $(OBJ): $(HEADERS)
 
-$(EXE) : $(OBJ)
+include $(KOKKOS_PATH)/Makefile.kokkos
+
+build: $(EXE)
+
+$(EXE): $(OBJ) $(KOKKOS_LINK_DEPENDS)
 	echo $@
 	$(CXX) $(KOKKOS_LDFLAGS) $(LDFLAGS) $(EXTRA_PATH) $(OBJ) $(KOKKOS_LIBS) $(LIB) -o $@
 
-clean:
+clean: kokkos-clean
 	rm -f $(OBJ) $(EXE)
 
 cleandata:
@@ -50,6 +57,8 @@ cleandata:
 
 cleanall: clean
 	rm -f *.ppm
+
+# Compilation rules
 
 %.o:    %.cpp $(KOKKOS_CPP_DEPENDS)
 	$(CXX) $(KOKKOS_CPPFLAGS) $(KOKKOS_CXXFLAGS) $(CXXFLAGS) $(EXTRA_INC) -c $< -o $@
