@@ -129,6 +129,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
     /*using range_type=Kokkos::Experimental::MDRangePolicy<DEVICE,
       Kokkos::Experimental::Rank<2>>;*/
     Kokkos::parallel_reduce(NX*NY_chunk, functor, error);
+    Kokkos::fence();
 
     // MPI reduce to compute global error
     real_t globalerror = 0.0;
