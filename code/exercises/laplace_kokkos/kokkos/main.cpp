@@ -40,7 +40,7 @@ void test_laplace(int NX, int NY)
   
   // allocate data context
   DataContext context(params);
-  
+
   real_t *rhs = context.rhs;
   
   // set rhs
