@@ -28,7 +28,7 @@ int check_results(DataContext&       context_serial,
   real_t* Aref = context_serial.Aref;
 
   // get a host copy of kokkos computation
-  DataArrayHost A("Ahost", NX*NY);
+  DataArrayHost A("Ahost", NX, NY);
   Kokkos::deep_copy(A, context_kokkos.A);
 
   // now check results
@@ -38,11 +38,11 @@ int check_results(DataContext&       context_serial,
 
     for( int ix = ix_start; ix < ix_end /*&& (result_correct == 1)*/; ix++ ) {
 
-      if ( fabs ( Aref[iy*NX+ix] - A[iy*NX+ix] ) >= tol ) {
+      if ( fabs ( Aref[iy*NX+ix] - A(ix,iy) ) >= tol ) {
 	fprintf(stderr,"[rank=%d] ERROR: A[%d][%d] = %f does not match %f (reference) --- abs(delta)=%f\n",
 		mpi_rank,
-		ix, iy, A[iy*NX+ix], Aref[iy*NX+ix],
-		fabs(A[iy*NX+ix]-Aref[iy*NX+ix]));
+		iy, ix, A(ix,iy), Aref[iy*NX+ix],
+		fabs(A(ix,iy)-Aref[iy*NX+ix]));
 	result_correct = 0;
 	error_count++;
       }

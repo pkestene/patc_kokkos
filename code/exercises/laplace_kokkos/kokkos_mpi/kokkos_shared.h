@@ -12,10 +12,12 @@
 using Device = Kokkos::DefaultExecutionSpace;
 
 // Data array for laplace computation
-typedef Kokkos::View<real_t*, Device> DataArray;
+typedef Kokkos::View<real_t**, Device> DataArray;
+typedef Kokkos::View<real_t* , Device> DataArray1d;
 
 // host mirror
 typedef DataArray::HostMirror         DataArrayHost;
+typedef DataArray1d::HostMirror       DataArray1dHost;
 
 /**
  * Retrieve cartesian coordinate from index, using memory layout information.

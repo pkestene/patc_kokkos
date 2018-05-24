@@ -109,16 +109,18 @@ void test_laplace(int NX, int NY, int iter_max)
 
   // initialize context
   Kokkos::parallel_for( NX*NY, KOKKOS_LAMBDA(const int index) {      
-      context_kokkos.A   (index) = 0;
-      context_kokkos.Anew(index) = 0;
+      int i,j;
+      index2coord(index,i,j,NX,NY);
+      context_kokkos.A   (i,j) = 0;
+      context_kokkos.Anew(i,j) = 0;
     });
 
   Kokkos::parallel_for( NX*NY, KOKKOS_LAMBDA(const int index) {    
-      int ix,iy;
-      index2coord(index,ix,iy,NX,NY);
-      const real_t x = -1.0 + (2.0*ix/(NX-1));
-      const real_t y = -1.0 + (2.0*iy/(NY-1));
-      context_kokkos.rhs(index) = expr(-10.0*(x*x + y*y));
+      int i,j;
+      index2coord(index,i,j,NX,NY);
+      const real_t x = -1.0 + (2.0*i/(NX-1));
+      const real_t y = -1.0 + (2.0*j/(NY-1));
+      context_kokkos.rhs(i,j) = expr(-10.0*(x*x + y*y));
     });
 
 #ifdef KOKKOS_ENABLE_CUDA
