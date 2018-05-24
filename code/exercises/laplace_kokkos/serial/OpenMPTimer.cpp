@@ -72,3 +72,10 @@ double OpenMPTimer::elapsed() const
   return total_time;
 
 } // OpenMPTimer::elapsed
+
+  // =======================================================
+  // =======================================================
+void OpenMPTimer::reset()
+{
+  total_time = 0.0;
+} // OpenMPTimer::reset()

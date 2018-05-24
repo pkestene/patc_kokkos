@@ -34,6 +34,8 @@ public:
   /** return elapsed time in seconds (as stored in total_time) */
   virtual double elapsed() const;
 
+  void reset();
+  
 protected:
   double    start_time;
 

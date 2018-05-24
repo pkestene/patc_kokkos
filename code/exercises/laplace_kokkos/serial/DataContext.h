@@ -19,6 +19,11 @@ struct DataContext {
     Anew = new real_t[NX*NY];
     Aref = new real_t[NX*NY];
     rhs  = new real_t[NX*NY];
+
+    // reset
+    memset(A,    0, NY * NX * sizeof(real_t));
+    memset(Aref, 0, NY * NX * sizeof(real_t));
+
   };
 
   ~DataContext() {

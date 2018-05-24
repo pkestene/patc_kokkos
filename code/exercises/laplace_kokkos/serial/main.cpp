@@ -11,20 +11,17 @@
 
 #include "laplace2d_serial_kernel.h"
 
-int main(int argc, char* argv[])
+// ========================================================================
+// ========================================================================
+void test_laplace(int NX, int NY)
 {
 
-  int NX = 512;
-  int NY = 512;
   int iter_max = 1000;
   real_t tol = 1e-5;
   Params params(NX, NY, iter_max, tol);
 
   // allocate data context
   DataContext context(params);
-
-  memset(context.A,    0, NY * NX * sizeof(real_t));
-  memset(context.Aref, 0, NY * NX * sizeof(real_t));
 
   real_t *rhs = context.rhs;
   
@@ -52,6 +49,14 @@ int main(int argc, char* argv[])
 
   printf("%dx%d: %8.4f secondes\n",NX,NY,runtime_serial);
 
+} // test_laplace
+
+// ========================================================================
+// ========================================================================
+int main(int argc, char* argv[])
+{
+
+  test_laplace(512,512);
   
   return 0;
 

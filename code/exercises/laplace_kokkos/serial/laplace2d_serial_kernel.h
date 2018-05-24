@@ -39,9 +39,9 @@ void poisson2d_serial( DataContext& context, Params& params )
 
     // copy Anew into Aref
     for ( int iy = 1; iy < NY-1; iy++ ) {
-	for ( int ix = 1; ix < NX-1; ix++ ) {
-	    Aref[iy*NX+ix] = Anew[iy*NX+ix];
-	}
+      for ( int ix = 1; ix < NX-1; ix++ ) {
+	Aref[iy*NX+ix] = Anew[iy*NX+ix];
+      }
     }
 
     // Ensure periodic boundary conditions
@@ -55,6 +55,7 @@ void poisson2d_serial( DataContext& context, Params& params )
       Aref[iy*NX+(NX-1)] = Aref[iy*NX+1];
     }
 
+    if ( (iter % 100) == 0) printf("%5d, %0.6f\n", iter, error);
     iter++;
 
   } // end while
