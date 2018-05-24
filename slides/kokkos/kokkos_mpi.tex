@@ -5,7 +5,7 @@
 
   \begin{itemize}
   \item \textcolor{violet}{Perform \textbf{distributed computing}} on a cluster of \textbf{Power8 nodes (4 GPU/node)}
-  \item \textcolor{red}{\bf How to build application when \texttt{KOKKOS\_DEVICE} is Cuda ?}
+  \item \textcolor{red}{\bf How to build an MPI application when \texttt{KOKKOS\_DEVICE} is Cuda ?}
     \begin{itemize}
     \item Solution 1: Use \texttt{mpicxx} and pass env variable \texttt{OMPI\_CXX=nvcc\_wrapper}~\footnote{Use MPICH\_CXX if your MPI implementation is MPICH.}
     \item Solution 2: Use \texttt{nvcc\_wrapper} as the compiler, but modify \texttt{CXX\_FLAGS} / \texttt{LDFLAGS} to add MPI specific flags.
@@ -33,7 +33,7 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{MPI + Kokkos on Ouessant (2)}
 
-  {\Large Simple job script for using \textbf{MPI+Kokkos/OpenMP}}
+  {\Large Simple job script for using \textbf{MPI + Kokkos/OpenMP}}
 
   {\small
     \begin{minted}{bash}
@@ -42,18 +42,18 @@
       #BSUB -J test_mpi_kokkos_openmp            # Job name
       #BSUB -n 4                                 # total number of MPI task
       #BSUB -o test_mpi_kokkos_openmp.%J.out     # stdout filename
-      #BSUB -q compute                           # queue name
-      #BSUB -R "affinity[core(10):cpubind=core]" # affinity
+      #BSUB -q computet1                         # queue name
+      #BSUB -a p8aff(10,8,1,balance)             # 10 OpenMP thread/task, SMT=8
       #BSUB -R 'span[ptile=2]'                   # tile : number of MPI task/node
       #BSUB -W 00:05                             # maximum runtime
             
-      module load gcc/4.8/ompi/1.10
+      module load gcc/4.8/ompi/2.1
       
       # number of OpenMP thread per MPI task
-      OMP_NUM_THREADS=20
+      # env variable OMP_NUM_THREADS is set by LSF
       
       # report bindings for cross-checking
-      mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./test_mpi_kokkos.omp
+      mpirun --report-bindings ./test_mpi_kokkos.omp
     \end{minted}
   }
 \end{frame}
@@ -73,14 +73,12 @@
       #BSUB -n 8                                # number of MPI tasks
       #BSUB -o test_mpi_kokkos_cuda.%J.out       # stdout filename
       #BSUB -q compute                          # queue name
-      #BSUB -R "affinity[core(5):cpubind=core]"  # nb cores per MPI task
       #BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"  # activate GPU usage
       #BSUB -W 00:05                            # max runtime
             
-      module load gcc/4.8/ompi/1.10 cuda/8.0
+      module load gcc/4.8/ompi/1.10 cuda/9.0
       
-      CUDA_VISIBLE_DEVICES=0,1,2,3      
-      GPUS_PER_NODES=4
+      #GPUS_PER_NODES=4
       
       # Each mpi tasks are binded to a different GPU
       mpirun --report-bindings -n ${LSB_DJOB_NUMPROC} ./test_mpi_kokkos.cuda --ndevices=$GPUS_PER_NODES
