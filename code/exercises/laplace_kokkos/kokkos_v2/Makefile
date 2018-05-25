@@ -7,6 +7,8 @@ default: build
 
 EXE_PREFIX=laplace2d_kokkos
 
+NVCC_WRAPPER = $(KOKKOS_PATH)/bin/nvcc_wrapper
+
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
 CXXFLAGS = -ccbin g++ -I. -Wall -O3
