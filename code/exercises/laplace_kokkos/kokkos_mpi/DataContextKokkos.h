@@ -11,9 +11,9 @@ struct DataContextKokkos {
   DataArray rhs;
 
   DataContextKokkos(Params& params) :
-    A   ("A",    params.NX*params.NY),
-    Anew("Anew", params.NX*params.NY),
-    rhs ("rhs",  params.NX*params.NY)
+    A   ("A",    params.NX, params.NY),
+    Anew("Anew", params.NX, params.NY),
+    rhs ("rhs",  params.NX, params.NY)
   {};
 
   ~DataContextKokkos() {}

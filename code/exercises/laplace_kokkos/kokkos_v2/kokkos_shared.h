@@ -9,21 +9,10 @@
 #include "common.h"
 
 // define Kokkos execution space
-#ifdef CUDA
-# define DEVICE Kokkos::Cuda
-#include <cuda.h>
-#endif
-
-#ifdef OPENMP
-# define DEVICE Kokkos::OpenMP
-#endif
-
-#ifndef DEVICE
-# define DEVICE Kokkos::OpenMP
-#endif
+using Device = Kokkos::DefaultExecutionSpace;
 
 // Data array for laplace computation
-typedef Kokkos::View<real_t**, DEVICE> DataArray;
+typedef Kokkos::View<real_t**, Device> DataArray;
 
 // host mirror
 typedef DataArray::HostMirror          DataArrayHost;

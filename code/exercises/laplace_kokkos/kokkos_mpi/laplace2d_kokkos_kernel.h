@@ -35,8 +35,10 @@ public:
     const int iy_start = params.iy_start;
     const int iy_end   = params.iy_end;
 
+    const int NY_chunk = iy_end - iy_start;
+
     // compute local i,j
-    index2coord(index,i,j,NX,NY);
+    index2coord(index,i,j,NX,NY_chunk);
 
     // TODO the following should be refactored
     // using experimental MDRange policy
@@ -44,19 +46,15 @@ public:
     // offset j to get
     j += iy_start;
 
-    // compute index in large array
-    int index2 = coord2index(i,j,NX,NY);
-    
-    
     if ( j >= iy_start and j < iy_end and
 	 i >= ix_start and i < ix_end ) {
       
-      Anew(index2) = -0.25 * (rhs(index2) - ( A( coord2index(i+1,j  ,NX,NY) ) +
-					      A( coord2index(i-1,j  ,NX,NY) ) +
-					      A( coord2index(i  ,j+1,NX,NY) ) +
-					      A( coord2index(i  ,j-1,NX,NY) ) ));
+      Anew(i,j) = -0.25 * (rhs(i,j) - ( A( i+1,j   ) +
+					A( i-1,j   ) +
+					A( i  ,j+1 ) +
+					A( i  ,j-1 ) ) );
       
-      error = fmaxr( error, fabsr( Anew(index2)-A(index2) ) );
+      error = fmaxr( error, fabsr( Anew(i,j)-A(i,j) ) );
 
     }
   }
@@ -142,20 +140,20 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
 	int ix = index;
 	
     	if ( ix >= ix_start and ix < ix_end ) {
-	  context.A(coord2index(ix,iy_start,NX,NY)) = context.Anew(coord2index(ix,iy_start,NX,NY));
-	  context.A(coord2index(ix,iy_end-1,NX,NY)) = context.Anew(coord2index(ix,iy_end-1,NX,NY));
+	  context.A(ix,iy_start) = context.Anew(ix,iy_start);
+	  context.A(ix,iy_end-1) = context.Anew(ix,iy_end-1);
 	}	
       });    
     
     // TODO/CHECK if we could async copy (to obtain overlap MPI_Sendrevc)
     Kokkos::parallel_for( NX*NY_chunk, KOKKOS_LAMBDA(const int index) {    
     	int ix,iy;
-    	index2coord(index,ix,iy,NX,NY);
+    	index2coord(index,ix,iy,NX,NY_chunk);
 	iy += iy_start;
 	
     	if ( ix >= ix_start   and ix < ix_end and
 	     iy >= iy_start+1 and iy < iy_end-1) {
-    	  context.A(coord2index(ix,iy,NX,NY)) = context.Anew(coord2index(ix,iy,NX,NY));
+    	  context.A(ix,iy) = context.Anew(ix,iy);
     	}
       });
 
@@ -167,8 +165,8 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
     {
 
       // create border buffer
-      DataArray sendBuf("sendBuf",NX);
-      DataArray recvBuf("recvBuf",NX);
+      DataArray1d sendBuf("sendBuf",NX);
+      DataArray1d recvBuf("recvBuf",NX);
 
       //1. Sent row iy_start (first modified row) to top
       //   receive lower boundary (iy_end) from bottom
@@ -182,7 +180,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
       // copy A's border into rowBlock
       Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
 	
-    	  sendBuf(index) = context.A(coord2index(index,iy_start,NX,NY));
+    	  sendBuf(index) = context.A(index,iy_start);
 	  
       });
       Kokkos::fence();
@@ -194,7 +192,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
       // copy back in place received data
       Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
 	  
-    	  context.A(coord2index(index,iy_end,NX,NY)) = recvBuf(index);
+    	  context.A(index,iy_end) = recvBuf(index);
 	  
       });
       
@@ -208,7 +206,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
        */
       Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
 	
-    	  sendBuf(index) = context.A(coord2index(index,iy_end-1,NX,NY));
+    	  sendBuf(index) = context.A(index,iy_end-1);
 	  
       });
       Kokkos::fence();
@@ -221,7 +219,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
       // copy back in place received data
       Kokkos::parallel_for( NX, KOKKOS_LAMBDA(const int index) {    
 	  
-    	  context.A(coord2index(index,iy_start-1,NX,NY)) = recvBuf(index);
+    	  context.A(index,iy_start-1) = recvBuf(index);
 	  
       });
 
@@ -232,8 +230,8 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
 	int iy = index+iy_start;
 
 	if ( iy >= iy_start and iy < iy_end ) {
-	  context.A(coord2index(   0,iy,NX,NY)) = context.A(coord2index(NX-2,iy,NX,NY));
-	  context.A(coord2index(NX-1,iy,NX,NY)) = context.A(coord2index(   1,iy,NX,NY));
+	  context.A(   0,iy) = context.A(NX-2,iy);
+	  context.A(NX-1,iy) = context.A(   1,iy);
 	}
       });
 
