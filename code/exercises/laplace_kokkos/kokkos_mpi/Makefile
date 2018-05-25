@@ -11,6 +11,8 @@ EXE_PREFIX=laplace2d_kokkos_mpi
 MPI_CXXFLAGS = $(shell mpicxx -showme:compile)
 MPI_LDFLAGS  = $(shell mpicxx -showme:link)
 
+NVCC_WRAPPER = $(KOKKOS_PATH)/bin/nvcc_wrapper
+
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = $(NVCC_WRAPPER)
 CXXFLAGS = -ccbin g++ -I. -Wall -O3 $(MPI_CXXFLAGS)
