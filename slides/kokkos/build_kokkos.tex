@@ -228,7 +228,8 @@
     {\scriptsize
       \begin{minted}{c++}
         // Just checking how Kokkos+hwloc performed
-        // the MPI rank - GPU mapping 
+        // the MPI rank - GPU mapping
+        // you may need to add flag : --ndevices=X on the command line
         int cudaDeviceId;
         cudaGetDevice(&cudaDeviceId);
         std::cout << "I'm MPI task #" << rank << " pinned to GPU #" << cudaDeviceId << "\n";
