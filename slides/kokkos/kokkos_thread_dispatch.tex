@@ -282,10 +282,64 @@
   
 \end{frame}
   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (11)}
+
+  {\large \textcolor{blue}{\bf Team policy:} for {\bf hierarchical parallelism}}
+
+  \begin{minted}{c++}
+    // with the team policy you need to map a thread to an iteration id
+    KOKKOS_INLINE_FUNCTION
+    void operator() ( const team_member & thread) {
+      // example of data/iteration mapping (similar to CUDA)
+      int i = thread.team_rank() +
+              thread.league_rank() * thread.team_size();
+      data(i) = ... ;
+    }
+  \end{minted}
+  this very similar to CUDA:
+  \begin{minted}{c++}
+    // inside a CUDA kernel, using built-in variables
+    // threadIdx and blocIdx
+    int index = threadIdx.x + blockIdx.x * blockDim.x;
+  \end{minted}
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (12)}
+
+  {\large \textcolor{blue}{\bf Team policy:} for {\bf nested parallelism}}
+
+  \begin{minted}{c++}
+    // within a parallel functor with team policy
+    // you can call another parallel_for / reduce / ... 
+    KOKKOS_INLINE_FUNCTION
+    void operator() ( const team_member & thread) {
+      // do something (all threads of all teams participate)
+      do_something();
+      
+      // then parallelize a loop over all threads of a team
+      // each team is executing a loop of 200 iterations
+      // the 200 iterations are splitted over the thread of current team
+      // the total number of iterations is 200 * number of teams
+      Kokkos::parallel_for(Kokkos::TeamThreadRange(thread,200),
+               KOKKOS_LAMBDA (const int& i) {
+                 ...;
+      });
+    }
+  \end{minted}
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (13)}
   
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
