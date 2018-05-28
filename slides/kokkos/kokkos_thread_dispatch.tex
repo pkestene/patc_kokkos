@@ -356,3 +356,27 @@ using 2D Partitioned-Block Layout
   \end{itemize}
   
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - Advanced items}
+  
+  {\Large \textcolor{violet}{\textbf{SIMD / Vectorization}}}
+
+  The following reference give details / best practices to obtain carefully written kernels for portable SIMD vectorization:\\
+  \myurl{http://www.sci.utah.edu/publications/Sun2016a/ESPM2Dan-sunderland.pdf}
+
+  \begin{itemize}
+  \item \texttt{Kokkos::subview} $\Rightarrow$ allow to extract a {\it view}
+    \begin{minted}{c++}
+      // assume data is a 3d Kokkos::View
+      // slice is a 1d sub view : column at (i,j)
+      auto slice = subview(data, i, j,  ALL());
+    \end{minted}
+    This is usefull for SIMD, auto vectorization, it helps the compiler understand we are accessing
+    memory with a stride 1 (assuming layout right, which the default for OpenMP device).
+  \end{itemize}
+  
+  
+\end{frame}

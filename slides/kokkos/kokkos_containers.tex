@@ -148,3 +148,38 @@
   \end{itemize}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos data Container (7)}
+
+  {\Large \bf Incrementally porting a code to Kokkos}
+
+  \begin{itemize}
+  \item Use \textcolor{red}{\bf unmanaged Kokkos::Views}, before using \textcolor{darkgreen}{\bf regular Kokkos::Views}
+  \item Unmanaged view are not reference counted
+  \end{itemize}
+
+  { \scriptsize
+    \begin{minted}{c++}
+      // legacy code allocate memory this way ...
+      const size_t N0 = ...;
+      double* x_raw = malloc (N0 * sizeof (double));
+      {
+        // ... but you want to access it with Kokkos.
+        //
+        // malloc() returns host memory, so we use the host memory space HostSpace.  
+        // Unmanaged Views have no label because labels work with the reference counting system.
+        Kokkos::View<double*, Kokkos::HostSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+        x_view (x_raw, N0);
+        
+        functionThatTakesKokkosView (x_view);
+        
+        // It's safest for unmanaged Views to fall out of scope before freeing their memory.
+      }
+      free (x_raw);
+    \end{minted}
+    }
+  
+\end{frame}
