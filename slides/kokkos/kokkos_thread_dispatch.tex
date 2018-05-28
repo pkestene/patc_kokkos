@@ -248,13 +248,44 @@
     }
     equivalent to launching in CUDA a 1D grid of 1D blocks of threads.\\
     Team scratch pad memory $\Longleftrightarrow$ CUDA shared memory
+  \item Lambda interface changed:
+    {\small
+      \begin{minted}{c++}
+        KOKKOS_LAMBDA (const team_member& thread) { ...};
+      \end{minted}
+    }
+    team\_member is a structure (aliased to \texttt{Kokkos::TeamPolicy<>::member\_type})
   \end{itemize}
 \end{frame}
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (10)}
+
+  {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
+
+  \begin{itemize}
+  \item \textcolor{blue}{\bf Team policy:} for {\bf hierarchical parallelism}
+  \item \textcolor{blue}{\texttt{team\_member}} is a structure equipped with
+    \begin{tabular}{ll}
+      \texttt{league\_size()} : & return number of teams (of threads)\\
+      \texttt{league\_rank()} : & return team id (of current thread)\\
+      \texttt{team\_size()}   : & return number of threads (per team)\\
+      \texttt{team\_rank()} : & return thread id (of current thread)
+    \end{tabular}
+  \item Can I synchronize threads ?\\
+    Yes, but only threads inside a team (same semantics as in CUDA with \texttt{\_\_syncthreads();})
+    $\Rightarrow$ \texttt{team\_barrier()}
+    
+  \end{itemize}
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos compute Kernels - parallel dispatch (11)}
   
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
