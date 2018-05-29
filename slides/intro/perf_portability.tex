@@ -7,6 +7,7 @@
   \item \textbf{Developing / maintaining} a \textcolor{red}{\textbf{separate}} implementation of an application for each \textbf{new hardware platform} (Intel KNL, Nvidia GPU, ARMv8, ...) is \textcolor{red}{\textbf{less and less realistic}}
   \item \textbf{Identical code} will never perform \textbf{optimally} on all platforms~\footnote{source: Matt Norman, \myhref{http://waccpd.org/wp-content/uploads/2016/04/WACCPD_2016_Norman.pdf}{WACCPD 2016}}
   \item Is it possible to have a \textcolor{blue}{\textbf{single set of source codes}} that can be compiled for different hardware targets ?
+\only<1>{
   \item Performance portability should be understood as a single source code base with
     \begin{itemize}
     \item \textcolor{darkgreen}{\textbf{good}} performance on different architectures
@@ -22,8 +23,17 @@
     % \item GPU vector length: 65 536 bit (2048 \textit{GPU vector threads})\\
     %   Less cache-based, heavy on latency/bandwidth hiding
     % \end{itemize}
+  }
+  \only<2>{
+  \item \textcolor{darkgreen}{\bf performance portability} is achieved when software implementation
+    \begin{itemize}
+    \item compiles and runs on {\bf multiple architectures},
+    \item obtains performant {\bf memory access patterns} across architectures,
+    \item can {\bf leverage architecture-specific features} where possible.
+    \end{itemize}
+  }
   \end{itemize}
-
+  \vfill
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
