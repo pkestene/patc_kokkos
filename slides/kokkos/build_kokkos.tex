@@ -212,7 +212,9 @@
     #endif
   \end{minted}
   \begin{itemize}
-  \item {\bf May not be needed} if you run on a supercomputer where the job scheduler sets for you OpenMP env variables or GPU/task mapping.
+  \item \textcolor{darkgreen}{\bf Prefer using command line argument / env variables}, e.g.:\\
+    \texttt{./my\_kokkos\_app --help; ./my\_kokkos\_app --kokkos-threads=10}
+  \item \textcolor{darkgreen}{\bf Not really needed} if you run on a supercomputer where the job scheduler will set OpenMP env variables or GPU/task mapping for you.
   \end{itemize}
 \end{frame}
 
