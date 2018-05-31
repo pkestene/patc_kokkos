@@ -9,8 +9,8 @@
 #BSUB -W 00:05
 
 
-module load gcc/4.8 ompi/1.10
-module load cuda/8.0
+module load at/10.0 ompi/2.1
+module load cuda/9.0
 
 # This variable is normally set by the job scheduler
 # As of January, 9th 2017, we enforce its value here
