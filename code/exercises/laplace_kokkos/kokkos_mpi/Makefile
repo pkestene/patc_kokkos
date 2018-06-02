@@ -1,5 +1,5 @@
 # KOKKOS setup (OpenMP or CUDA backend)
-# here we assume KOKKOS_PATH is setup by an environment variable
+# here we assume KOKKOS_PATH is setup by an env variable or on the command line
 KOKKOS_PATH ?= .
 
 default: build
