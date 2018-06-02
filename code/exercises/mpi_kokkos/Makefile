@@ -1,5 +1,5 @@
 # KOKKOS setup (OpenMP or CUDA backend)
-# here we assume KOKKOS_PATH is setup by "module load kokkos"
+# here we assume KOKKOS_PATH is setup by an env variable or on the command line
 KOKKOS_PATH ?= .
 include $(KOKKOS_PATH)/Makefile.kokkos
 
