@@ -4,15 +4,12 @@
 #BSUB -n 4                                         # total number of MPI task
 #BSUB -o test_mpi_kokkos_openmp.%J.out             # stdout filename
 #BSUB -q compute                                   # queue name
-#BSUB -R "affinity[core(10):cpubind=core]"         # affinity
+#BSUB -a p8aff(10,8,1,balance)                     # 10 OpenMP thread/task, SMT=8
 #BSUB -R 'span[ptile=2]'                           # tile : number of MPI task/node
 #BSUB -W 00:05
 
 
-module load gcc/4.8 ompi/1.10
-
-# number of OpenMP thread per MPI task
-OMP_NUM_THREADS=20
+module load at/10.0 ompi/2.1
 
 EXE_NAME=test_mpi_kokkos.omp
 
