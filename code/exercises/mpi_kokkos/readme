@@ -6,9 +6,9 @@ module load at/10.0 cuda/9.0 gcc/4.8/ompi/2.1
 
 make KOKKOS_DEVICES=OpenMP KOKKOS_ARCH=Power8 KOKKOS_USE_TPLS="hwloc" KOKKOS_PATH=$HOME/kokkos-tutorial/kokkos
 
+2. buidl for GPU on ouessant
 
-
-Kokkos must be configured with hwloc.
+make KOKKOS_DEVICES="Cuda,OpenMP" KOKKOS_ARCH="Power8,Pascal60" KOKKOS_USE_TPLS="hwloc" KOKKOS_PATH=$HOME/kokkos-tutorial/kokkos
 
 This example is the most simple thing you think of:
 just initialize MPI, then Kokkos, and finaly check
