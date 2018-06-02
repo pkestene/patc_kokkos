@@ -10,31 +10,18 @@
 #include <cuda.h>
 #endif
 
-// #ifdef CUDA
-// #include "CudaTimer.h"
-// #else // OpenMP
-// #include "OpenMPTimer.h"
-// #endif
-
 #include <unistd.h>
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
 
-  /* Init MPI */
+  /* Initialize MPI */
   MPI_Init(&argc, &argv);
     
   /*
    * Initialize kokkos (host + device)
    */
-#ifdef CUDA
-  // Initialize Host mirror device
-  //Kokkos::HostSpace::execution_space::initialize(1);
-#else // OpenMP CPU
-  // nothing special
-#endif
-  
   Kokkos::initialize(argc, argv);
 
   int rank, nRanks;
@@ -55,6 +42,7 @@ int main(int argc, char* argv[]) {
           << "] )"
           << std::endl ;
     }
+    Kokkos::print_configuration( msg );
 #if defined( CUDA )
     Kokkos::Cuda::print_configuration( msg );
 #else
