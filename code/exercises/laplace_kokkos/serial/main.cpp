@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
 #include <cassert>
 
 #include "common.h"
@@ -60,12 +61,12 @@ int main(int argc, char* argv[])
   int iter_max = 1000;
 
   if (argc > 1) {
-    NX = atoi(argv[1]);
-    NY = atoi(argv[1]);
+    NX = std::atoi(argv[1]);
+    NY = std::atoi(argv[1]);
   }
 
   if (argc > 2)
-    iter_max = atoi(argv[2]);
+    iter_max = std::atoi(argv[2]);
   
   test_laplace(NX,NY,iter_max);
   

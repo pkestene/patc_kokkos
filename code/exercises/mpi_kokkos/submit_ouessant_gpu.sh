@@ -1,21 +1,21 @@
 #!/bin/bash
 #BSUB -x
-#BSUB -J test_mpi_kokkos_cuda                       # Job name
 #BSUB -n 8                                          # number of MPI tasks
+#BSUB -gpu "num=4:mode=exclusive_process:mps=no:j_exclusive=yes"
+#BSUB -J test_mpi_kokkos_cuda                       # Job name
 #BSUB -o test_mpi_kokkos_cuda.%J.out                # stdout filename
-#BSUB -q compute                                    # queue name
-#BSUB -R "affinity[core(5):cpubind=core]"           # number of core reserved per MPI task
-#BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"  # activate GPU usage
+#BSUB -q computet1                                  # queue name
+#BSUB -a p8aff(5,8,1,balance)                       # 5 threads/pask, so that only 2 tasks/CPU
+#BSUB -R 'span[ptile=4]'                            # tile : number of MPI task/node (1 MPI task <--> 1 GPU)
 #BSUB -W 00:05
 
 
-module load at/10.0 ompi/2.1
-module load cuda/9.0
+module load at/10.0 gcc/4.8/ompi/2.1 cuda/9.0
 
 # This variable is normally set by the job scheduler
 # As of January, 9th 2017, we enforce its value here
 # to make sure all GPU devices can be used by our job.
-CUDA_VISIBLE_DEVICES=0,1,2,3
+#CUDA_VISIBLE_DEVICES=0,1,2,3
 
 NUMBER_OF_GPUS_PER_NODES=4
 
