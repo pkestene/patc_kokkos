@@ -5,7 +5,7 @@
 #BSUB -J test_mpi_kokkos_cuda                       # Job name
 #BSUB -o test_mpi_kokkos_cuda.%J.out                # stdout filename
 #BSUB -q computet1                                  # queue name
-#BSUB -a p8aff(5,8,1,balance)                       # 5 threads/pask, so that only 2 tasks/CPU
+#BSUB -a p8aff(5,8,1,balance)                       # 5 threads/task, so that only 2 tasks/CPU, 1 task <-> 1 GPU
 #BSUB -R 'span[ptile=4]'                            # tile : number of MPI task/node (1 MPI task <--> 1 GPU)
 #BSUB -W 00:05
 
