@@ -1,3 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Exascale race: technological challenge(s)}
+  
+  % https://www.exascaleproject.org/what-is-exascale/
+  
+  % What is Exascale?
+  % Exascale refers to the next challenge in high performance computing systems: machines capable of at least a billion billion calculations per second or 50 to 100 times faster than the most powerful supercomputers in use today.  The Exascale Computing Project (ECP) was established with the goals of maximizing the benefits of high performance computing and accelerating the development of a computing ecosystem, encompassing applications, system software, hardware technologies, and architectures. An additional goal of ECP is workforce development to meet the scientific and national security mission needs of the U.S. Department of Energy (DOE) by the early- to mid-2020s.  ECP is chartered with breakthrough modeling and simulation solutions to address the most critical challenges in scientific discovery, energy assurance, and national security.  The power of this new class of systems will be measured in exaflops i.e. 1018 floating point operations per second, or a thousand times more powerful than today’s petaflop machines.
+  % https://exascale.sandia.gov/
+  
+  \only<1>{
+    \begin{minipage}{0.75\linewidth}
+      \textcolor{blue}{\bf \large Exascale is about...}
+      \begin{itemize}
+      \item ... reaching exaflops = $10^{18}$ flop/s
+        \begin{itemize}
+        \item 1.3 exaflops of aggregate peak flops
+        \item $\sim$ 8 PBytes of RAM
+        \end{itemize}
+      \item \textcolor{darkgreen}{\bf Building a computing ecosystem:} from applications, system software, hardware technologies, and architectures
+      \item Doing usefull work : HPC simulation ? AI ? both !
+      \item timeframe : $\sim$ 2021 - 2022
+      \end{itemize}
+      
+      \textcolor{violet}{\bf \large Many challenges:}
+      \begin{itemize}
+      \item {\bf Most challenging constraint:} fitting the \textcolor{red}{\bf electrical power envelop} ( $P$ in  $[20 - 40]$ MWatts)
+      \item develop new applications / adapt old ones
+      \item system software, application software stacks
+      \item hardware technologies ({\bf interconnect, storage, processor architectures,...})
+      \end{itemize}      
+    \end{minipage}
+    %
+    \begin{minipage}{0.24\linewidth}
+      {\scriptsize {\bf Summit}\\current \#1 @top500}\\
+      \includegraphics[width=3cm]{images/exascale/Summit_ORNL-2060x1648}
+      
+      {\scriptsize {\bf Post-K} (Japan, 2021 ?)}\\
+      \includegraphics[width=3cm]{images/exascale/fujitsu-100677939-large}
+    \end{minipage}
+  }
+    
+  \only<2>{  
+    \textcolor{violet}{\bf \large ...also about building an economic ecosystem}
+    \begin{minipage}{0.68\linewidth}
+      \begin{itemize}
+      \item New architectures designed to address \textcolor{violet}{\bf several markets} : HPC, AI, IoT, near-sensor computing, automotive, ...
+        % \item Building supercomputer is how/where real things get done
+        % \item Semantic shift: HPC = ({\it old school}) simulation + ({\it more than trendy}) AI
+      \item {\bf Hardware vendors already designing/optimizing new architectures for AI} (always back and forth between general purpose and application specific):e.g
+        \begin{itemize}
+        \item Nvidia (Tensor Core),
+        \item Xilinx (Alveo / Versal),
+        \item Intel (BFLOAT16, for future CooperLake), ...
+        \end{itemize}
+        % https://www.nextplatform.com/2018/10/02/inferring-the-future-of-the-fpga-and-then-making-it/
+        % The changes in the GPU architecture to do machine learning better didn’t make GPUs any less valuable to gamers or HPC centers, but it is clear what is driving the technology.
+      \item \textcolor{blue}{\bf Semantic shift: HPC = simulation + AI}
+      \item \textcolor{red}{\bf Cost of designing a new chip skyrocketting, ...}
+      \end{itemize}
+    \end{minipage}
+    % 
+    \begin{minipage}{0.30\linewidth}
+      \begin{center}
+        {\bf Nvidia Tensor Core, Volta (2017)}\\
+        \includegraphics[width=2.2cm]{images/exascale/tensor_core_3d}
+        
+        {\bf Xilinx AI Engine array (2019)}\\
+        \includegraphics[width=2.5cm]{./images/exascale/Xilinx-AI-Engine-Array}
+      \end{center}
+    \end{minipage}
+  }
+  
+  % https://www.nextplatform.com/2018/04/09/bidders-off-and-running-after-1-8-billion-doe-exascale-supercomputer-deals/
+  
+  % https://www.nextplatform.com/2018/11/12/the-widening-gyre-of-supercomputing/
+  
+  % from Coral to Coral-2
+  % https://procurement.ornl.gov/rfp/CORAL2/
+  
+  % HPE the Machine :
+  % https://www.nextplatform.com/2018/06/21/hpe-boots-up-sandbox-of-the-machine-for-early-users/
+  % https://www.nextplatform.com/2018/06/21/hpe-boots-up-sandbox-of-the-machine-for-early-users/
+  
+  % can Google or Amazon Web Services or Microsoft Azure build such a machine ?
+  
+  % Matthieu Lobet slides : https://hal.inria.fr/hal-01820511/document
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Pre-Exascale machines - hardware diversity !}
+  
+  \begin{itemize}
+  \item \textcolor{red}{\bf \large US}: Summit , Sierra $\Rightarrow$ mostly OpenPower (IBM P9 + Nvidia V100), GPU-based architecture, \#1 and \#2 @top500
+  \item \textcolor{blue}{\bf \large China:} 3 machines %(arrounds 2.5 PFlops each)
+    \begin{itemize}
+    \item Phytium FT2000/64 ARM chips + Matrix2000 GPDSP accelerators $\Rightarrow$ \#4 @top500, Tianhe-2A, 61 Pflops
+    \item 260-core Shenwei, \textcolor{blue}{\bf homegrow technology} hardware + software (C++/fortran compiler + OpenACC) $\Rightarrow$ \#3 @top500 , Sunway TaihuLght, 93 PFlops
+    \item Dhyana, AMD-licenced x86 multicore (300 M\$ !), identical to AMD EPYC
+      % https://www.top500.org/news/china-reveals-third-exascale-prototype/
+    \end{itemize}
+    
+  \item \textcolor{violet}{\bf \large Japan:} {\bf Post K}(Fujitsu, ARM, RIKEN)  A64FX ARM (\textcolor{violet}{\bf home grown}, started in 2014, 900 M\$), GPU, etc ...
+    % https://www.hpcwire.com/2018/09/05/no-go-for-glofo-at-7nm-and-the-fujitsu-a64fx-post-k-cpu/
+    % https://www.top500.org/news/fujitsu-reveals-details-of-processor-that-will-power-post-k-supercomputer/
+    % http://www.fujitsu.com/jp/Images/20180821hotchips30.pdf
+    % https://www.theregister.co.uk/2018/08/22/fujitsu_post_k_a64fx/
+  \item \textcolor{darkgreen}{\bf \large Europe ?} lagging behind but new organization EuroHPC (2019), EC H2020 budget ($\sim$ 500 M\euro)\\
+    \textcolor{darkgreen}{\bf home grown} ARM and/or RISC-V architecture, just starting development
+    % https://www.top500.org/news/european-program-to-develop-supercomputing-chips-begins-to-take-shape/
+    % mettre une EPI roadmap
+    % EuroHPC (Nov. 2018 - 2026)
+    % EuroHPC, Exascale not before 2022 : https://www.youtube.com/watch?v=y7_VvcIKJnI
+    % EuroHPC 2 exascale machines (500 M€)
+    % EuroHPC 2 pre-exascale machines in 2021 (240 M€)
+  \end{itemize}
+
+  %{\tiny \myurl{https://www.nextplatform.com/2016/07/11/chinas-triple-play-pre-exascale-systems/}}
+  
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
