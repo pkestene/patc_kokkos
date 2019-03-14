@@ -1,7 +1,19 @@
 The simple 7 points stencil computation kernel revisited with Kokkos programing model.
 
-Subdir src contains the code to use for the exercise (fill the holes).
-Subdir solution is complete.
+- Subdir src contains the code to use for the exercise (fill the holes).
+
+ * stencil.cpp contains "main" and drives the computation. Open and look
+   where the stencil computation are called.
+
+There 5 versions of the stencil kernel, only the first three need to fixed:
+ * src/test_stencil_3d_flat.cpp          : todo
+ * src/test_stencil_3d_range.cpp         : todo
+ * src/test_stencil_3d_range_vector.cpp  : todo
+ * src/test_stencil_3d_flat_vector.cpp   : already done
+ * src/test_stencil_3d_range_vector2.cpp : already done
+
+
+- Subdir solution is complete (all in one file + python script for benchmark).
 If you just want to build solution, just edit CMakeLists.txt and
 - comment   line add_subdirectory(src)
 - uncomment line add_subdirectory(src_solution)
