@@ -13,4 +13,7 @@
 
 # launch this script with bsub < job_cuda_ouessant.sh
 
-./stencil.cuda -b
+./stencil.cuda -n 320 -nrepeat 20
+
+# if you run the solution, you can use the bench mode (run multiple different configurations)
+#./stencil.cuda -b

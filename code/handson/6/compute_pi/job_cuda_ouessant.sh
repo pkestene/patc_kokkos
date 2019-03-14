@@ -13,4 +13,4 @@
 
 # launch this script with bsub < job_cuda_ouessant.sh
 
-./compute_pi.cuda
+./compute_pi.cuda -niter 100000000
