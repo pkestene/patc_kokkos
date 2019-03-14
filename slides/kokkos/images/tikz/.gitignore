@@ -1,0 +1,10 @@
+row-major.aux
+row-major.log
+col-major.aux
+col-major.log
+row-major-cuda.aux
+row-major-cuda.log
+row-major-openmp.aux
+row-major-openmp.log
+col-major-kokkos-openmp.aux
+col-major-kokkos-openmp.log
