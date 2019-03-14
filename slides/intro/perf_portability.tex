@@ -14,15 +14,6 @@
     \item a relatively \textcolor{darkgreen}{\textbf{small amount of effort}} required to tune app performance from one architecture to another.\\
       {\tiny source \myurl{http://www.nersc.gov/research-and-development/application-readiness-across-doe-labs}}
     \end{itemize}
-  \item \textcolor{orange}{\textbf{High Developper / programmer productivity}}
-    % \begin{itemize}
-    % \item CPU vector length: 256 bits (8 \textit{vector threads})\\
-    %   \textcolor{red}{Heavily cache-based}
-    % \item KNL vector length: 512 bits  x  2 (16-32 \textit{vector threads})\\
-    %   Moderately cache-based, some latency/bandwidth hiding
-    % \item GPU vector length: 65 536 bit (2048 \textit{GPU vector threads})\\
-    %   Less cache-based, heavy on latency/bandwidth hiding
-    % \end{itemize}
   }
   \only<2>{
   \item \textcolor{darkgreen}{\bf performance portability} is achieved when software implementation
@@ -34,6 +25,27 @@
   }
   \end{itemize}
   \vfill
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Performance portability issue}
+  \textcolor{orange}{\large \textbf{Developper productivity versus optimization}}
+
+  \begin{itemize}
+  \item \textcolor{red}{Taking into account hardware details is a hard job}
+    \begin{itemize}
+    \item CPU vector length: 256 bits (8 \textit{vector threads})\\
+      \textcolor{violet}{Heavily cache-based}
+    \item KNL vector length: 512 bits  x  2 (16-32 \textit{vector threads})\\
+      \textcolor{violet}{Moderately cache-based, some latency/bandwidth hiding}
+    \item GPU vector length: 65 536 bit (2048 \textit{GPU vector threads})\\
+      \textcolor{violet}{Less cache-based, heavy on latency/bandwidth hiding}
+    \end{itemize}
+  \item \textcolor{darkgreen}{Find ways of writing codes that avoid optimization blockers}\\
+    $\Rightarrow$ Constructs that can be used to express operations without going into details
+  \end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
