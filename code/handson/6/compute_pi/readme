@@ -2,6 +2,9 @@ Compute pi with monte carlo method.
 
 Subdir src contains the code to use (fill the holes).
 Subdir solution is complete.
+If you just want to build solution, just edit CMakeListx.txt and
+- comment   line add_subdirectory(src)
+- uncomment line add_subdirectory(src_solution)
 
 step 0:
 
