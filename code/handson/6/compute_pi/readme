@@ -1,18 +1,22 @@
 Compute pi with monte carlo method.
 
-Subdir src contains the code to use (fill the holes).
+Subdir src contains the code to use for the exercise (fill the holes).
 Subdir solution is complete.
-If you just want to build solution, just edit CMakeListx.txt and
+If you just want to build solution, just edit CMakeLists.txt and
 - comment   line add_subdirectory(src)
 - uncomment line add_subdirectory(src_solution)
 
+##################################################################
 step 0:
+##################################################################
 
 create a symbolic link to an existing kokkos source dir.
 e.g. if you have cloned kokkos in your home dir, just type
      ln -s $HOME/kokkos kokkos
 
+##################################################################
 step 1: How to build ?
+##################################################################
 
 - for OpenMP
   * mkdir build_openmp; cd build_openmp
@@ -29,5 +33,7 @@ step 1: How to build ?
   * cmake -DKOKKOS_ENABLE_CUDA=ON -DKOKKOS_ENABLE_CUDA_LAMBDA=ON -DKOKKOS_ARCH=Pascal60 ..
   * make
 
+##################################################################
 step 2: Open src/compute_pi.cpp and try to fill the holes.
-        Just find the locations of TODO.
+        Just find the locations of "TODO".
+##################################################################
