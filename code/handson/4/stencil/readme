@@ -1,0 +1,39 @@
+The simple 7 points stencil computation kernel revisited with Kokkos programing model.
+
+Subdir src contains the code to use for the exercise (fill the holes).
+Subdir solution is complete.
+If you just want to build solution, just edit CMakeLists.txt and
+- comment   line add_subdirectory(src)
+- uncomment line add_subdirectory(src_solution)
+
+##################################################################
+step 0:
+##################################################################
+
+create a symbolic link to an existing kokkos source dir.
+e.g. if you have cloned kokkos in your home dir, just type
+     ln -s $HOME/kokkos kokkos
+
+##################################################################
+step 1: How to build ?
+##################################################################
+
+- for OpenMP
+  * mkdir build_openmp; cd build_openmp
+  * cmake -DKOKKOS_ENABLE_OPENMP=ON -DCMAKE_BUILD_TYPE=Release ..
+  * make
+
+- for Cuda (ouessant host node)
+  * mkdir build_cuda_sm37; cd build_cuda_sm37
+  * cmake -DKOKKOS_ENABLE_CUDA=ON -DKOKKOS_ENABLE_CUDA_LAMBDA=ON -DKOKKOS_ARCH=Kepler37 -DCMAKE_BUILD_TYPE=Release ..
+  * make
+
+- for Cuda (ouessant compute node)
+  * mkdir build_cuda_sm60; cd build_cuda_sm60
+  * cmake -DKOKKOS_ENABLE_CUDA=ON -DKOKKOS_ENABLE_CUDA_LAMBDA=ON -DKOKKOS_ARCH=Pascal60 -DCMAKE_BUILD_TYPE=Release ..
+  * make
+
+##################################################################
+step 2: Open src/stencil.cpp and try to fill the holes.
+        Just find the locations of "TODO".
+##################################################################

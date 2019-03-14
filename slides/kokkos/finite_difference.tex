@@ -6,7 +6,23 @@
   \hypertarget{handson4}{}
 
   \begin{itemize}
-  \item Illustrate the use of 2D \texttt{Kokkos::View}
+  \item Purpose:
+    \begin{itemize}
+    \item Illustrate the use of 2D/3D \texttt{Kokkos::View}
+    \item Illustrate the use of alternative execution policies: \texttt{Kokkos::Experimental::MDRangePolicy}, \texttt{Kokkos::TeamPolicy},...
+    \end{itemize}
+  \item Stencil kernel:
+    \begin{minted}[autogobble,obeytabs=true,tabsize=2]{c++}
+      for (int k=0; k<nz; ++k)
+        for (int j=0; j<ny; ++j)
+          for (int i=0; i<nx; ++i) {
+            y(i,j,k) = -5*x(i,j,k) +
+              ( x(i-1,j  ,k  ) + x(i+1,j  ,k  ) +
+                x(i  ,j-1,k  ) + x(i  ,j+1,k  ) +
+                x(i  ,j  ,k-1) + x(i  ,j  ,k+1) );
+          }
+    \end{minted}
+  %\item solution to exercise 
   \end{itemize}
   
 \end{frame}
