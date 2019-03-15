@@ -6,12 +6,12 @@
   \hypertarget{handson4}{}
 
   \begin{itemize}
-  \item Purpose:
+  \item \textcolor{violet}{\bf Purpose:}
     \begin{itemize}
     \item Illustrate the use of 2D/3D \texttt{Kokkos::View}
     \item Illustrate the use of alternative execution policies: \texttt{Kokkos::Experimental::MDRangePolicy}, \texttt{Kokkos::TeamPolicy},...
     \end{itemize}
-  \item Stencil kernel:
+  \item {\bf Stencil kernel:}
     \begin{minted}[autogobble,obeytabs=true,tabsize=2]{c++}
       for (int k=0; k<nz; ++k)
         for (int j=0; j<ny; ++j)
@@ -32,13 +32,14 @@
 \begin{frame}[fragile=singleslide]
   \frametitle{Hands-On 4 : Finite Difference / Stencil}
 
-  Work to do:
+  {\bf \large Work to do:}
   \begin{itemize}
   \item follow \texttt{readme}
-  \item Once the kernels are done, you compare the performance
+  \item Once the kernels are done, you can compare the performance for different configurations
     \begin{itemize}
     \item the difference between kernel implementations, for different sizes
-    \item CPU / GPU
+    \item run on CPU versus run on GPU
+    \item interpretation of memory bandwidth measurements
     \end{itemize}
   \end{itemize}
   
@@ -51,16 +52,22 @@
 
   Example of performance obtained on different architectures (can be reproduced using \url{https://github.com/pkestene/kokkos-proj-tmpl/}):
 
+  {How to estimate hardware peak bandwidth ? See additional slides at the end}
+  
   \begin{itemize}
     \only<1>{
     \item On Intel skylake (1 socket, 24 cores)\\
       \includegraphics[width=7.5cm]{images/stencil/plot_stencil_perf_irene_skx}
     }
     \only<2>{
+    \item On Intel KNL (256 threads)\\
+      \includegraphics[width=7.5cm]{images/stencil/plot_stencil_perf_knl256}
+    }
+    \only<3>{
     \item On Nvidia K80\\
       \includegraphics[width=7.5cm]{images/stencil/plot_stencil_perf_k80}
     }
-    \only<3>{
+    \only<4>{
     \item On Nvidia P100\\
       \includegraphics[width=7.5cm]{images/stencil/plot_stencil_perf_p100}
     }
