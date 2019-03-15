@@ -1,0 +1,73 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Evaluating Peak Memory bandwidth}
+
+  \textcolor{violet}{\Large How to determine the {\bf peak} hardware memory bandwidth of your compute platform ?}
+
+  \begin{itemize}
+  \item \textcolor{red}{\bf Multicore CPU} (e.g. Intel Skylake):
+    \begin{itemize}
+    \item Memory type ? e.g. DDR4-2666
+    \item Number of channels ? e.g. 6
+    \item Max $BW =$ \# NbOfChannel $\times$ Frequency(GHz) $\times$ BusWidth/8 (Bytes) $\times$ \# NbOfSockets
+    \item e.g. on \myhref{http://www-hpc.cea.fr/fr/complexe/tgcc-Irene.htm}{TGCC/IRENE}, BW = 6 $\times$ 2.6 $\times$ 64/8 $\times$ 2 = 256 GBytes per node
+    \end{itemize}
+  \item \textcolor{orange}{\bf Manycore CPU} (e.g. Intel KNL):
+    \begin{itemize}
+    \item depends on \myhref{https://colfaxresearch.com/knl-mcdram/}{HBM configuration} (CACHE, FLAT, HYBRID)
+    \item e.g. KNL on TGCC/IRENE configured in CACHE mode, BW $\geqslant 400$ GBytes/s
+    \end{itemize}
+  \item \textcolor{blue}{\bf NVIDIA GPU} (e.g. Pascal P100):
+    \begin{itemize}
+    \item Use sample application {\tt deviceQuery} to retrieve hardware spec.
+    \item \# Memory Clock rate:  715 Mhz
+    \item \# Memory Bus Width:   4096-bit
+    \item $BW =$ 732.1 Gbytes/s
+    \end{itemize}
+  \item \textcolor{RoyalPurple}{\bf NVIDIA GPU} (e.g. Pascal V100):
+    \begin{itemize}
+    \item $BW =$ 898.0 Gbytes/s
+    \end{itemize}
+  \end{itemize}
+
+% ref on KNL : http://sites.utexas.edu/jdm4372/tag/memory-bandwidth/
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Evaluating Peak Memory bandwidth}
+
+  \textcolor{violet}{\Large What about {\bf achievable} memory bandwidth ?}
+
+  \begin{itemize}
+  \item Use the stream benchmark. e.g. \myurl{https://github.com/UoB-HPC/BabelStream}
+    \begin{itemize}
+    \item Copy : $C[i] = A[i]$
+    \item Trias : $A[i] = B[i] + scalar * C[i]$
+    \end{itemize}
+  \item On \textcolor{red}{\bf TGCC/Irene/Skylake} (2 sockets per node), one can measure:
+    \begin{itemize}
+    \item copy: $190$ GBytes/s (74 \% of peak)
+    \item triad: $160$ GBytes/s (63 \% of peak)
+    \end{itemize}
+  \item On \textcolor{orange}{\bf TGCC/Irene/KNL} (1 socket), one can measure:
+    \begin{itemize}
+    \item copy: $260$ GBytes/s (65 \% of peak)
+    \item triad: $330$ GBytes/s (80 \% of peak)
+    \end{itemize}
+  \item On \textcolor{blue}{\bf NVIDIA P100}:
+    \begin{itemize}
+    \item copy: $530$ GBytes/s (72 \% of peak)
+    \item triad: $550$ GBytes/s (75\% of peak)
+    \end{itemize}    
+  \item On \textcolor{RoyalPurple}{\bf NVIDIA V100}:
+    \begin{itemize}
+    \item copy: $650$ GBytes/s (72 \% of peak)
+    \item triad: $860$ GBytes/s (95\% of peak)
+    \end{itemize}    
+  \end{itemize}
+
+\end{frame}

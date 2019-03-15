@@ -1,4 +1,4 @@
-\documentclass[9pt,hyperref={pdfpagemode=FullScreen,urlcolor=blue},xcolor=x11names]{beamer}
+\documentclass[9pt,hyperref={pdfpagemode=FullScreen,urlcolor=blue},usenames,xcolor=dvipsnames]{beamer}
 
 \mode<presentation>
 {
@@ -43,7 +43,7 @@
 
 % souligne, barre
 \usepackage{ulem}
-%\usepackage[x11names]{xcolor}
+% \usepackage[x11names]{xcolor}
 
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
 
@@ -261,5 +261,8 @@
 
 \subsection{Custom monitoring / intrumenting / profiling}
 \input{kokkos_profiling_interface}
+
+% additionnal stuff
+\input{memory_bw}
 
 \end{document}
