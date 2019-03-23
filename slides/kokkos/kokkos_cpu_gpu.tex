@@ -6,7 +6,7 @@
   \begin{center}
     \textbf{\textcolor{blue}{Architecture design differences between manycore GPUs and general purpose multicore CPU ?}}
     
-    \only<1-3>{\includegraphics[height=3.5cm]{images/cpu_gpu_comparison}}
+    \only<1-4>{\includegraphics[height=3.5cm]{images/cpu_gpu_comparison}}
 
   \end{center}
 
@@ -46,6 +46,11 @@
     \item  multithreading can \textcolor{blue}{hide latency} => skip the big caches
     \item \textcolor{blue}{share control logic} across many threads
     \end{itemize}
+  }
+
+  \only<4>{
+  \item \textcolor{red}{\bf CPU} : 1 thread $\Leftrightarrow$ 1 core
+  \item \textcolor{blue}{\bf GPU}: nb threads $\gg$ nb cores
   }
 \end{itemize}
   
