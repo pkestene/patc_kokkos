@@ -8,7 +8,15 @@
     %
     % explain from core/src/Kokkos_Parallel.hpp
     % explain from core/src/Cuda/Kokkos_Cuda_Parallel.hpp
-  \item \texttt{parallel\_for} 
+  \item entry point of parallel computation is through a function call to \texttt{parallel\_for} (templated by execution policy, functor, ...)
+  \item \texttt{closure} : an instance of class \texttt{Kokkos::Impl::ParallelFor} is created
+    % Kokkos_Parallel.hpp : line 221
+    %  Impl::ParallelFor< FunctorType , policy > closure( functor , policy(0,work_count) );
+  \item \texttt{Class ParallelFor} is defined in \texttt{Cuda/Kokkos\_Cuda\_Parallel.hpp}, line 456
+  \item \texttt{closure.execute()} is called, which itself calls \texttt{CudaParallellaunch}
+  \item Copy functor to GPU memory (constant, local or global) using Cuda API (e.g \texttt{cudaMemcpyToSymbolAsync} to copy constant memory space)
+  \item finally the actual generated cuda kernel, using of the static function define (e.g. \texttt{cuda\_parallel\_launch\_constant\_memory})
+    % see Kokkos_Cuda_KernelLaunch.hpp
   \end{itemize}
 
 \end{frame}
