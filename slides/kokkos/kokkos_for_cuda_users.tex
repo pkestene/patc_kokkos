@@ -1,22 +1,85 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}
+\begin{frame}[fragile=singleslide]
   \frametitle{Kokkos for Cuda users}
 
-  \begin{itemize}
-  \item From a pure software engineering point of view, how does Kokkos manage to turn a pur C++ functor into a CUDA kernel ?
-    %
+  From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
+  
+  \begin{enumerate}
     % explain from core/src/Kokkos_Parallel.hpp
     % explain from core/src/Cuda/Kokkos_Cuda_Parallel.hpp
-  \item entry point of parallel computation is through a function call to \texttt{parallel\_for} (templated by execution policy, functor, ...)
-  \item \texttt{closure} : an instance of class \texttt{Kokkos::Impl::ParallelFor} is created
+  \item entry point of parallel computation is through \texttt{parallel\_for} (function call, templated by execution policy, functor, ...)
+    \begin{minted}[autogobble=true]{c++}
+      // parallel_for is defined in 
+      // core/src/Kokkos_Parallel.hpp : line 200
+      template< class FunctorType >
+      inline
+      void parallel_for( const size_t       work_count
+                       , const FunctorType& functor
+                       , const std::string& str = ""
+                       )
+      {
+        // ...
+        Impl::ParallelFor< FunctorType , policy > 
+        closure( functor , policy(0,work_count) );
+        // ...
+      }
+    \end{minted}
+  \end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos for Cuda users}
+
+  %From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
+  
+  \begin{enumerate}
+    \setcounter{enumi}{1}
+  \item \texttt{closure} is an instance of the {\bf driver} class \texttt{Kokkos::Impl::ParallelFor}; the precise object type created is off course Kokkos-backend dependent
     % Kokkos_Parallel.hpp : line 221
-    %  Impl::ParallelFor< FunctorType , policy > closure( functor , policy(0,work_count) );
-  \item \texttt{Class ParallelFor} is defined in \texttt{Cuda/Kokkos\_Cuda\_Parallel.hpp}, line 456
-  \item \texttt{closure.execute()} is called, which itself calls \texttt{CudaParallellaunch}
-  \item Copy functor to GPU memory (constant, local or global) using Cuda API (e.g \texttt{cudaMemcpyToSymbolAsync} to copy constant memory space)
-  \item finally the actual generated cuda kernel, using of the static function define (e.g. \texttt{cuda\_parallel\_launch\_constant\_memory})
-    % see Kokkos_Cuda_KernelLaunch.hpp
-  \end{itemize}
+    % Impl::ParallelFor< FunctorType , policy > closure( functor , policy(0,work_count) );
+  \item If CUDA backend is activated, the instantiated class \texttt{Kokkos::Impl::ParallelFor} is defined in \texttt{Cuda/Kokkos\_Cuda\_Parallel.hpp}; there are multiple specialization for the different execution policies (Range, multi-dimensional range, team policy, ...); e.g. for range
+    {\scriptsize
+      \begin{minted}[autogobble=true]{c++}
+        template< class FunctorType , class ... Traits >
+        class ParallelFor< FunctorType
+                         , Kokkos::RangePolicy< Traits ... >
+                         , Kokkos::Cuda
+                         >
+        {
+          // this is where for a given iteration id, the functor is called
+          // kind of generic cuda kernel work definition
+          inline   __device__  void operator()(void) const { ... };
+          
+          // this is where the actual CUDA kernel run time config
+          // is setup : block and grid dimension
+          // then create a CudaParallelLaunch object
+          inline void execute() const { ... };
+        }
+
+      \end{minted}
+  }
+  \end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos for Cuda users}
+
+  %From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
+  
+  \begin{enumerate}
+    \setcounter{enumi}{3}
+  \item when \texttt{closure.execute()} is called, an object \texttt{CudaParallellaunch} is created
+  \item struct \texttt{CudaParallellaunch} contains only a constructor, which only purpose is to actually launch the CUDA kernel (using the $<<<$ ... $>>>$ syntax)
+  \item Copy closure (driver instance) to GPU memory (either constant, local or global) using Cuda API (e.g \texttt{cudaMemcpyToSymbolAsync} to copy constant memory space)
+  \item finally the actual generated cuda kernel, using one of the static functions defined (e.g. \texttt{cuda\_parallel\_launch\_constant\_memory})
+    % see Kokkos_Cuda_KernelLaunch.hpp  
+  \end{enumerate}
 
 \end{frame}
