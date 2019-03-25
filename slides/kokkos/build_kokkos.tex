@@ -72,22 +72,36 @@
   \frametitle{Hands-On 0: Build kokkos (4)}
 
   \begin{itemize}
-  \item \textcolor{blue}{\textbf{Example build configurations (for an installed Kokkos)}}
-    \begin{itemize}
-    \item For \texttt{ouessant}, see file \texttt{doc/readme\_build\_kokkos\_ouessant} in the provided archive
-    \item Serial (mostly for testing)\\
-      \texttt{../generate\_makefile.bash --with-serial --prefix=\$HOME/local/kokkos\_serial}
-    \item \textbf{OpenMP}\\
-      \texttt{../generate\_makefile.bash --with-openmp --prefix=\$HOME/local/kokkos\_openmp\_dev}
-    \item \textbf{CUDA (+ OpenMP)}; typical configuration\\
-      \texttt{../generate\_makefile.bash --with-cuda --arch=Pascal60 --prefix=\$HOME/local/kokkos\_cuda\_lambda\_openmp --with-cuda-options=enable\_lambda --with-openmp --with-hwloc=/usr}
-    \end{itemize}
+  \item \textcolor{blue}{\textbf{Example build configurations (only for an installed Kokkos)}}
+    {
+      \small
+      \begin{itemize}
+      \item For \texttt{ouessant}, see file \texttt{doc/readme\_build\_kokkos\_ouessant} in the provided archive
+      \item \textbf{Serial} (mostly for testing)\\
+        \texttt{../generate\_makefile.bash \--\--with-serial \--\--prefix=\$HOME/local/kokkos\_serial}
+      \item \textbf{OpenMP}\\
+        \texttt{../generate\_makefile.bash \--\--with-openmp \--\--prefix=\$HOME/local/kokkos\_openmp\_dev}
+      \item \textbf{CUDA (+ OpenMP)}; typical configuration\\
+        \texttt{../generate\_makefile.bash \--\--with-cuda \--\--arch=Pascal60 \--\--prefix=\$HOME/local/kokkos\_cuda\_lambda\_openmp \--\--with-cuda-options=enable\_lambda \--\--with-openmp \--\--with-hwloc=/usr}
+      \end{itemize}
+    }
   \item \textcolor{darkgreen}{\textbf{After installation}} (\texttt{make kokkoslib; make install;}) the file \textbf{\texttt{Makefile.kokkos}} is created, and designed to be reused in your application build system.
-  \item \textbf{Two choices for integrating Kokkos in your app:}
-    \begin{itemize}
-    \item Use an existing Makefile from Kokkos tutorial, examples, ...
-    \item Use your own build system ({\bf cmake recommended}): there can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
-    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
+  \frametitle{Hands-On 0: Build kokkos (5)}
+
+  \begin{itemize}
+  \item \textcolor{red}{\bf What is really important:} use {\bf consitently} the same flags for building \textcolor{red}{\bf kokkos} as well as for building the final application
+  \item \textcolor{darkgreen}{\bf In summary:} {\bf two choices for integrating Kokkos in your application}
+    \fbox{\parbox{\textwidth}{
+        \begin{enumerate}
+        \item Use / adapt an existing Makefile from Kokkos tutorial, examples, ...
+        \item Use your own build system ({\bf cmake recommended}): there can be a quite large combinatorics of \texttt{DEVICES}, \texttt{ARCH}, compilers, compiler options, ...
+        \end{enumerate}}}
   \end{itemize}
   
 \end{frame}
@@ -213,7 +227,7 @@
   \end{minted}
   \begin{itemize}
   \item \textcolor{darkgreen}{\bf Prefer using command line argument / env variables}, e.g.:\\
-    \texttt{./my\_kokkos\_app --help; ./my\_kokkos\_app --kokkos-threads=10}
+    \texttt{./my\_kokkos\_app \--\--help; ./my\_kokkos\_app \--\--kokkos-threads=10}
   \item \textcolor{darkgreen}{\bf Not really needed} if you run on a supercomputer where the job scheduler will set OpenMP env variables or GPU/task mapping for you.
   \end{itemize}
 \end{frame}

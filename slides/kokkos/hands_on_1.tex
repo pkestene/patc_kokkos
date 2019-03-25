@@ -9,9 +9,9 @@
   \item We will use a cuda sample
   \item In your home on \texttt{ouessant}: 
     \begin{itemize}
-    \item \texttt{cp -a /usr/local/cuda-9.0/samples .}
-    \item \texttt{cd samples/1\_Utilities/deviceQuery}
-    \item \texttt{module load at/10.0 cuda/9.0}
+    \item \texttt{cp -a /usr/local/cuda-9.2/samples ./samples-9.2}
+    \item \texttt{cd samples-9.2/1\_Utilities/deviceQuery}
+    \item \texttt{module load at/11.0 cuda/9.2}
     \item \texttt{make}
     \item You have an executable named \texttt{deviceQuery}
     \item You can run it on a \textcolor{red}{\bf Ouessant login node:} \fbox{\texttt{./deviceQuery}}
@@ -75,14 +75,15 @@
   \frametitle{Hands-On 1b : Kokkos query\_device with hwloc}
 
   \begin{enumerate}
-  \item \textbf{Default serial build (with hwloc):} \texttt{make KOKKOS\_USE\_TPLS="hwloc"}\\
+  \item \textbf{Serial build (default, with hwloc):}\\
+    \fbox{\texttt{make KOKKOS\_USE\_TPLS="hwloc"}}\\
     How many NUMA / Cores / Hyperthreads on power8 CPU ?\\
-    What is the current SMT mode on a \texttt{ouessant} login node ?
+    \underline{Cross check:} what is the current SMT mode on a \texttt{ouessant} login node ?
     \begin{itemize}
     \item \texttt{ppc64\_cpu \--\--smt}
-    \item \texttt{ppc64\_cpu --info} 
+    \item \texttt{ppc64\_cpu \--\--info} 
     \end{itemize}
-  \item environment: \texttt{module load at/10.0 cuda/9.0}
+  \item environment:~\footnote{module at/11.0 provides gnu (advanced) toolchain, version 7.2.1} \texttt{module load at/11.0 cuda/9.2}
   \item \textbf{OpenMP build (with hwloc):}\\
     \fbox{\texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=OpenMP}} (off course, exact same information obtained as with serial execution)
   \item \textbf{CUDA/OpenMP build (with hwloc):}\\
