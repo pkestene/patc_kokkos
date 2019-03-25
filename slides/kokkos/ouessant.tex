@@ -22,6 +22,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{frame}
+  \frametitle{Ouessant : IBM Power8 + Nvidia Pascal P100}
+  
+  \begin{itemize}
+  \item {\bf \textcolor{violet}{\large About ouessant computing platform}}
+    \begin{itemize}
+    \item \textcolor{red}{\bf CPU is IBM Power8} - {\bf see output of lstopo}
+    \item \textcolor{darkgreen}{\bf GPU are K80 (on login nodes) and P100 (on compute nodes)}
+    \end{itemize}
+    \includegraphics[width=6cm]{images/ouessant_lstopo}
+    % on ouessant : lstopo-no-graphics -p ouessant_lstopo.xml
+    % on desktop : lstopo -i ouessant_lstopo.xml -l ouessant_lstopo.png
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}
   \frametitle{Kokkos training material}
   
   \begin{itemize}
