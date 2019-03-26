@@ -2,9 +2,8 @@ Compute pi with monte carlo method.
 
 Subdir src contains the code to use for the exercise (fill the holes).
 Subdir solution is complete.
-If you just want to build solution, just edit CMakeLists.txt and
-- comment   line add_subdirectory(src)
-- uncomment line add_subdirectory(src_solution)
+
+If you just want to build solution, just add "-DBUILD_SOLUTION=ON" on the cmake command line
 
 ##################################################################
 step 0: locate kokkos src dir
