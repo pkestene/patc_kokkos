@@ -7,12 +7,12 @@ If you just want to build solution, just edit CMakeLists.txt and
 - uncomment line add_subdirectory(src_solution)
 
 ##################################################################
-step 0:
+step 0: locate kokkos src dir
 ##################################################################
 
 create a symbolic link to an existing kokkos source dir.
 e.g. if you have cloned kokkos in your home dir, just type
-     ln -s $HOME/kokkos kokkos
+     ln -s $HOME/kokkos-tutorial/kokkos kokkos
 
 ##################################################################
 step 1: How to build ?
