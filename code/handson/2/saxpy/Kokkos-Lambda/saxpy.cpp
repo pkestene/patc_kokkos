@@ -49,6 +49,14 @@
 // Include Kokkos Headers
 #include<Kokkos_Core.hpp>
 
+#ifdef KOKKOS_ENABLE_CUDA
+#include "CudaTimer.h"
+using Timer = CudaTimer;
+#else
+#include "OpenMPTimer.h"
+using Timer = OpenMPTimer;
+#endif
+
 int main(int argc, char* argv[]) {
 
   // Parameters
@@ -88,8 +96,9 @@ int main(int argc, char* argv[]) {
     // Time saxpy computation
     struct timeval begin,end;
     
-    gettimeofday(&begin,NULL);
     
+    Timer wall_clock;
+    wall_clock.start();
     for(int k = 0; k < nrepeat; k++) {
       
       // Do saxpy
@@ -98,10 +107,10 @@ int main(int argc, char* argv[]) {
         });
       
     }
-    gettimeofday(&end,NULL);
-    
+    wall_clock.stop();
+
     // Print results
-    double time = 1.0*(end.tv_sec-begin.tv_sec) + 1.0e-6*(end.tv_usec-begin.tv_usec);
+    double time = wall_clock.elapsed();
     
     printf("#VectorLength Time(s) TimePerIterations(s) size(MB) BW(GB/s)\n");
     printf("%i %lf %e %lf %lf\n",length,time,time/nrepeat,1.0e-6*length*3*8,1.0e-9*length*3*nrepeat*8/time);

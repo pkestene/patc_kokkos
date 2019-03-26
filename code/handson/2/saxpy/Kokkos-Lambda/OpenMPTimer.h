@@ -19,20 +19,31 @@ class OpenMPTimer
 {
 public:
   /** default constructor, timing starts rightaway */
-  OpenMPTimer();
+  OpenMPTimer() {
+    start_time = 0.0;
+    total_time = 0.0;
+    start();
+  };
     
-  OpenMPTimer(double t);
-  OpenMPTimer(OpenMPTimer const& aTimer);
+  OpenMPTimer(double t) {
+      start_time = 0;
+      total_time = t;
+  };
+
+  OpenMPTimer(OpenMPTimer const& aTimer)  : start_time(aTimer.start_time), total_time(aTimer.total_time) {};
   virtual ~OpenMPTimer();
 
   /** start time measure */
-  virtual void start();
-    
+  virtual void start() { start_time = omp_get_wtime(); };
+  
   /** stop time measure and add result to total_time */
-  virtual void stop();
+  virtual void stop() {
+    double now = omp_get_wtime();
+    total_time += (now-start_time);
+  };
 
   /** return elapsed time in seconds (as stored in total_time) */
-  virtual double elapsed() const;
+  virtual double elapsed() const {  return total_time; };
 
 protected:
   double    start_time;
