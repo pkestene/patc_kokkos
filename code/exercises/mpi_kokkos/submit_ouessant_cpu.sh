@@ -8,8 +8,7 @@
 #BSUB -R 'span[ptile=2]'                           # tile : number of MPI task/node
 #BSUB -W 00:05
 
-
-module load at/10.0 ompi/2.1
+module load at/11.0 gcc/4.8/ompi/2.1
 
 EXE_NAME=test_mpi_kokkos.omp
 
