@@ -18,6 +18,8 @@
 # remember that cpus_per_core must be smaller than SMT
 # span[ptile=1] means our job is requesting 1 task per node
 
+module load at/10.0 cuda/9.2
+
 # how to submit this job ? 
 # bsub < job_cuda_ouessant.sh
 
