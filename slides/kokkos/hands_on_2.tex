@@ -23,9 +23,10 @@
     \item First, make sure you cloned kokkos sources inside \texttt{\${HOME}/kokkos-tutorial}:\\
       \textcolor{magenta}{\texttt{mkdir -p \${HOME}/kokkos-tutorial; cd \${HOME}/kokkos-tutorial}}\\
       \textcolor{magenta}{\texttt{git clone  https://github.com/kokkos/kokkos.git}}
-    \item Download \texttt{kokkos-tutorials} sources (anywhere in \texttt{\${HOME}}):\\
-      \textcolor{magenta}{\texttt{git clone https://github.com/kokkos/kokkos-tutorials.git}}
-    \item \textcolor{magenta}{\texttt{cd kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY}}
+    %\item Download \texttt{kokkos-tutorials} sources (anywhere in \texttt{\${HOME}}):\\
+     % \textcolor{magenta}{\texttt{git clone https://github.com/kokkos/kokkos-tutorials.git}}
+    %\item \textcolor{magenta}{\texttt{cd kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY}}
+    \item From the provided material \textcolor{magenta}{\texttt{cd patc\_kokkos/code/handson/2/saxpy}}
     \end{enumerate}
   }
   
@@ -40,13 +41,13 @@
   \begin{itemize}
   \item \textcolor{red}{\textbf{Saxpy serial (reference executable on Power8)}}
     \begin{itemize}
-    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY/Serial}
+    \item \texttt{cd handson/2/saxpy/Serial}
     \item \texttt{make KOKKOS\_ARCH=Power8}
-    \item Alternatively, we could have modified \texttt{Makefile} and changed \texttt{SNB} into \texttt{Power8}
+    \item Alternatively, we could have modified \texttt{Makefile} and changed \texttt{SNB} (Sandy Bridge) into \texttt{Power8}
     \end{itemize}
   \item \textcolor{orange}{\textbf{Saxpy regular OpenMP (on Power8)}}
     \begin{itemize}
-    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY/OpenMP}
+    \item \texttt{cd handson/2/saxpy/OpenMP}
     \item Rebuild: \texttt{make KOKKOS\_ARCH=Power8}; and observe performance
     \end{itemize}
   \end{itemize}
@@ -63,7 +64,7 @@
   \begin{itemize}
   \item \textcolor{violet}{\textbf{Saxpy Kokkos OpenMP (on Power8)}}~\footnote{Make sure to use a very large data array; Power8 has very large cache memory. If you don't, this example will not measure memory bandwith. Maximum bandwidth is 230 GB/s on a 2 socket P8. You should measure around 170 GB/s.}
     \begin{itemize}
-    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/Intro-Full/SNL2015/Exercises//01\_AXPY/Kokkos-Lambda}
+    \item \texttt{cd handson/2/saxpy/Kokkos-Lambda}
     \item Add 3 lines in \texttt{saxpy.cpp} right after Kokkos initialization
       \begin{minted}{c++}
         std::ostringstream msg;
@@ -89,7 +90,7 @@
   \begin{itemize}
   \item \textcolor{darkgreen}{\textbf{Saxpy CUDA (on Power8 + Nvidia K80/P100)}}
     \begin{itemize}
-    \item \texttt{cd \$HOME/kokkos-tutorial/kokkos-tutorials/Intro-Full/SNL2015/Exercises/01\_AXPY/Kokkos-Lambda}
+    \item \texttt{cd handson/2/saxpy/Kokkos-Lambda}
     \item \texttt{module load at/10.0 cuda/9.2}
     \end{itemize}
   \item Rebuild for K80, run on ouessant (front node):\\
