@@ -12,7 +12,7 @@
   \item User application top-level cmake can be as small as 7 lines
     {\small
       \begin{minted}{cmake}
-        cmake_minimum_required(VERSION 3.1)
+        cmake_minimum_required(VERSION 3.3)
         project(myproject CXX)
         
         # C++11 is for Kokkos
@@ -41,12 +41,12 @@
   {\large List of important kokkos-related {\bf cmake variables}}
   \begin{itemize}
   \item \textcolor{magenta}{\texttt{KOKKOS\_ENABLE\_OPENMP}}, \textcolor{magenta}{\texttt{KOKKOS\_ENABLE\_CUDA}},... $\Rightarrow$ which execution space are enabled (multiple possible)
-  \item \textcolor{magenta}{\texttt{KOKKOS\_ARCH}} (bold values are relevant for \texttt{ouessant}), will trigger relevant arch flags
+  \item \textcolor{magenta}{\texttt{KOKKOS\_ARCH}} (bold values are relevant for \texttt{ouessant}), will trigger relevant arch flags (complete list avail. from \texttt{Makefile.kokkos})
     \begin{tabular}{ll}
       \# Intel:    & KNC,KNL,SNB,HSW,BDW,SKX\\
     \# NVIDIA:   & Kepler,Kepler30,Kepler32,Kepler35,\textcolor{red}{\bf Kepler37},Maxwell,\\
       & Maxwell50,Maxwell52,Maxwell53,\textcolor{red}{\bf Pascal60},Pascal61,\\
-      & Volta70,Volta72\\
+      & Volta70,Volta72,Turing75\\
     \# ARM:      &ARMv80,ARMv81,ARMv8-ThunderX,ARMv8-TX2\\
     \# IBM:      &BGQ,Power7,\textcolor{red}{\bf Power8},Power9\\
     \# AMD-GPUS: &Kaveri,Carrizo,Fiji,Vega\\
