@@ -1,4 +1,12 @@
-You will need to download tutorial code from
-https://github.com/kokkos/kokkos-tutorials.git
+The code used here is adapted from an old version of kokkos-tutorial
+git clone https://github.com/kokkos/kokkos-tutorials.git
+git checkout 2bbfa49
+taken from Intro-Full/SNL2015/Exercises/01_AXPY
+
+The code has been slightly modified (to avoid warning and modernization).
 
 Please read instructions in this tutorial slides page 62.
+
+This handson requires kokkos sources to be located at
+$HOME/kokkos-tutorial/kokkos
+
