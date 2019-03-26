@@ -5,29 +5,16 @@
 #include <Kokkos_Parallel.hpp>
 #include <Kokkos_View.hpp>
 
-
-#ifdef CUDA
-# define DEVICE Kokkos::Cuda
-#include <cuda.h>
-#endif
-
-#ifdef OPENMP
-# define DEVICE Kokkos::OpenMP
-#endif
-
-#ifndef DEVICE
-# define DEVICE Kokkos::OpenMP
-#endif
+using Device = Kokkos::DefaultExecutionSpace;
 
 // Data array for image
-typedef Kokkos::View<unsigned char*, DEVICE> DataArray;
-#ifdef CUDA
+typedef Kokkos::View<unsigned char*, Device> DataArray;
+#ifdef KOKKOS_ENABLE_CUDA
 typedef Kokkos::View<unsigned char*, Kokkos::CudaHostPinnedSpace> DataArrayPinned;
 #endif
 
 // host mirror
 typedef DataArray::HostMirror                DataArrayHost;
-
 
 /**
  * Retrieve cartesian coordinate from index, using memory layout information.

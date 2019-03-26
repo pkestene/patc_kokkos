@@ -8,7 +8,7 @@
 #include "kokkos_shared.h"
 #include "mandelbrot.h"
 
-#ifdef CUDA
+#ifdef KOKKOS_ENABLE_CUDA
 #include "CudaTimer.h"
 #else // OpenMP
 #include "OpenMPTimer.h"
@@ -18,9 +18,11 @@
 
 using namespace std;
 
+// ============================================================
+// ============================================================
 void compute_mandelbrot(int argc, char* argv[])
 {
-#ifdef CUDA
+#ifdef KOKKOS_ENABLE_CUDA
   CudaTimer timer;
 #else
   OpenMPTimer timer;
@@ -59,7 +61,7 @@ void compute_mandelbrot(int argc, char* argv[])
 
     // compute Mandelbrot set on block
     MandelbrotFunctor functor(image, constants);
-    Kokkos::parallel_for(Kokkos::RangePolicy<DEVICE>(start,end), functor);
+    Kokkos::parallel_for(Kokkos::RangePolicy<Device>(start,end), functor);
         
     // copy back results from device to host
     Kokkos::deep_copy(imageBlockHost,imageBlock);
@@ -108,6 +110,7 @@ void compute_mandelbrot(int argc, char* argv[])
 
     fclose(myfile);
   }
+
 } // compute_mandelbrot
 
 int main(int argc, char* argv[]) {
@@ -115,16 +118,7 @@ int main(int argc, char* argv[]) {
   /*
    * Initialize kokkos (host + device)
    */
-#ifdef CUDA
-  // Initialize Host mirror device
-  Kokkos::HostSpace::execution_space::initialize(1);
-  //const unsigned device_count = Kokkos::Cuda::detect_device_count();
-
-  // Use the first device:
-  Kokkos::Cuda::initialize( Kokkos::Cuda::SelectDevice(0) );
-#else // OpenMP CPU
   Kokkos::initialize(argc, argv);
-#endif
 
   {
     std::cout << "##########################\n";
@@ -140,23 +134,14 @@ int main(int argc, char* argv[]) {
           << "] )"
           << std::endl ;
     }
-#if defined( CUDA )
-    Kokkos::Cuda::print_configuration( msg );
-#else
-    Kokkos::OpenMP::print_configuration( msg );
-#endif
+    Kokkos::print_configuration( msg );
     std::cout << msg.str();
     std::cout << "##########################\n";
   }
 
-  compute_mandelbrot(argc, argv);
+  compute_mandelbrot(argc,argv);
    
-#ifdef CUDA
-  Kokkos::Cuda::finalize();
-  Kokkos::HostSpace::execution_space::finalize();
-#else
   Kokkos::finalize();
-#endif
 
   return 0;
 }
