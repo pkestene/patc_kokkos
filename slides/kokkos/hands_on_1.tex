@@ -11,7 +11,7 @@
     \begin{itemize}
     \item \texttt{cp -a /usr/local/cuda-9.2/samples ./samples-9.2}
     \item \texttt{cd samples-9.2/1\_Utilities/deviceQuery}
-    \item \texttt{module load at/11.0 cuda/9.2}
+    \item \texttt{module load at/10.0 cuda/9.2}
     \item \texttt{make}
     \item You have an executable named \texttt{deviceQuery}
     \item You can run it on a \textcolor{red}{\bf Ouessant login node:} \fbox{\texttt{./deviceQuery}}
@@ -83,7 +83,7 @@
     \item \texttt{ppc64\_cpu \--\--smt}
     \item \texttt{ppc64\_cpu \--\--info} 
     \end{itemize}
-  \item environment:~\footnote{module at/11.0 provides gnu (advanced) toolchain, version 7.2.1} \texttt{module load at/11.0 cuda/9.2}
+  \item environment:~\footnote{module at/10.0 provides gnu (advanced) toolchain, version 6.3.1 (at/11.0 not compatible with cuda 9.2)} \texttt{module load at/10.0 cuda/9.2}
   \item \textbf{OpenMP build (with hwloc):}\\
     \fbox{\texttt{make KOKKOS\_USE\_TPLS="hwloc" KOKKOS\_DEVICES=OpenMP}} (off course, exact same information obtained as with serial execution)
   \item \textbf{CUDA/OpenMP build (with hwloc):}\\
@@ -92,6 +92,7 @@
   
 \end{frame}
 
+% https://devtalk.nvidia.com/default/topic/1023776/-request-add-nvcc-compatibility-with-glibc-2-26/
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

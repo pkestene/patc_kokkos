@@ -7,7 +7,7 @@
 #BSUB -q computet1
 #BSUB -W 00:05
 
-module load at/11.0 cuda/9.2
+module load at/10.0 cuda/9.2
 
 echo "########################################################"
 ./deviceQuery
