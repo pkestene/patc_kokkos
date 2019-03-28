@@ -28,7 +28,7 @@ public:
     int i,j;
 
     const int NX = params.NX;
-    const int NY = params.NY;
+    //const int NY = params.NY;
 
     const int ix_start = params.ix_start;
     const int ix_end   = params.ix_end;
@@ -101,7 +101,7 @@ void poisson2d_kokkos( DataContextKokkos& context, Params& params )
   real_t tol = params.tol;
   
   int NX = params.NX;
-  int NY = params.NY;
+  //int NY = params.NY;
   
   int iter  = 0;
   real_t error = 1.0;
