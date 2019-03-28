@@ -76,7 +76,7 @@
       #BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"  # activate GPU usage
       #BSUB -W 00:05                             # max runtime
             
-      module load gcc/4.8/ompi/2.1 cuda/9.0
+      module load gcc/4.8/ompi/2.1 cuda/9.2
       
       # Each mpi tasks are binded to a different GPU
       mpirun --report-bindings ./test_mpi_kokkos.cuda
