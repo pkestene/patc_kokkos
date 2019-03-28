@@ -5,14 +5,20 @@
 
   \hypertarget{handson7}{}
   \begin{itemize}
-  \item \textcolor{red}{\textbf{SETUP}}: we will use git to download this miniApp code designed at \myhref{http://www.cscs.ch/index.html}{CSCS} for HPC teaching purpose.
-    % See file \myurl{code/miniapps/SummerSchool2016/readme.md} to know how
-    % to download the code 
-    \begin{itemize}
-    \item \texttt{cd \$HOME/patc\_kokkos/code/miniapps/SummerSchool2016}
-    \item \texttt{git clone https://github.com/pkestene/SummerSchool2016.git}
-    \item \texttt{cd Summerschool2016; git checkout kokkos}
-    \end{itemize}
+  \item \textcolor{red}{\textbf{SETUP}}: we will use git to download this miniApp code designed at \myhref{http://www.cscs.ch/index.html}{CSCS} for HPC teaching purpose, and modified for testing Kokkos.
+  \end{itemize}
+  % See file \myurl{code/miniapps/SummerSchool2016/readme.md} to know how
+  % to download the code 
+  \fbox{\parbox{\textwidth}{
+      \begin{itemize}
+      \item \texttt{cd \$HOME/patc\_kokkos/code/miniapps/SummerSchool2016}
+      \item \texttt{git clone https://github.com/pkestene/SummerSchool2016.git}
+      \item \texttt{cd Summerschool2016; git checkout kokkos}
+      \end{itemize}
+    }
+  }
+
+  \begin{itemize}
   \item \textbf{This material contains multiple versions} of a \textcolor{violet}{\textbf{Reaction-Diffusion PDE solver (Fisher equation used e.g. in popualtion dynamics)}}. We will contribute two Kokkos versions of this solver.
     $$ \frac{\partial s}{\partial t} = D \left( \frac{\partial^2 s}{\partial x^2} + \frac{\partial^2 s}{\partial y^2} \right) + R s (1-s) = 0$$
   \end{itemize}
@@ -30,12 +36,13 @@
     \begin{itemize}
     \item Explore the \textcolor{red}{serial} version of the Fisher solver.
     \end{itemize}
-  \item These \textbf{Kokkos exercises} are routed to use the \textcolor{darkgreen}{\textbf{modulefiles}}:
+  \item These \textbf{Kokkos exercises} are routed to use \texttt{KOKKOS\_PATH} env variable; use the following command line as a starting point
+    %the \textcolor{darkgreen}{\textbf{modulefiles}}:
     \begin{itemize}
-    \item \texttt{module use /pwrwork/workshops/patc-201701/kokkos/modulefiles}
-    \item \texttt{module load kokkos/openmp\_gnu485\_dev}
-    \item \texttt{make}
-    \end{itemize}
+    \item \texttt{make KOKKOS\_DEVICES=OpenMP}
+    \item \texttt{make KOKKOS\_DEVICES=Cuda,OpenMP KOKKOS\_ARCH=Kepler37}
+    \item example run: \texttt{./fisher.openmp 128 128 100 0.01}
+\end{itemize}
   \item \textcolor{blue}{\textbf{Kokkos version 1}} / Exercice with \texttt{KOKKOS\_LAMBDA} / Already pre-filled, some TODOs
     \begin{itemize}
     \item Open and read file \texttt{miniapp/kokkos/cxx/readme.txt}
