@@ -1,0 +1,84 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{frame}[fragile]
+  \frametitle{C++ functors and Lambda}
+
+  \textcolor{violet}{\bf What is a functor class ?}\\
+  Functor $=$ Function object, can be called like a function.
+
+  \begin{itemize}
+    \begin{onlyenv}<1>
+    \item a simple computation
+      \begin{minted}[autogobble=true]{c++}
+        void do_a_for_loop(std::vector<double> data) {
+          for (int i=0; i<data.size; ++i) {
+            data[i] += 12;
+          }
+        }
+      \end{minted}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \item same with a function pointer
+      \begin{minted}[autogobble=true]{c++}
+        void doSomething(double &value) {
+          value += 12;
+        }
+        
+        // use a function pointeur
+        void do_a_for_loop(std::vector<double> data, void f(double&)) {
+          
+          for (int i=0; i<data.size; ++i) {
+            f(data[i]);
+          }
+        }
+    \end{minted}
+  \end{onlyenv}
+  \begin{onlyenv}<3>
+    \item same with a \textcolor{blue}{\bf function object (functor)}
+      {\small
+      \begin{minted}[autogobble=true]{c++}
+        class DoSomething {
+          // a functor can have parameters, members, execution context, ...
+          // can be copied, passed to function, to threads, ...
+          DomeSometing(double param) : param(param) {}
+
+          void operator() (double &value) {
+            value += param;
+          }
+          private:
+          double param;
+        }
+        
+        // use a function pointeur
+        void do_a_for_loop(std::vector<double> data, DoSomething f) {
+          for (int i=0; i<data.size; ++i) {
+            f(data[i]);
+          }
+        }
+    \end{minted}
+  }
+  \end{onlyenv}
+  \begin{onlyenv}<4>
+  \item same with a \textcolor{red}{\bf lambda} : lambda $=$ shorhand for a functor, context is {captured} from the surrounding code.
+      {\small
+      \begin{minted}[autogobble=true]{c++}
+        // use a function pointeur
+        template<class ALambda>
+        void do_a_for_loop(std::vector<double> data, ALambda f) {
+          for (int i=0; i<data.size; ++i) {
+            f(data[i]);
+          }
+        }
+
+        double param = 12;
+        auto domesometing = [=](double& value) {value += param; };
+        
+        // do some computation
+        do_a_for_loop(data, dosomething);
+
+    \end{minted}
+  }
+  \end{onlyenv}
+\end{itemize}
+
+\end{frame}
