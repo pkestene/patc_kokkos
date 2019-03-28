@@ -69,23 +69,26 @@
     \begin{minted}{bash}
       #!/bin/bash
       #BSUB -x
-      #BSUB -J test_mpi_kokkos_cuda              # Job name
       #BSUB -n 8                                 # number of MPI tasks
+      #BSUB -J test_mpi_kokkos_cuda              # Job name
       #BSUB -o test_mpi_kokkos_cuda.%J.out       # stdout filename
-      #BSUB -q compute                           # queue name
-      #BSUB -R "select[ngpus>0] rusage [ngpus_shared=1]"  # activate GPU usage
+      #BSUB -q computet1                         # queue name
+      #BSUB -a p8aff(5,1,1,balance)              # 5 threads/task, 2 tasks/socket
+      #BSUB -gpu "num=4:mode=exclusive_process:mps=no:j_exclusive=yes"
       #BSUB -W 00:05                             # max runtime
             
       module load gcc/4.8/ompi/2.1 cuda/9.2
       
       # Each mpi tasks are binded to a different GPU
-      mpirun --report-bindings ./test_mpi_kokkos.cuda
+      # tell kokkos to use up to 4 GPUs/node
+      mpirun --report-bindings ./test_mpi_kokkos.cuda --ndevices=4
       
     \end{minted}
   }
   \begin{itemize}
-    \item This script requests 2 nodes, i.e. $2\times4=8$ GPUs
-  \item \texttt{core(5)}: just to be sure that each Power8 will receive 2 MPI tasks
+  \item 1 MPI task $=$ 1 GPU
+  \item This script actually requests 2 nodes, i.e. $2\times4=8$ GPUs
+  \item \texttt{p8aff(5,1,1)}: just to be sure that each Power8 will receive 2 MPI tasks
   \end{itemize}
 \end{frame}
 
