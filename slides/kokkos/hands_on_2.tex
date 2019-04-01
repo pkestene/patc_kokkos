@@ -65,12 +65,22 @@
   \item \textcolor{violet}{\textbf{Saxpy Kokkos OpenMP (on Power8)}}~\footnote{Make sure to use a very large data array; Power8 has very large cache memory. If you don't, this example will not measure memory bandwith. Maximum bandwidth is 230 GB/s on a 2 socket P8. You should measure around 170 GB/s.}
     \begin{itemize}
     \item \texttt{cd handson/2/saxpy/Kokkos-Lambda}
-    \item Add 3 lines in \texttt{saxpy.cpp} right after Kokkos initialization
-      \begin{minted}{c++}
+    \item Add the following lines in \texttt{saxpy.cpp} right after Kokkos initialization
+      {\scriptsize
+      \begin{minted}[autogobble=true]{c++}
         std::ostringstream msg;
-        Kokkos::OpenMP::print_configuration( msg );
+        if ( Kokkos::hwloc::available() ) {
+          msg << "hwloc( NUMA[" << Kokkos::hwloc::get_available_numa_count()
+          << "] x CORE["    << Kokkos::hwloc::get_available_cores_per_numa()
+          << "] x HT["      << Kokkos::hwloc::get_available_threads_per_core()
+          << "] )"
+          << std::endl ;
+        }
+        
+        Kokkos::print_configuration( msg );
         std::cout << msg.str();
       \end{minted}
+    }
     \item \texttt{make KOKKOS\_ARCH=Power8}
     \item Make sure all available CPU cores were used ($1\times 160 \times 1$)
     \item Change the number of OpenMP threads created by kokkos, e.g. :\\
