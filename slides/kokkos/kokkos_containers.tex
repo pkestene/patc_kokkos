@@ -50,8 +50,8 @@
   \item \textcolor{blue}{\texttt{Kokkos::View<...>}} are reference-counted
   \item \textcolor{orange}{\textbf{shallow copy}} is default behavior
     \begin{minted}{c++}
-      Kokkos::View<int *>("a",10);
-      Kokkos::View<int *>("b",10);
+      Kokkos::View<int *> a("a",10);
+      Kokkos::View<int *> b("b",10);
       a = b; // a now points to b (ref counter incremented by 1)
       // a destructor (memory deallocation) only actually happen
       // when ref counter reaches zero.

@@ -81,7 +81,8 @@
         { data(i) = 2*i; };
       };
       ...
-      FunctorType func; // create a functor instance
+      Kokkos::View<int *> some_data("some_data",100);
+      FunctorType func(some_data); // create a functor instance
       Kokkos::parallel_for (100, func); // launch computation
     \end{minted}
     \begin{itemize}

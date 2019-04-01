@@ -10,7 +10,7 @@
     \begin{onlyenv}<1>
     \item a simple computation
       \begin{minted}[autogobble=true]{c++}
-        void do_a_for_loop(std::vector<double> data) {
+        void do_a_for_loop(std::vector<double>& data) {
           for (int i=0; i<data.size; ++i) {
             data[i] += 12;
           }
@@ -25,7 +25,7 @@
         }
         
         // use a function pointeur
-        void do_a_for_loop(std::vector<double> data, void f(double&)) {
+        void do_a_for_loop(std::vector<double>& data, void f(double&)) {
           
           for (int i=0; i<data.size; ++i) {
             f(data[i]);
@@ -50,7 +50,7 @@
         }
         
         // use a function pointeur
-        void do_a_for_loop(std::vector<double> data, DoSomething f) {
+        void do_a_for_loop(std::vector<double>& data, DoSomething f) {
           for (int i=0; i<data.size; ++i) {
             f(data[i]);
           }
@@ -64,7 +64,7 @@
       \begin{minted}[autogobble=true]{c++}
         // use a function pointeur
         template<class ALambda>
-        void do_a_for_loop(std::vector<double> data, ALambda f) {
+        void do_a_for_loop(std::vector<double>& data, ALambda f) {
           for (int i=0; i<data.size; ++i) {
             f(data[i]);
           }
