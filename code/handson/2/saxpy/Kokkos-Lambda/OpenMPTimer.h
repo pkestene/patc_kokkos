@@ -31,7 +31,7 @@ public:
   };
 
   OpenMPTimer(OpenMPTimer const& aTimer)  : start_time(aTimer.start_time), total_time(aTimer.total_time) {};
-  virtual ~OpenMPTimer();
+  ~OpenMPTimer() {};
 
   /** start time measure */
   virtual void start() { start_time = omp_get_wtime(); };
