@@ -16,7 +16,7 @@
     \item You have an executable named \texttt{deviceQuery}
     \item You can run it on a \textcolor{red}{\bf Ouessant login node:} \fbox{\texttt{./deviceQuery}}
     \item You can run it on a \textcolor{darkgreen}{\bf Ouessant compute node} using the script \texttt{submit\_ouessant.sh} launched like this:\\
-      \fbox{\texttt{bsub < submit\_ouessant.sh}}\\
+      \fbox{\texttt{bsub < submit\_ouessant\_gpu.sh}}\\
       The submission script is located in the training archive (\texttt{code/handson/1a/submit\_ouessant.sh})
     \item What differences can you see between the two executions ?
     \end{itemize}
@@ -111,12 +111,7 @@
     \item change\\
       {\small
         \begin{minted}{c++}
-          #if defined( KOKKOS_ENABLE_CUDA )
-          Kokkos::Cuda::print_configuration( msg );
-          #else
-          Kokkos::OpenMP::print_configuration( msg );
-          #endif
-          //Kokkos::print_configuration( msg ); // how this app was build
+          Kokkos::print_configuration( msg );
         \end{minted}
       }
     \end{enumerate}

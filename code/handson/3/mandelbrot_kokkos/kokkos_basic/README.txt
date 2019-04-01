@@ -4,6 +4,9 @@ Just edit :
 
 fill the blanks marked with /* TODO */
 
+# before trying to build the projet, you need to make a
+# symbolic link to kokkos sources, e.g.
+ln -s $HOME/kokkos-tutorial/kokkos
 
 # minimal cmake information for Power8
 mkdir build_openmp; cd build_openmp
