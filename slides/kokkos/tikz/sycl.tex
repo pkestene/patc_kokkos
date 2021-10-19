@@ -1,0 +1,79 @@
+\documentclass[tikz]{standalone}
+
+%\usepackage{mathdots}
+\usepackage[utf8]{inputenc}
+\usepackage[upright]{fourier}
+%\usepackage{tikz}
+\usetikzlibrary{matrix,arrows,decorations.pathmorphing}
+
+%\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+
+
+\newcommand\x{\times}
+
+\begin{document}
+
+% l' unite
+\newcommand{\myunit}{1 cm}
+\tikzset{
+    node style sp/.style={draw,circle,minimum size=\myunit},
+    node style ge/.style={circle,minimum size=\myunit},
+    arrow style mul/.style={draw,sloped,midway,fill=white},
+    arrow style plus/.style={midway,sloped,fill=white},
+}
+
+
+\begin{tikzpicture}
+
+\definecolor{blue1}{HTML}{6095C9}
+\definecolor{blue2}{HTML}{55779A}
+
+\definecolor{BlueLUH}{cmyk}{1.0,0.7,0,0}
+\colorlet{LightBlue}{BlueLUH!20!white}
+\colorlet{DarkBlue}{BlueLUH!80!black!20}
+
+%\definecolor{darkorange}{rgb}{1.0, 0.55, 0.0}
+
+\colorlet{Col1}{red!90!black!10!}
+
+\matrix [column sep=10mm, row sep=8mm, every node/.style={
+    shape=rectangle,
+    text width=2.75cm,
+    minimum height=1.75cm,
+    text centered,
+    font=\sffamily\bf\Large,
+    very thick,
+    color=Col1,
+    draw=blue2,
+    fill=blue1,
+}] {
+  & \node (a1) {SYCL\\ abstractions}; & \\
+  \node (b1) {OpenCL : Intel OneAPI (dpc++)}; &
+  \node (b2) {hipSYCL (ROCm)}; &
+  \node (b3) {triSYCL (Xilinx)};\\
+  \node (c1) {Intel CPU+GPU (and Nvidia GPU)}; &
+  \node (c2) {AMD and Nvidia GPUs}; &
+  \node (c3) {Xilinx FPGA};\\
+};
+
+\begin{scope}[->, very thick, blue1]
+  \draw (a1) -- (b1);
+  \draw (a1) -- (b2);
+  \draw (a1) -- (b3);
+  \draw[-, dashed] (b1) -- (c1);
+  \draw[-, dashed] (b2) -- (c2);
+  \draw[-, dashed] (b3) -- (c3);
+  % \draw ([xshift=3mm]a1.south) |- ([yshift=3mm]d2.west);
+  % \draw (a2) -- (b2);
+  % \draw (b2) -- (c2);
+  % \draw (c2) -- (d2);
+  % \draw ([yshift=-3mm]d2.west) -| ([xshift=-3mm]a1.south);
+  % \draw[-, dashed] (d2) -- (d3);
+  % \draw ([xshift=5mm]b3.south) -- ([xshift=-10mm]c3.north);
+  % \draw ([xshift=-10mm]c3.south) -- ([xshift=5mm]d3.north);
+  % \draw ([xshift=-5mm]d3.north) -- ([xshift=-5mm]b3.south);
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

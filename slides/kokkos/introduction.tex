@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{frame}
 %   \frametitle{Kokkos: a programming model for performance portability}
 
@@ -25,19 +25,19 @@
 
 % \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos: a programming model for perf. portability}
 
   \only<1>{
     \begin{itemize}
     \item \textcolor{blue}{\textbf{Kokkos}} is a \textbf{C++ library} for \textcolor{violet}{\textbf{node-level parallelism}} (i.e. \textcolor{violet}{\bf shared memory}) providing:
- 
+
       \begin{itemize}
       \item \textcolor{red}{\textbf{parallel algorithmic patterns}}
-      \item \textcolor{red}{\textbf{data containers}} 
+      \item \textcolor{red}{\textbf{data containers}}
       \end{itemize}
     \item Implementation relies heavily on \textbf{meta-programing} to derive native low-level code (OpenMP, Pthreads, CUDA, ...) and adapt data structure memory layout at compile-time
     \item Core developers at \textcolor{violet}{\textbf{SANDIA NL}} (\textbf{H.C. Edwards~\footnote{now hired @Nvidia}, C. Trott})
@@ -50,11 +50,12 @@
     \item Also used in
       \begin{itemize}
       \item \myhref{http://lammps.sandia.gov/}{LAMMPS} (molecular dynamics code),
-      \item \myhref{https://github.com/NaluCFD/Nalu}{NALU CFD} (low-Mach wind),
-      \item \myhref{https://sparta.sandia.gov/}{SPARTA/DSMC} (rarefied gas flow),
+      \item \myhref{https://github.com/NaluCFD/Nalu}{NALU CFD} (low-Mach wind flow),
+      \item \myhref{https://sparta.sandia.gov/}{SPARTA/DSMC} (rarefied gas flow), \myhref{}{SPARC} (CFD, RANS, LES, hypersonic flow)
       \item \myhref{https://github.com/SNLComputation/Albany}{Albany} (fluid/solid,...)
+      \item \myhref{http://uintah.utah.edu/}{Uintah} (structured AMR, combustion, radiation)
       \end{itemize}
-      
+
     %\item Goal: \textcolor{orange}{\textbf{ISO/C++ 2020 Standard}} subsumes Kokkos abstractions~\footnote{\scriptsize see mdspan proposal \myurl{https://github.com/kokkos/array_ref}}
     \end{itemize}
   }
@@ -72,9 +73,9 @@
   {\scriptsize see mdspan proposal \myurl{https://github.com/kokkos/array_ref}}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos: a programming model for performance portability}
 
@@ -86,9 +87,9 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos: a programming model for performance portability}
 
