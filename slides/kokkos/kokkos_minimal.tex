@@ -44,7 +44,7 @@
   \begin{itemize}
   \item {\Large What is performance portability ?}
     \begin{itemize}
-    \item \textcolor{violet}{\large \bf (Re)write your code once, run {\it efficiently} everywhere}
+    \item \textcolor{violet}{\large \bf (Re)write your code once, (try to) run {\it efficiently} everywhere}
     \item By everywhere, we mean : Multicore Intel/ARM and Nvidia/AMD GPUs
     \item \textcolor{violet}{\bf High-level approach:} as much as possible (if possible) hide hardware details to the (physicist / applied math) software developer
     \item \myhref{https://performanceportability.org}{https://performanceportability.org}
@@ -73,8 +73,8 @@
       {
         \scriptsize
         \begin{itemize}
-        \item \framebox{\myhref{https://github.com/kokkos/kokkos}{Kokkos}}, \myhref{https://github.com/LLNL/RAJA}{RAJA}, \myhref{https://github.com/alpaka-group/alpaka}{Alpaka}, \myhref{https://github.com/STEllAR-GROUP/hpx}{HPX}, \myhref{https://github.com/GridTools/gridtools}{GridTools}...
-        \item \myhref{https://www.khronos.org/sycl}{SYCL} (Khronos Group \textit{standard}), C++ high-level layer on top of OpenCL. \textcolor{red}{\bf Still $\sim$experimental}\\
+        \item \framebox{\myhref{https://github.com/kokkos/kokkos}{Kokkos}}, \myhref{https://github.com/LLNL/RAJA}{RAJA}, \myhref{https://github.com/alpaka-group/alpaka}{Alpaka}, \myhref{https://github.com/STEllAR-GROUP/hpx}{HPX}, \myhref{https://github.com/GridTools/gridtools}{GridTools}, \myhref{https://arrayfire.com/}{ArrayFire}...
+        \item \myhref{https://www.khronos.org/sycl}{SYCL} (Khronos Group \textit{standard}), C++ high-level layer on top of OpenCL. %\textcolor{red}{\bf Still $\sim$experimental}\\
           \myhref{https://software.intel.com/content/www/us/en/develop/tools/oneapi.html}{Intel OneAPI/DPCPP} (Intel CPU/GPU/FPGA, Nvidia GPUs),\\
           \myhref{https://www.codeplay.com/products/computesuite/computecpp}{CodePlay},
           \myhref{https://github.com/illuhad/hipSYCL}{AMD and Nvidia GPUs},
@@ -141,6 +141,7 @@
     \item Used in, e.g.:
       \begin{itemize}
       \item \myhref{http://lammps.sandia.gov/}{LAMMPS} (molecular dynamics code),
+        %\myhref{https://github.com/ECP-copa/ExaMiniMD}{ExaMiniMD}
       \item \myhref{https://github.com/NaluCFD/Nalu}{NALU CFD} (low-Mach wind flow),
       \item \myhref{https://sparta.sandia.gov/}{SPARTA/DSMC} (rarefied gas flow), \myhref{}{SPARC} (CFD, RANS, LES, hypersonic flow)
       \item \myhref{https://github.com/SNLComputation/Albany}{Albany} (fluid/solid,...)

@@ -1,0 +1,16 @@
+1:
+	pdflatex -shell-escape cafe_calcul_kokkos_2021.tex
+
+all:
+	pdflatex -shell-escape cafe_calcul_kokkos_2021.tex
+	pdflatex -shell-escape cafe_calcul_kokkos_2021.tex
+
+clean:
+	rm -rf cafe_calcul_kokkos_2021.aux
+	rm -rf cafe_calcul_kokkos_2021.log
+	rm -rf cafe_calcul_kokkos_2021.nav
+	rm -rf cafe_calcul_kokkos_2021.out
+	rm -rf cafe_calcul_kokkos_2021.snm
+	rm -rf cafe_calcul_kokkos_2021.toc
+	rm -rf cafe_calcul_kokkos_2021.vrb
+

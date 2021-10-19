@@ -1,5 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos - cmake integration (1)}
 
@@ -12,29 +12,28 @@
   \item User application top-level cmake can be as small as 7 lines
     {\small
       \begin{minted}{cmake}
-        cmake_minimum_required(VERSION 3.3)
+        cmake_minimum_required(VERSION 3.16)
         project(myproject CXX)
-        
+
         # C++11 is for Kokkos
-        set(CMAKE_CXX_STANDARD 11)
+        set(CMAKE_CXX_STANDARD 14)
         set(CMAKE_CXX_EXTENSIONS OFF)
-        
+
         # first buid kokkos
+        # not recommended, but ok for demo
         add_subdirectory(external/kokkos)
-        
-        # pass Kokkos include directories to our target application
-        include_directories(${Kokkos_INCLUDE_DIRS_RET})
-        
+
         # build the user sources
-        add_subdirectory(src)
+        add_executable(my_exe PRIVATE main.cpp)
+        target_link_library(my_exe PRIVATE Kokkos::kokkos)
       \end{minted}
       }
   \end{itemize}
-  
+
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos - cmake integration (2)}
 
@@ -65,8 +64,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos - cmake integration (3)}
 
@@ -81,9 +80,9 @@
   \end{itemize}
 
 \end{frame}
-  
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Hands-On 3a}
 
@@ -108,7 +107,7 @@
       make
     \end{minted}
   }
-  % 
+  %
   \begin{itemize}
   \item \textcolor{blue}{Build the sample application (saxpy)}: repeat as above to setup the Kokkos CUDA target (for arch Kepler37)
   \end{itemize}
@@ -128,4 +127,3 @@
   \end{itemize}
 
 \end{frame}
-

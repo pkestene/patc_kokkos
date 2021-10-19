@@ -1,11 +1,11 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos Concepts (1) - the abstract machine model}
 
   \begin{itemize}
-  \item Kokkos defines an abstract machine model for future large shared-memory nodes made of 
+  \item Kokkos defines an abstract machine model for future large shared-memory nodes made of
     \begin{itemize}
     \item \textcolor{blue}{\textbf{latency-oriented cores}} (contemporary CPU core)
     \item \textcolor{orange}{\textbf{throughput-oriented cores}} (GPU, ...)
@@ -16,60 +16,60 @@
     \begin{figure}
       \includegraphics[width=5cm]{images/kokkos_machine_model}
       \caption{Conceptual model of a current/future \textcolor{darkgreen}{\bf HPC node}. (Kokkos User's Guide).}
-      \end{figure}
+    \end{figure}
   \end{center}
 
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos Concepts (2) - What is a device ?}
 
   \begin{itemize}
   \item Kokkos defines several {\bf c++ class} for representing a \textcolor{red}{device} in \texttt{core/src}, e.g.
     \begin{itemize}
-    \item Kokkos::Cuda, Kokkos::OpenMP, Kokkos::Pthreads, Kokkos::Serial
+    \item {\tt Kokkos::Cuda}, {\tt Kokkos::HIP}, {\tt Kokkos::SYCL}, {\tt Kokkos::OpenMPTarget} {\tt Kokkos::OpenMP}, {\tt Kokkos::Threads}, {\tt Kokkos::Serial}
     \item \textcolor{red}{\bf device = execution space + memory space}
     \end{itemize}
   \item Each \textit{Kokkos device} pre-defines some types
-  \item Example \textcolor{red}{\textbf{Kokkos device}} (not required for a user, only Kokkos developper), e.g.\\
+  \item Example \textcolor{red}{\textbf{Kokkos exec space}} (not required for a user, only Kokkos developper), e.g.\\
     {\tiny
       \begin{minted}{c++}
         class Cuda {
           public:
           // Tag this class as a kokkos execution space
-          typedef Cuda                  execution_space ;
-          
+          using execution_space = Cuda;
+
           #if defined( KOKKOS_USE_CUDA_UVM )
           // This execution space's preferred memory space.
-          typedef CudaUVMSpace          memory_space ;
+          using memory_space = CudaUVMSpace;
           #else
           // This execution space's preferred memory space.
-          typedef CudaSpace             memory_space ;
+          using memory_space = CudaSpace;
           #endif
-          
+
           // This execution space preferred device_type
-          typedef Kokkos::Device<execution_space,memory_space> device_type;
-          
+          using device_type = Kokkos::Device<execution_space,memory_space>;
+
           // The size_type best suited for this execution space.
-          typedef memory_space::size_type  size_type ;
-          
+          using size_type = memory_space::size_type;
+
           // This execution space's preferred array layout.
-          typedef LayoutLeft            array_layout ;
+          using array_layout = LayoutLeft;
           ...
         } // end class Cuda
-        \end{minted}
-      }
+      \end{minted}
+    }
   \end{itemize}
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos Concepts (3) - execution space, memory space}
 
@@ -85,9 +85,10 @@
     \begin{itemize}
     \item Execution policy: used to modify a parallel thread dispatch
     \end{itemize}
-  \item \textcolor{red}{Multiple execution / memory space} can be used in a single application\\
+  \item \textcolor{red}{\bf Multiple execution / memory space} can be used in a single application\\
     See for example in Kokkos sources \texttt{example/tutorial/Advanced\_View/07\_Overlapping\_DeepCopy}\\
-    Though, take care that currently, Cuda stream are not completely mapped into Kokkos API; meanwhile Cuda streams can be used directly (but looses some portability);~\footnote{\myhref{https://github.com/kokkos/kokkos/issues/1723}{kokkos/issues/1723}} 
+    Cuda stream can be used Kokkos; they must be created before {\tt Kokkos::Cuda} exec space
+%meanwhile Cuda streams can be used directly (but looses some portability);~\footnote{\myhref{https://github.com/kokkos/kokkos/issues/1723}{kokkos/issues/1723}}
   \end{itemize}
 
 \end{frame}

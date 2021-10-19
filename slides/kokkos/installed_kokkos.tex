@@ -1,5 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Using an installed Kokkos (deprecated)}
 
@@ -15,20 +15,20 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Using an installed Kokkos (2)}
 
   \begin{itemize}
   \item A simple modulefiles for Kokkos should at minimum set variable \textcolor{blue}{\texttt{KOKKOS\_PATH}} pointing to the installed directory (the one which contains \textcolor{blue}{\texttt{Makefile.kokkos}}
-  \item {\bf How to use Kokkos modulefiles on \textcolor{blue}{your own machine} ?} Just use the following: 
+  \item {\bf How to use Kokkos modulefiles on \textcolor{blue}{your own machine} ?} Just use the following:
     {\small
       \begin{minted}{bash}
         # Assuming you placed the module file in
         # /somewhere_on_your_machince/modulefiles
         module use /somewhere_on_your_machince/modulefiles
-        
+
         # e.g. load Kokkos for GPU
         module load kokkos/cuda80_gnu485_dev_k80
       \end{minted}

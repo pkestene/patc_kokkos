@@ -83,7 +83,7 @@
 \newcommand{\reddanger}{\textcolor{red}{\danger}}
 
 
-% the following is from 
+% the following is from
 % http://tex.stackexchange.com/questions/4811/make-first-row-of-table-all-bold
 %\usepackage{array}
 %\newcolumntype{$}{>{\global\let\currentrowstyle\relax}}
@@ -100,7 +100,7 @@
 
 %%%%%%%%%%%%%%%%%%%
 \hypersetup{%
-  pdftitle={CAF-LOOPS-2021},%
+  pdftitle={CAF-CALCUL-2021},%
   pdfauthor={Pierre Kestener - CEA Saclay - IRFU/LILAS},
   pdfsubject={Introduction to Kokkos},
   pdfkeywords={KOKKOS, C++, GPU},
@@ -126,7 +126,7 @@
   \myhref{http://www.cea.fr/}{CEA Saclay}, \myhref{http://www.cea.fr/drf/Pages/Accueil.aspx}{DRF}, \myhref{https://irfu.cea.fr/Phocea/Vie_des_labos/Ast/ast_service.php?id_unit=5}{IRFU/DEDIP/LILAS}
 }
 
-\date{Café LOOPS - 22 octobre 2021}
+\date{Café CALCUL - 22 octobre 2021}
 
 %\pgfdeclareimage[height=0.5cm]{university-logo}{./images/Sigle-mdls}
 \pgfdeclareimage[height=0.7cm]{university-logo}{./images/cea2}
@@ -189,6 +189,8 @@
   \titlepage
 \end{frame}
 
+\input{cafe_calcul_plan}
+
 \section{Introduction - Kokkos concepts}
 
 %\input{introduction}
@@ -205,7 +207,7 @@
 \input{build_kokkos}
 
 % device query
-\input{hands_on_1}
+%\input{hands_on_1}
 
 \section{Kokkos - data containers and threads dispatch}
 \input{kokkos_containers}
@@ -213,7 +215,7 @@
 \input{kokkos_thread_dispatch}
 
 % saxpy
-\input{hands_on_2}
+%\input{hands_on_2}
 
 \section{Examples}
 
@@ -222,11 +224,11 @@
 
 \section*{Additionnal Kokkos material}
 
-\subsection{Use an installed version of Kokkos}
-\input{installed_kokkos}
+%\subsection{Use an installed version of Kokkos}
+%\input{installed_kokkos}
 
-\subsection{Use Kokkos from Trilinos}
-\input{trilinos}
+%\subsection{Use Kokkos from Trilinos}
+%\input{trilinos}
 
 \subsection{Custom monitoring / intrumenting / profiling}
 \input{kokkos_profiling_interface}

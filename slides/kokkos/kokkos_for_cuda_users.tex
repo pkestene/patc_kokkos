@@ -1,16 +1,16 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos for Cuda users}
 
   From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
-  
+
   \begin{enumerate}
     % explain from core/src/Kokkos_Parallel.hpp
     % explain from core/src/Cuda/Kokkos_Cuda_Parallel.hpp
   \item entry point of parallel computation is through \texttt{parallel\_for} (function call, templated by execution policy, functor, ...)
     \begin{minted}[autogobble=true]{c++}
-      // parallel_for is defined in 
+      // parallel_for is defined in
       // core/src/Kokkos_Parallel.hpp : line 200
       template< class FunctorType >
       inline
@@ -20,7 +20,7 @@
                        )
       {
         // ...
-        Impl::ParallelFor< FunctorType , policy > 
+        Impl::ParallelFor< FunctorType , policy >
         closure( functor , policy(0,work_count) );
         // ...
       }
@@ -29,13 +29,13 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos for Cuda users}
 
   %From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
-  
+
   \begin{enumerate}
     \setcounter{enumi}{1}
   \item \texttt{closure} is an instance of the {\bf driver} class \texttt{Kokkos::Impl::ParallelFor}; the precise object type created is off course Kokkos-backend dependent
@@ -53,7 +53,7 @@
           // this is where for a given iteration id, the functor is called
           // kind of generic cuda kernel work definition
           inline   __device__  void operator()(void) const { ... };
-          
+
           // this is where the actual CUDA kernel run time config
           // is setup : block and grid dimension
           // then create a CudaParallelLaunch object
@@ -66,20 +66,20 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos for Cuda users}
 
   %From a pure software engineering point of view, how does {\bf Kokkos} manage to turn \textcolor{red}{\bf a pur C++ functor} into a \textcolor{darkgreen}{\bf CUDA kernel} ?
-  
+
   \begin{enumerate}
     \setcounter{enumi}{3}
   \item when \texttt{closure.execute()} is called, an object \texttt{CudaParallellaunch} is created
   \item struct \texttt{CudaParallellaunch} contains only a constructor, which only purpose is to actually launch the CUDA kernel (using the $<<<$ ... $>>>$ syntax)
   \item Copy closure (driver instance) to GPU memory (either constant, local or global) using Cuda API (e.g \texttt{cudaMemcpyToSymbolAsync} to copy constant memory space)
   \item finally the actual generated cuda kernel, using one of the static functions defined (e.g. \texttt{cuda\_parallel\_launch\_constant\_memory})
-    % see Kokkos_Cuda_KernelLaunch.hpp  
+    % see Kokkos_Cuda_KernelLaunch.hpp
   \end{enumerate}
 
 \end{frame}
