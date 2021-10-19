@@ -1,5 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (1)}
 
@@ -20,8 +20,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
   \frametitle{Kokkos compute Kernels - parallel dispatch (2)}
 
@@ -36,7 +36,7 @@
         Kokkos::parallel_for (100, KOKKOS_LAMBDA (const int i) {
           data(i) = 2*i;
         });
-        
+
         // is equivalent to the following serial code
         for(int i = 0; i<100; ++i) {
           data[i] = 2*i;
@@ -61,8 +61,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (3)}
 
@@ -75,7 +75,7 @@
         public:
         // constructor : pass data
         FunctorType(Kokkos::View<...> data);
-        
+
         KOKKOS_INLINE_FUNCTION
         void operator() ( const int i ) const
         { data(i) = 2*i; };
@@ -92,8 +92,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (4)}
 
@@ -113,8 +113,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (5)}
 
@@ -133,8 +133,8 @@
   \end{enumerate}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (6)}
 
@@ -161,11 +161,11 @@
          - how the different intermediate results are {\it joined}
        \end{itemize}
   }
-  
+
 \end{frame}
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (7)}
 
@@ -181,15 +181,15 @@
       class ReduceFunctor {
         public:
         // declare a constructor ...
-        KOKKOS_INLINE_FUNCTION void 
+        KOKKOS_INLINE_FUNCTION void
         operator() (const int i, data_t &update) const {...}
 
         // How to join/combine intermediate reduce from different threads
-        KOKKOS_INLINE_FUNCTION void 
+        KOKKOS_INLINE_FUNCTION void
         join(volatile data_t &dst, const volatile data_t &src) const {...}
 
         // how each thread initializes its reduce result
-        KOKKOS_INLINE_FUNCTION void 
+        KOKKOS_INLINE_FUNCTION void
         init(const volatile data_t &dst) const {...}
       }
       \end{minted}
@@ -197,11 +197,11 @@
     }
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (8)}
-  
+
   {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
 
   \begin{itemize}
@@ -216,7 +216,7 @@
       using namespace Kokkos::Experimental;
       using range_type = MDRangePolicy< Rank<2>, Kokkos::IndexType<int> >;
       range_type range( {0,0}, {N0,N1} );
-      
+
       // use a special multidimensional parallel for launcher
       md_parallel_for(range, functor);
     \end{minted}
@@ -224,11 +224,11 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (9)}
-  
+
   {\Large \textcolor{violet}{\textbf{Parallel dispatch - execution policy}}}
 
   \begin{itemize}
@@ -238,7 +238,7 @@
     \item threads inside a team %$\Longleftrightarrow$ thread (in CUDA)
     \item vector lanes
     \end{itemize}
-  \item 
+  \item
     {\small
       \begin{minted}{c++}
         // Using default execution space and launching
@@ -258,9 +258,9 @@
     team\_member is a structure (aliased to \texttt{Kokkos::TeamPolicy<>::member\_type})
   \end{itemize}
 \end{frame}
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (10)}
 
@@ -278,13 +278,13 @@
   \item Can I synchronize threads ?\\
     Yes, but only threads inside a team (same semantics as in CUDA with \texttt{\_\_syncthreads();})\\
     $\Rightarrow$ \texttt{team\_barrier()}
-    
+
   \end{itemize}
-  
+
 \end{frame}
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (11)}
 
@@ -306,11 +306,11 @@
     // threadIdx and blocIdx
     int index = threadIdx.x + blockIdx.x * blockDim.x;
   \end{minted}
-  
+
 \end{frame}
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (12)}
 
@@ -318,12 +318,12 @@
 
   \begin{minted}{c++}
     // within a parallel functor with team policy
-    // you can call another parallel_for / reduce / ... 
+    // you can call another parallel_for / reduce / ...
     KOKKOS_INLINE_FUNCTION
     void operator() ( const team_member & thread) {
       // do something (all threads of all teams participate)
       do_something();
-      
+
       // then parallelize a loop over all threads of a team
       // each team is executing a loop of 200 iterations
       // the 200 iterations are splitted over the thread of current team
@@ -334,14 +334,14 @@
       });
     }
   \end{minted}
-  
+
 \end{frame}
-  
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - parallel dispatch (13)}
-  
+
   {\Large \textcolor{violet}{\textbf{Hierarchical parallelism (advanced)}}}
 
   \begin{itemize}
@@ -355,14 +355,14 @@
 using 2D Partitioned-Block Layout
     \end{itemize}
   \end{itemize}
-  
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos compute Kernels - Advanced items}
-  
+
   {\Large \textcolor{violet}{\textbf{SIMD / Vectorization}}}
 
   The following reference give details / best practices to obtain carefully written kernels for portable SIMD vectorization:\\
@@ -378,6 +378,6 @@ using 2D Partitioned-Block Layout
     This is usefull for SIMD, auto vectorization, it helps the compiler understand we are accessing
     memory with a stride 1 (assuming layout right, which the default for OpenMP device).
   \end{itemize}
-  
-  
+
+
 \end{frame}

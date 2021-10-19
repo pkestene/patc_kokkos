@@ -7,16 +7,18 @@
   \begin{itemize}
   \item Kokkos defines an abstract machine model for future large shared-memory nodes made of
     \begin{itemize}
-    \item \textcolor{blue}{\textbf{latency-oriented cores}} (contemporary CPU core)
-    \item \textcolor{orange}{\textbf{throughput-oriented cores}} (GPU, ...)
+    \item \textcolor{blue}{\bf latency-oriented cores} (multicore CPU)
+    \item \textcolor{orange}{\bf throughput-oriented cores} (GPU, ...)
     \end{itemize}
   \end{itemize}
 
   \begin{center}
     \begin{figure}
-      \includegraphics[width=5cm]{images/kokkos_machine_model}
-      \caption{Conceptual model of a current/future \textcolor{darkgreen}{\bf HPC node}. (Kokkos User's Guide).}
+      \includegraphics[width=4.5cm]{images/kokkos_machine_model}
+      \includegraphics[width=5.5cm]{images/kokkos_simd}
+      \caption{(left) Conceptual model of a current/future \textcolor{darkgreen}{\bf HPC node}. (Kokkos User's Guide).\\ (right) Concept mapping to hardware.}
     \end{figure}
+    reference : \myhref{https://www.osti.gov/servlets/purl/1643357}{A portable SIMD primitive in Kokkos for heterogeneous architectures}
   \end{center}
 
 \end{frame}
