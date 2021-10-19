@@ -1,0 +1,333 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}
+%   \frametitle{Main difference between CPU and GPU}
+
+%   \begin{center}
+%     \textbf{\textcolor{blue}{Architecture design differences between manycore GPUs and general purpose multicore CPU ?}}
+    
+%     \only<1-4>{\includegraphics[height=3.5cm]{images/cpu_gpu_comparison}}
+
+%   \end{center}
+
+% \begin{itemize}
+
+%   \only<1>{
+%   \item \textbf{Different goals produce different designs:}
+%     \begin{itemize}
+%     \item \textcolor{red}{\textbf{CPU}}  must be good at everything, parallel or not
+%     \item \textcolor{blue}{\textbf{GPU}} assumes work load is highly parallel
+%     \end{itemize}
+%   }
+%   \only<2>{
+%   \item \textcolor{red}{\textbf{CPU}} design goal : optimize architecture for sequential code
+%     performance : \textcolor{red}{minimize latency experienced by \textbf{1 thread}}
+%     % latence = nb de cycle d'horloge pour acheminer des donnees de la memoire centrale jusqu'au coeur de calcul (ALU)
+%     % donner l'illusion d'une memoire tres rapide
+%     % exploiter la localite spatiale et temporelle de la memoire
+%     % s'il n'y avait pas de cache, les coeurs de proc serait sans arret en "stall"
+%     % voir l'article: http://dl.acm.org/citation.cfm?id=2692965.2682585
+%     % Rethinking caches for throughput processors: technical perspective
+%     % by Stephen W. Keckler
+
+%     \begin{itemize}
+%     \item \textcolor{red}{sophisticated} (i.e. large chip area) \textcolor{red}{control logic} for instruction-level parallelism
+%       (branch prediction, out-of-order instruction, etc...)
+%     \item \textcolor{red}{CPU have large cache memory} to reduce the instruction and
+%       data access latency
+%     \end{itemize}
+%   }
+
+%   \only<3>{
+%   \item \textcolor{blue}{\textbf{GPU}} design goal : \textcolor{blue}{maximize throughput of \textbf{all threads}}
+%     \begin{itemize}
+%     \item \# threads in flight limited by resources => lots of
+%       resources (registers, bandwidth, etc.)
+%     \item  multithreading can \textcolor{blue}{hide latency} => skip the big caches
+%     \item \textcolor{blue}{share control logic} across many threads
+%     \end{itemize}
+%   }
+%   \only<4>{
+%   \item \textcolor{red}{\bf CPU} : {\bf 1 thread $\Leftrightarrow$ 1 core}
+%     \hspace{0.2\textwidth}\textcolor{blue}{\bf GPU}: {\bf \# threads $\gg$ \# cores}
+%   }
+% \end{itemize}
+
+% %\only<4>{
+% %\item \textcolor{red}{\bf CPU} : {\bf 1 thread $\Leftrightarrow$ 1 core}
+% %\item \textcolor{blue}{\bf GPU}: {\bf \# threads $\gg$ \# cores}
+
+%   % \begin{colums}
+%   %   \begin{colum}{0.48\textwidth}
+%   %     \textcolor{red}{\bf CPU} : {\bf 1 thread $\Leftrightarrow$ 1 core}
+%   %   \end{colum}
+%   %   \begin{colum}{0.48\textwidth}
+%   %     \textcolor{blue}{\bf GPU}: {\bf \# threads $\gg$ \# cores}
+%   %   \end{colum}
+%   % \end{colums}
+% %}
+  
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}
+%   \frametitle{Kokkos portability: leveraging hardware specific features}
+
+%   \begin{center}
+%     \textcolor{violet}{\Large Memory layouts / index linearization: e.g. 2D}
+%   \end{center}
+
+%   \begin{columns}
+%     \begin{column}{0.5\textwidth}
+%       \begin{center}
+%         \textcolor{red}{\large row-major}
+
+%         \includegraphics[width=5cm]{tikz/row-major}
+
+%         $\text{index} = i + n_x j$,\\
+%         \textcolor{red}{left layout}\\
+%         fast index on the left
+%       \end{center}
+%     \end{column}
+%     %
+%     \begin{column}{0.5\textwidth}
+%       \begin{center}
+%         \textcolor{blue}{\large column-major}
+
+%         \includegraphics[width=5cm]{tikz/col-major}
+
+%         $\text{index} = j + n_y i$,\\
+%         \textcolor{blue}{right layout}\\
+%         fast index on the right
+%       \end{center}
+%     \end{column}
+%   \end{columns}
+
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  %\frametitle{Kokkos portability: leveraging hardware specific features}
+  \frametitle{Illustrating portability with Kokkos}
+
+  % \begin{block}{}
+  %   {\large \textcolor{Red}{\bf Question:}
+  %   Assuming 2d data, \textcolor{red}{left layout}, which loop would you prefer to parallelize (inner or outer) ?}
+  % \end{block}
+
+  \begin{center}
+    \begin{minipage}{0.5\textwidth}
+      \begin{minted}[autogobble=true]{c++}
+    for(int j=0; j<ny; ++j)
+      for(int i=0; i<nx; ++i)
+        data[i+nx*j] += 42;
+      \end{minted}
+    \end{minipage}
+  \end{center}
+
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{}
+        { \small
+          \textcolor{Red}{\bf Question:}
+          Assuming 2d data with \textcolor{red}{left layout}, but only 1 loop to parallelize, which one would you prefer to parallelize (inner or outer) ?}
+      \end{block}
+
+      \begin{center}
+        \textcolor{red}{left-layout $=$ row-major}
+
+        \includegraphics[width=5cm]{tikz/row-major}
+
+        %$\text{index} = i + n_x j$,\\
+        %\textcolor{red}{left layout}\\
+        %fast index on the left
+      \end{center}
+    \end{column}
+    %\hspace{-1.5cm}
+    \begin{column}{0.49\textwidth}
+\begin{block}{}
+  \textcolor{blue}{\bf Answer:}\\
+  {\bf Optimize memory access pattern !}
+\end{block}
+{
+  \scriptsize
+  \begin{itemize}
+  \item \textcolor{violet}{maximize cache usage + SIMD for CPU}
+  \item \textcolor{darkgreen}{maximize memory coalescence on GPU}
+  \end{itemize}
+}
+\begin{center}
+  \begin{block}{}
+    {\bf Different hardware $\Rightarrow$}\\
+    \textcolor{orange}{\bf Different parallelization strategies}
+  \end{block}
+
+  \includegraphics[width=5cm]{images/perf_portability/cpu_gpu_comparison}
+\end{center}
+\end{column}
+    \hfill
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  %\frametitle{Multidimensional array and data parallelism}
+  \frametitle{Illustrating portability with Kokkos}
+
+  \begin{block}{}
+    {\textcolor{Red}{\bf Question:}
+    Assuming 2d data, \textcolor{red}{left layout}, which loop would you prefer to parallelize (inner or outer) ?}
+  \end{block}
+
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \textcolor{violet}{\bf OpenMP // outer loop}
+        %each OpenMP thread handles {\bf 1 or more row(s)}
+
+        \begin{minipage}{1.0\textwidth}
+      {
+        \scriptsize
+        \begin{minted}[autogobble=true]{c++}
+#pragma omp parallel
+{
+  #pragma omp for
+  for(int j=0; j<ny; ++j)
+     #pragma omp simd ivdep
+    for(int i=0; i<nx; ++i)
+      data[i+nx*j] += 42;
+}
+        \end{minted}
+      }
+      \end{minipage}
+      \end{center}
+
+      \begin{center}
+        %\textcolor{red}{\large row-major}
+
+        \includegraphics[width=3.0cm]{tikz/row-major-openmp}
+
+        %$\text{index} = i + n_x j$,\\
+        %\textcolor{red}{left layout}\\
+        %fast index on the left
+      \end{center}
+    \end{column}
+    %\hspace{-1.0cm}
+    \begin{column}{0.48\textwidth}
+      \begin{center}
+        \textcolor{darkgreen}{\bf CUDA // inner loop}
+        %each CUDA thread handles {\bf1 or more col(s)}\\
+        %memory coalescence
+      \end{center}
+      {\tiny
+        \begin{minted}[autogobble=true]{c++}
+__global__ void compute(int *data)
+{
+  // adjacent memory cells
+  // computed by adjacent threads
+  int i = threadIdx.x + blockIdx.x*blockDim.x;
+
+  for(int j=0; j<ny; ++j)
+    data[i+nx*j] += 42;
+}
+\end{minted}
+}
+      \begin{center}
+        %\textcolor{red}{\large row-major}
+
+        \includegraphics[width=3cm]{tikz/row-major-cuda}
+
+        %$\text{index} = i + n_x j$, \textcolor{red}{left layout}\\
+        %fast index on the left
+      \end{center}
+
+    \end{column}
+    \hfill
+  \end{columns}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile=singleslide]
+%   %\frametitle{Multidimensional array and data parallelism}
+%   \frametitle{Illustrating portability with Kokkos}
+
+%   \begin{block}{Conclusion:}
+%     {\Large Don't assume \textcolor{red}{layout}, let's \textcolor{red}{chose} at compile-time !}
+%   \end{block}
+
+%   \begin{itemize}
+%   \item {\bf First conclusion:}\\
+%     if we keep the same memory layout, \textcolor{violet}{\bf OpenMP} and \textcolor{darkgreen}{\bf CUDA} \textcolor{red}{\bf disagree} on which loop should be parallelized to optimize for their respective hardware target.
+%   \item \textcolor{blue}{\bf How can we make portable code ?}
+%   \item Note that swapping memory layout and {\tt for loops} is {\bf involutive}
+%   %\item instead of swapping loops, swap memory layout
+%   \item \textcolor{orange}{\bf Kokkos answer:} make memory layout abstract (since a good memory layout is hardware dependent), fixed at compile-time\\
+%     access $data(i,j)$
+%     \begin{itemize}
+%     \item On \textcolor{violet}{\bf OpenMP} $data(i,j)$ actually means accessing $dataPtr[Ny*i+j]$
+%     \item On \textcolor{darkgreen}{\bf Cuda} $data(i,j)$ actually means accessing $dataPtr[i+Nx*j]$
+%     \end{itemize}
+%   \end{itemize}
+
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  %\frametitle{Multidimensional array and data parallelism}
+  \frametitle{Illustrating portability with Kokkos}
+
+  \begin{center}
+    {\large Let's \textcolor{red}{chose} memory layout at compile-time\\
+    Make it hardware aware.}
+  \end{center}
+
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \textcolor{black}{\large left layout / CUDA}\\
+        \includegraphics[width=2.8cm]{tikz/row-major-cuda}
+
+        \textcolor{black}{\large right layout / OpenMP}\\
+        \includegraphics[width=2.8cm]{tikz/col-major-kokkos-openmp}
+
+      \end{center}
+    \end{column}
+    %\hspace{-1.5cm}
+    \begin{column}{0.45\textwidth}
+      \begin{center}
+        \textcolor{orange}{\bf Kokkos single parallel version (CUDA+OpenMP)}\\
+        {
+          \scriptsize
+          Kokkos/CUDA defaults to \textcolor{darkgreen}{\bf left-layout}\\
+          Kokkos/OpenMP defaults to \textcolor{violet}{\bf right-layout}
+        }
+      \end{center}
+      \begin{minted}{c++}
+Kokkos::parallel_for(nx,
+   KOKKOS_LAMBDA(int i) {
+     for (int j=0; j<ny; ++j)
+       data(i,j) += 42;
+   }
+);
+      \end{minted}
+    \end{column}
+    \hfill
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}
+%   %\frametitle{Multidimensional array and data parallelism}
+%   \frametitle{Kokkos summary}
+
+%   \begin{center}
+%     \includegraphics<1>[width=0.8\linewidth]{./images/kokkos/kokkos_pattern1}
+%     \includegraphics<2>[width=0.8\linewidth]{./images/kokkos/kokkos_pattern2}
+%   \end{center}
+
+% \end{frame}
