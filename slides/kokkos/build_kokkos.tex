@@ -26,16 +26,18 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
+\begin{frame}[fragile=singleslide]
    \frametitle{How to Build kokkos (2)}
 
    \begin{enumerate}
       \setcounter{enumi}{1}
-   \item \textcolor{violet}{\bf Build/install with cmake:} \\
+   \item \textcolor{violet}{\bf Build/install with cmake:}
       \begin{itemize}
+         \item Note on using vs integrating  {\tt Kokkos} in your own application :\\
+         Don't try to add {\tt Kokkos} source as a git submodule to your project (unless for quick demo ;) $\Rightarrow$ deprecated
          % \item {\bf not recommended} for production level (see below), {\bf OK for testing and building examples}
          % \item use \texttt{generate\_makefile.bash}, then \texttt{make kokkoslib; make install}\\
-      \item Don't try to add {\tt Kokkos} source as a git submodule to your project (unless for quick demo ;) $\Rightarrow$ deprecated
+
          % Kokkos examples (inside source) can be built that way, as well as \myhref{https://github.com/kokkos/kokkos-tutorials}{Kokkos-tutorials}
       \end{itemize}
    \item \textcolor{blue}{\textbf{Build/install Kokkos with spack:}}
@@ -116,22 +118,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-  \frametitle{Kokkos - Documentation}
-
-  \begin{itemize}
-  %\item PDF documentation in kokkos source tree : \texttt{doc/Kokkos\_PG.pdf} (programming guide)
-  %\item \myhref{http://www.stack.nl/~dimitri/doxygen/}{Doxygen} can only be built from inside \myhref{https://github.com/trilinos/Trilinos}{Trilinos source tree}\\
-   % Version of the day can be browsed at \myurl{https://trilinos.org/docs/dev/packages/kokkos/doc/html/index.html}
-  \item \myhref{https://github.com/kokkos/kokkos-tutorials/wiki/Kokkos-Lecture-Series}{Kokkos video lectures + slides}
-  \item \myhref{https://github.com/kokkos/kokkos-tutorials}{Kokkos tutorial}
-  \item Kokkos source code itself, reading unit tests code is also helpful
-  \end{itemize}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos - initialize / finalize}
 
@@ -145,8 +131,7 @@
         int main(int argc, char* argv[]) {
           // default: initialize the host exec space
           // What exactly gets initialized depends on how kokkos
-          // was built, i.e. which options was passed to
-          // generate_makefile.bash
+          // was built, i.e. which options was passed to cmake
           Kokkos::initialize();
           ...
           Kokkos::finalize();
