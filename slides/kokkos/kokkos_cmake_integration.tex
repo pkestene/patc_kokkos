@@ -45,7 +45,7 @@
       \# Intel:    & KNC,KNL,SNB,HSW,BDW,SKX\\
     \# NVIDIA:   & Kepler,Kepler30,Kepler32,Kepler35,\textcolor{red}{\bf Kepler37},Maxwell,\\
       & Maxwell50,Maxwell52,Maxwell53,\textcolor{red}{\bf Pascal60},Pascal61,\\
-      & Volta70,Volta72,Turing75\\
+      & Volta70,Volta72,Turing75,Ampere80\\
     \# ARM:      &ARMv80,ARMv81,ARMv8-ThunderX,ARMv8-TX2\\
     \# IBM:      &BGQ,Power7,\textcolor{red}{\bf Power8},Power9\\
     \# AMD-GPUS: &Kaveri,Carrizo,Fiji,Vega\\
@@ -84,7 +84,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
-  \frametitle{Hands-On 3a}
+  \frametitle{A template starter project}
 
   {\large \bf Activity: Use the template cmake / kokkos project}
 
@@ -98,7 +98,7 @@
   }
   %
   \begin{itemize}
-  \item \textcolor{blue}{Build the sample application (saxpy)}: use \texttt{ccmake} interface to setup the Kokkos OpenMP target; then try to setup the CUDA target (for arch Kepler37)
+  \item \textcolor{blue}{Build the sample application (saxpy)}: use \texttt{ccmake} interface to setup the Kokkos OpenMP target; then try to setup the CUDA target (for arch Turing75)
   \end{itemize}
   {\small
     \begin{minted}{shell}
@@ -116,7 +116,7 @@
     \begin{minted}{shell}
       # don't forget to set environment variable CXX
       # export CXX="full path to nvcc_wrapper"
-      mkdir build_cuda_kepler37; cd build_openmp; ccmake ..
+      mkdir build_cuda_turing75; cd build_openmp; ccmake ..
       # set KOKKOS_ENABLE_CUDA to ON; set KOKKOS_ARCH
       make
     \end{minted}
