@@ -112,6 +112,37 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  \frametitle{Kokkos (2010), before C++-11 and lambdas}
+
+  \begin{itemize}
+  \item Before 2010, starts as a refactoring of Trilinos (10.4), \textcolor{darkgreen}{abstract concept of {\tt Node}} (generic for SerialNode, TBBNode or CUDANode)\\
+    conf paper: \myhref{https://www.researchgate.net/publication/221392413_A_Light-weight_API_for_Portable_Multicore_Programming}{A light-weight API for portable Multicore Programming}
+    {\small
+    \begin{minted}[autogobble=true]{c++}
+      // data-work struct
+      template <class Node>
+      class AxpyOp {
+        Node::buffer x,y;
+        double alpha,beta;
+        void execute(int i);
+      };
+
+      template <>
+      void SomeNode::parallel_for<AxpyOp>(int begin, int end, AxpyOp wd) {
+        // node specific implementation
+        // if SomeNode == TBB, then call TBB API
+        // if SomeNode == CUDA, then call Cuda thrust::for_each
+        // ...
+      }
+    \end{minted}
+  }
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{Kokkos: a programming model for perf. portability}
 
@@ -138,7 +169,7 @@
   }
   \only<2>{
     \begin{itemize}
-    \item \textcolor{darkgreen}{\textbf{Open source}}, \myurl{https://github.com/kokkos/kokkos}, since $\sim 2012$
+    \item \textcolor{darkgreen}{\textbf{Open source}}, \myurl{https://github.com/kokkos/kokkos} %, since $\sim 2012$
     \item Primarily developped as a base building layer for \textbf{generic high-performance parallel linear algebra} in \myhref{https://github.com/trilinos/Trilinos}{Trilinos}
     \item Used in, e.g.:
       \begin{itemize}
