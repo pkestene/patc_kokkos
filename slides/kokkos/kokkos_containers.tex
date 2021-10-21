@@ -1,15 +1,15 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (1)}
-  
+
   {\large \textcolor{blue}{\texttt{Kokkos::View<...>}} is \textbf{multidimensionnal data container} with \textbf{hardware adapted memory layout}}
   \begin{itemize}
   \item \textcolor{blue}{\texttt{Kokkos::View<double **> data("data",NX,NY);}} : 2D array with sizes known at runtime
   \item \textcolor{blue}{\texttt{Kokkos::View<double *[3]> data("data",NX);}} : 2D array with first size known at runtime ($NX$), and second known at compile time (3).
-  \item \fbox{How do I access data ? $data(i,j)$ !} {\it a la Fortran}
+  \item \fbox{How do I access data ? $data(i,j)$ !} {\it à la Fortran}
   \item \textcolor{orange}{\bf Which memory space ?} By default, the default device memory space !\\
-    Want to enforce in which memory space lives the view ? 
+    Want to enforce in which memory space lives the view ?
     \textcolor{blue}{\texttt{Kokkos::View<..., Device>}}: if a second template parameter is given, Kokkos expects a \texttt{Device} (e.g. \texttt{Kokkos::OpenMP}, \texttt{Kokkos::Cuda}, ...)
   \item \texttt{Kokkos::View} are \textbf{small}, designed as reference to allocated memory buffer
     \begin{itemize}
@@ -21,8 +21,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (2)}
 
@@ -41,8 +41,8 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile=singleslide]
   \frametitle{Kokkos data Container (3)}
 
@@ -69,117 +69,118 @@
   \end{itemize}
 
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (4)}
 
-  \begin{itemize}
-  \item A verbose \textcolor{black}{\textbf{Kokkos::View}} declaration example of a 1D array of doubles:\\
-    %\begin{minted}{c++}
-    \textcolor{black}{\texttt{Kokkos::View}}<\textcolor{red}{double*},\textcolor{darkgreen}{Kokkos::LayoutLeft},\textcolor{magenta}{Kokkos::CudaSpace}> a;
-    %\end{minted}
-    \begin{itemize}
-    \item \textcolor{red}{\textbf{What ?}} a data type
-    \item \textcolor{darkgreen}{\textbf{How ?}} a memory layout
-    \item \textcolor{magenta}{\textbf{Where ?}} a memory space
-    \item the last two template parameters are optionnal (have default values)
-    \item There is actually a 4th template parameter for Memory traits (e.g. atomic access)
-    \end{itemize}
-  \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
-    see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
-  \item \textcolor{blue}{\texttt{Kokkos::UnorderedMap<...>}}
-  \item Can also define \textbf{subview (array slicing, no deep copy)}. See exercice about Mandelbrot set.
-  \end{itemize}
-  
-\end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile=singleslide]
+%   \frametitle{Kokkos data Container (4)}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (5)}
+%   \begin{itemize}
+%   \item A verbose \textcolor{black}{\textbf{Kokkos::View}} declaration example of a 1D array of doubles:\\
+%     %\begin{minted}{c++}
+%     \textcolor{black}{\texttt{Kokkos::View}}<\textcolor{red}{double*},\textcolor{darkgreen}{Kokkos::LayoutLeft},\textcolor{magenta}{Kokkos::CudaSpace}> a;
+%     %\end{minted}
+%     \begin{itemize}
+%     \item \textcolor{red}{\textbf{What ?}} a data type
+%     \item \textcolor{darkgreen}{\textbf{How ?}} a memory layout
+%     \item \textcolor{magenta}{\textbf{Where ?}} a memory space
+%     \item the last two template parameters are optionnal (have default values)
+%     \item There is actually a 4th template parameter for Memory traits (e.g. atomic access)
+%     \end{itemize}
+%   \item \textcolor{blue}{\texttt{Kokkos::DualView<...>}} : usefull when porting an application incrementally, adata container on two different memory space.\\
+%     see \texttt{tutorial/Advanced\_Views/04\_dualviews/dual\_view.cpp}
+%   \item \textcolor{blue}{\texttt{Kokkos::UnorderedMap<...>}}
+%   \item Can also define \textbf{subview (array slicing, no deep copy)}. See exercice about Mandelbrot set.
+%   \end{itemize}
 
-  \begin{itemize}
-  \item \textcolor{red}{\textbf{What types of data may a View contain ?}}\\
-    C++ \myhref{http://en.cppreference.com/w/cpp/concept/PODType}{Plain Old Data} (POD), i.e. basically compatible with C language:
-    \begin{itemize}
-    \item Can be allocated with \texttt{std::malloc}
-    \item Can be copied with \texttt{std::memmove}
-    \end{itemize}
-  \item POD in C++11: 
-    \begin{itemize}
-    \item a trivial type (no virtual member functions, no virtual base class)
-    \item a standard layout type
-    \end{itemize}
-  \item C++11: How to check if a given class \texttt{A} is POD ?
-  \end{itemize}
-  \begin{minted}{c++}
-    #include <type_traits>
-    
-    class A { ... }
-    std::cout << "is class A POD ? " << std::is_pod<A>::value << "\n";
-  \end{minted}
-  
-\end{frame}
+% \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (6)}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile=singleslide]
+%   \frametitle{Kokkos data Container (5)}
 
-  {\Large \bf Other interesting types}
-  \begin{itemize}
-  \item static size \texttt{Kokkos::Array} (equivalent to \texttt{std::array})
-  \item can be used inside a Kokkos kernel
-  \item example
-    \begin{minted}{c++}
-      using vec = Kokkos::Array<double,3>;
-    \end{minted}
-  \end{itemize}
+%   \begin{itemize}
+%   \item \textcolor{red}{\textbf{What types of data may a View contain ?}}\\
+%     C++ \myhref{http://en.cppreference.com/w/cpp/concept/PODType}{Plain Old Data} (POD), i.e. basically compatible with C language:
+%     \begin{itemize}
+%     \item Can be allocated with \texttt{std::malloc}
+%     \item Can be copied with \texttt{std::memmove}
+%     \end{itemize}
+%   \item POD in C++11:
+%     \begin{itemize}
+%     \item a trivial type (no virtual member functions, no virtual base class)
+%     \item a standard layout type
+%     \end{itemize}
+%   \item C++11: How to check if a given class \texttt{A} is POD ?
+%   \end{itemize}
+%   \begin{minted}{c++}
+%     #include <type_traits>
 
-  {\Large \bf Interoperability with a legacy C++ API} (pointer based)
+%     class A { ... }
+%     std::cout << "is class A POD ? " << std::is_pod<A>::value << "\n";
+%   \end{minted}
 
-  \begin{itemize}
-  \item \texttt{void legacyFunction(int * data, int size);}\\
-    how to retrieve a raw pointer from a \texttt{Kokkos::View<int *> data}:\\
-    \texttt{int *raw\_ptr = data.ptr\_on\_device()} \\
-    This is not recommended. Only if you must (e.g. pass data to CuBLAS, ...).\\
-    No more reference counting. Kokkos::View's are reference-counted
-  \end{itemize}
+% \end{frame}
 
-\end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile=singleslide]
+%   \frametitle{Kokkos data Container (6)}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-\begin{frame}[fragile=singleslide]
-  \frametitle{Kokkos data Container (7)}
+%   {\Large \bf Other interesting types}
+%   \begin{itemize}
+%   \item static size \texttt{Kokkos::Array} (equivalent to \texttt{std::array})
+%   \item can be used inside a Kokkos kernel
+%   \item example
+%     \begin{minted}{c++}
+%       using vec = Kokkos::Array<double,3>;
+%     \end{minted}
+%   \end{itemize}
 
-  {\Large \bf Incrementally porting a code to Kokkos}
+%   {\Large \bf Interoperability with a legacy C++ API} (pointer based)
 
-  \begin{itemize}
-  \item Use \textcolor{red}{\bf unmanaged Kokkos::Views}, before using \textcolor{darkgreen}{\bf regular Kokkos::Views}
-  \item Unmanaged view are not reference counted
-  \end{itemize}
+%   \begin{itemize}
+%   \item \texttt{void legacyFunction(int * data, int size);}\\
+%     how to retrieve a raw pointer from a \texttt{Kokkos::View<int *> data}:\\
+%     \texttt{int *raw\_ptr = data.ptr\_on\_device()} \\
+%     This is not recommended. Only if you must (e.g. pass data to CuBLAS, ...).\\
+%     No more reference counting. Kokkos::View's are reference-counted
+%   \end{itemize}
 
-  { \scriptsize
-    \begin{minted}{c++}
-      // legacy code allocate memory this way ...
-      const size_t N0 = ...;
-      double* x_raw = malloc (N0 * sizeof (double));
-      {
-        // ... but you want to access it with Kokkos.
-        //
-        // malloc() returns host memory, so we use the host memory space HostSpace.  
-        // Unmanaged Views have no label because labels work with the reference counting system.
-        Kokkos::View<double*, Kokkos::HostSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged> >
-        x_view (x_raw, N0);
-        
-        functionThatTakesKokkosView (x_view);
-        
-        // It's safest for unmanaged Views to fall out of scope before freeing their memory.
-      }
-      free (x_raw);
-    \end{minted}
-    }
-  
-\end{frame}
+% \end{frame}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{frame}[fragile=singleslide]
+%   \frametitle{Kokkos data Container (7)}
+
+%   {\Large \bf Incrementally porting a code to Kokkos}
+
+%   \begin{itemize}
+%   \item Use \textcolor{red}{\bf unmanaged Kokkos::Views}, before using \textcolor{darkgreen}{\bf regular Kokkos::Views}
+%   \item Unmanaged view are not reference counted
+%   \end{itemize}
+
+%   { \scriptsize
+%     \begin{minted}{c++}
+%       // legacy code allocate memory this way ...
+%       const size_t N0 = ...;
+%       double* x_raw = malloc (N0 * sizeof (double));
+%       {
+%         // ... but you want to access it with Kokkos.
+%         //
+%         // malloc() returns host memory, so we use the host memory space HostSpace.
+%         // Unmanaged Views have no label because labels work with the reference counting system.
+%         Kokkos::View<double*, Kokkos::HostSpace, Kokkos::MemoryTraits<Kokkos::Unmanaged> >
+%         x_view (x_raw, N0);
+
+%         functionThatTakesKokkosView (x_view);
+
+%         // It's safest for unmanaged Views to fall out of scope before freeing their memory.
+%       }
+%       free (x_raw);
+%     \end{minted}
+%     }
+
+% \end{frame}

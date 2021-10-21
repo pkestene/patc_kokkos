@@ -5,7 +5,7 @@
 
   \hypertarget{handson0}{}
   \begin{itemize}
-  \item {\bf Very large combinatorics of compile options !}
+  \item \fbox{\bf Very large combinatorics of compile options / compiler / target architecture !}
   \item {\tt Kokkos} is (used to be) mostly header-only;\\
      examples can be build using a \textcolor{darkgreen}{\bf standalone Makefile} (provided {\tt Kokkos} is cloned in your home directory) or \textcolor{violet}{\bf cmake}.
   \end{itemize}
@@ -132,7 +132,7 @@
           // default: initialize the host exec space
           // What exactly gets initialized depends on how kokkos
           // was built, i.e. which options was passed to cmake
-          Kokkos::initialize();
+          Kokkos::initialize(argc, argv);
           ...
           Kokkos::finalize();
         }
@@ -141,8 +141,10 @@
     %
   \item \textcolor{red}{\textbf{What's happening inside \texttt{Kokkos::initialize}}}
     \begin{itemize}
-    \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} (as specified when kokkos itself was built, by order of {\bf priority}: ROCm > Cuda > OpenMP > Threads > Serial)\\
-      e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
+    \item Defines \textcolor{blue}{\texttt{Default Device / DefaultExecutionSpace Default memory space}} as specified when kokkos itself was built, by order of {\bf priority}:\\
+       \textcolor{blue}{Cuda > HIP > SYCL > OpenMPTarget > OpenMP > Threads > HPX > Serial}\\
+      see header \myhref{https://github.com/kokkos/kokkos/blob/master/core/src/Kokkos_Macros.hpp}{Kokkos\_Macros.hpp}
+       % e.g. if \texttt{\--\--with-cuda} was not pass to \texttt{generate\_makefile.bash}, but \texttt{\--\--with-openmp} was, then \texttt{DefaultExecutionSpace} is OpenMP
     \item You can activate several execution spaces (recommended)
     %\item Defines a \textcolor{blue}{default memory space}
     \item all this information provided at compile time will internally be used inside Kokkos sources as default (hidden) template parameters
@@ -167,9 +169,8 @@
         int main(int argc, char* argv[]) {
           // default: initialize the host exec space
           // What exactly gets initialized depends on how kokkos
-          // was built, i.e. which options was passed to
-          // generate_makefile.bash
-          Kokkos::initialize();
+          // was built, i.e. which options was passed to cmake
+          Kokkos::initialize(argc, argv);
           ...
           Kokkos::finalize();
         }
