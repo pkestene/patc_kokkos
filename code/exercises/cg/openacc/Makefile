@@ -1,8 +1,8 @@
-CC=pgc++
+CC=nvc++
 CFLAGS_ACC=-fast -acc -ta=tesla:managed -Minfo=accel
 CFLAGS_OMP=-fast -mp -ta=host -Minfo
 
-all: 
+all:
 	${CC} ${CFLAGS_ACC} main.cpp -o cg.gpu
 	${CC} ${CFLAGS_OMP} main.cpp -o cg.cpu
 clean:
