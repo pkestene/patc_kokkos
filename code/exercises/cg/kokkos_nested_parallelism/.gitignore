@@ -1,3 +1,5 @@
 *.o
 cg.omp
 cg.cuda
+cg.serial
+KokkosCore_Config_*

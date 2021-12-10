@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <cstdio>
 
+#include <omp.h>
+
 #include "kokkos_shared.h"
 
 #include "vector.h"
@@ -8,19 +10,20 @@
 #include "matrix.h"
 #include "matrix_functions.h"
 
-#define N 100
-#define MAX_ITERS 100
-#define TOL 1e-12
+static const int N=100;
+static const unsigned int MAX_ITERS=100;
+static const double TOL=1e-12;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   Kokkos::initialize(argc, argv);
-  
+
   {
     std::cout << "##########################\n";
     std::cout << "KOKKOS CONFIG             \n";
     std::cout << "##########################\n";
-    
+
     std::ostringstream msg;
     std::cout << "Kokkos configuration" << std::endl;
     if ( Kokkos::hwloc::available() ) {
@@ -30,70 +33,76 @@ int main(int argc, char *argv[]) {
           << "] )"
           << std::endl ;
     }
-#if defined( CUDA )
-    Kokkos::Cuda::print_configuration( msg );
-#else
-    Kokkos::OpenMP::print_configuration( msg );
-#endif
+    Kokkos::print_configuration( msg );
     std::cout << msg.str();
     std::cout << "##########################\n";
   }
-  
-  matrix A(N);
-  vector x(A.num_rows),b(A.num_rows);
-  vector r(A.num_rows),p(A.num_rows),Ap(A.num_rows);
-  
-  double one=1.0, zero=0.0;
-  double normr, rtrans, oldtrans, p_ap_dot , alpha, beta;
-  int iter=0;
 
-  // init matrix
-  A.init();
-  
-  //printf("Rows: %d, nnz: %d\n", A.num_rows, A.row_offsets[A.num_rows]);
-  printf("Rows: %d, nnz: %d\n", A.num_rows, A.nnz);
+  {
+    matrix A(N);
+    vector x(A.num_rows),b(A.num_rows);
+    vector r(A.num_rows),p(A.num_rows),Ap(A.num_rows);
 
-  x.init(100000.0);
-  b.init(1.0);
-  
-  waxpby(one, x, zero, x, p);
-  matvec(A,p,Ap);
-  waxpby(one, b, -one, Ap, r);
-  
-  rtrans = dot(r,r);
-  normr = sqrt(rtrans);
-  
-  double st = omp_get_wtime();
-  do {
-    if(iter==0) {
-      waxpby(one,r,zero,r,p);
-    } else {
-      oldtrans=rtrans;
-      rtrans = dot(r,r);
-      beta = rtrans/oldtrans;
-      waxpby(one,r,beta,p,p);
-    }
-    
-    normr=sqrt(rtrans);
-  
+    double one=1.0, zero=0.0;
+    double normr, rtrans, oldtrans, p_ap_dot , alpha, beta;
+    int iter=0;
+
+    // init matrix
+    A.init();
+
+    //printf("Rows: %d, nnz: %d\n", A.num_rows, A.row_offsets[A.num_rows]);
+    printf("Rows: %d, nnz: %d\n", A.num_rows, A.nnz);
+
+    x.init(100000.0);
+    b.init(1.0);
+
+    waxpby(one, x, zero, x, p);
     matvec(A,p,Ap);
-    p_ap_dot = dot(Ap,p);
+    waxpby(one, b, -one, Ap, r);
 
-    alpha = rtrans/p_ap_dot;
+    rtrans = dot(r,r);
+    normr = sqrt(rtrans);
 
-    waxpby(one,x,alpha,p,x);
-    waxpby(one,r,-alpha,Ap,r);
+    double start_time = omp_get_wtime();
+    do
+    {
+      if(iter==0)
+      {
+        waxpby(one,r,zero,r,p);
+      }
+      else
+      {
+        oldtrans=rtrans;
+        rtrans = dot(r,r);
+        beta = rtrans/oldtrans;
+        waxpby(one,r,beta,p,p);
+      }
 
-    if(iter%10==0)
-      printf("Iteration: %d, Tolerance: %.4e\n", iter, normr);
-    iter++;
-  } while(iter<MAX_ITERS && normr>TOL);
-  double et = omp_get_wtime();
-  
-  printf("Total Iterations: %d\n", iter);
-  printf("Total Time: %lf s\n", (et-st));
-  
+      normr=sqrt(rtrans);
+
+      matvec(A,p,Ap);
+      p_ap_dot = dot(Ap,p);
+
+      alpha = rtrans/p_ap_dot;
+
+      waxpby(one,x,alpha,p,x);
+      waxpby(one,r,-alpha,Ap,r);
+
+      if(iter%10==0)
+        printf("Iteration: %d, Tolerance: %.4e\n", iter, normr);
+      iter++;
+    }
+    while(iter<MAX_ITERS && normr>TOL);
+
+    double end_time = omp_get_wtime();
+
+    printf("Total Iterations: %d\n", iter);
+    printf("Total Time: %lf s\n", (end_time-start_time));
+
+  }
+
   Kokkos::finalize();
-  
-  return 0;
-}
+
+  return EXIT_SUCCESS;
+
+} // main

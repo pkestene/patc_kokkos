@@ -5,18 +5,8 @@
 #include <Kokkos_Parallel.hpp>
 #include <Kokkos_View.hpp>
 
+#include <Kokkos_Macros.hpp> // for KOKKOS_ENABLE_XXX
 
-#ifdef CUDA
-# define DEVICE Kokkos::Cuda
-#include <cuda.h>
-#endif
-
-#ifdef OPENMP
-# define DEVICE Kokkos::OpenMP
-#endif
-
-#ifndef DEVICE
-# define DEVICE Kokkos::OpenMP
-#endif
+using Device = Kokkos::DefaultExecutionSpace;
 
 #endif // KOKKOS_SHARED_H_

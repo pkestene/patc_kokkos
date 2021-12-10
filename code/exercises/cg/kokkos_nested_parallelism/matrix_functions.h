@@ -8,7 +8,7 @@ typedef Kokkos::TeamPolicy<>       team_policy_t;
 typedef team_policy_t::member_type team_member_t ;
 
 class MatvecFunctor {
- 
+
 public:
   MatvecFunctor(matrix A, vector x, vector y):
     A(A), x(x), y(y)
@@ -23,7 +23,7 @@ public:
 
     // get thread's team rank inside league
     const int i = thread.league_rank();
-    
+
     int row_start = A.row_offsets(i);
     int row_end   = A.row_offsets(i+1);
 
@@ -41,7 +41,7 @@ public:
       y.coefs(i) = sum;
 
   }
-  
+
   matrix A;
   vector x,y;
 
@@ -55,12 +55,12 @@ void matvec(matrix A, vector x, vector y) {
 
   // number of threads teams is A.num_rows (the outer loop bound)
   int num_teams = A.num_rows;
-  
+
   // the total number of threads will be
   // num_teams * team_policy_t::team_size_max( functor )
-  team_policy_t policy( num_teams, team_policy_t::team_size_max( functor ) );
+  team_policy_t policy( num_teams, Kokkos::AUTO );
 
   // run the parallel loop
   Kokkos::parallel_for(policy, functor);
-  
+
 } // matvec
