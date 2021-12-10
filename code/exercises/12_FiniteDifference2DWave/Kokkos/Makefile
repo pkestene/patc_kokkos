@@ -1,4 +1,4 @@
-KOKKOS_PATH = ${HOME}/kokkos-tutorial/kokkos
+KOKKOS_PATH = ${HOME}/Kokkos/kokkos
 KOKKOS_DEVICES = "OpenMP"
 EXE_NAME = "finite_difference_2dwave"
 
@@ -21,7 +21,7 @@ endif
 
 CXXFLAGS = -O3 -g
 LINK = ${CXX}
-LINKFLAGS =  
+LINKFLAGS =
 
 DEPFLAGS = -M
 
@@ -35,7 +35,7 @@ build: $(EXE)
 $(EXE): $(OBJ) $(KOKKOS_LINK_DEPENDS)
 	$(LINK) $(KOKKOS_LDFLAGS) $(LINKFLAGS) $(EXTRA_PATH) $(OBJ) $(KOKKOS_LIBS) $(LIB) -o $(EXE)
 
-clean: kokkos-clean 
+clean: kokkos-clean
 	rm -f *.o *.cuda *.host *.csv
 
 # Compilation rules
