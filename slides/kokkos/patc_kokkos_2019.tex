@@ -1,4 +1,5 @@
-\documentclass[9pt,hyperref={pdfpagemode=FullScreen,urlcolor=blue},usenames,xcolor=dvipsnames]{beamer}
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[9pt,hyperref={pdfpagemode=FullScreen,urlcolor=blue}]{beamer}
 
 \mode<presentation>
 {
@@ -46,6 +47,7 @@
 \usepackage{ulem}
 % \usepackage[x11names]{xcolor}
 
+
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
 
 
@@ -83,7 +85,7 @@
 \newcommand{\reddanger}{\textcolor{red}{\danger}}
 
 
-% the following is from 
+% the following is from
 % http://tex.stackexchange.com/questions/4811/make-first-row-of-table-all-bold
 %\usepackage{array}
 %\newcolumntype{$}{>{\global\let\currentrowstyle\relax}}
@@ -149,7 +151,7 @@
 \begin{document}
 
 
-\definecolor{green2}{rgb}{0.1,0.8,0.1} 
+\definecolor{green2}{rgb}{0.1,0.8,0.1}
 \definecolor{trust}{rgb}{0.71,0.14,0.07}
 \definecolor{FancyPurple}{rgb}{0.5176, 0.1137, 0.2314}
 
