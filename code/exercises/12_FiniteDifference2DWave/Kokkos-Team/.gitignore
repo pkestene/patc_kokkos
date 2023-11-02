@@ -9,3 +9,4 @@ KokkosCore_Config_*.hpp
 desul/*
 Desul_Config.tmp
 .gdb_history
+_build/*

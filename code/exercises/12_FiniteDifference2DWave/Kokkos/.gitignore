@@ -8,3 +8,4 @@ KokkosCore_Config_*.tmp
 KokkosCore_Config_*.hpp
 desul/*
 Desul_Config.tmp
+_build/*
