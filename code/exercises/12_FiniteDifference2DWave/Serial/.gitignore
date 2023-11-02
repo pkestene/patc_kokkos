@@ -3,3 +3,4 @@ KokkosCore_config.*
 finite_difference_2dwave.host
 libkokkos.a
 *.csv
+_build/*

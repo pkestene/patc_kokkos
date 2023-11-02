@@ -5,6 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import os
 
 def read_csv(filename):
     data = np.loadtxt(filename, delimiter=',')
@@ -24,11 +25,16 @@ def updatefig(*args):
     index = index+1
 
     filename = prefix+"_{0:03d}.csv".format(index)
+
+    if not os.path.isfile(filename):
+        index = 0
+        filename = prefix+"_{0:03d}.csv".format(index)
+
     data = read_csv(filename)
 
     im.set_array(data)
     return im,
- 
-ani = animation.FuncAnimation(fig, updatefig, interval=50, blit=True)
+
+ani = animation.FuncAnimation(fig, updatefig, interval=50, blit=True, repeat=True)
 
 plt.show()

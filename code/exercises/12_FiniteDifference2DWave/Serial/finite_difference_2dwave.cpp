@@ -1,13 +1,13 @@
 /*
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        Kokkos v. 2.0
 //              Copyright (2014) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Questions? Contact  H. Carter Edwards (hcedwar@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 */
@@ -50,83 +50,92 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <vector>
 #include <array>
 #include <string>
 #include <algorithm>
 #include <chrono>
 
-using std::string;
-using std::vector;
-using std::array;
-using std::chrono::high_resolution_clock;
-using std::chrono::duration;
-using std::chrono::duration_cast;
+using Timer_t = std::chrono::high_resolution_clock;
 
-int main(int argc, char** argv) {
+int
+main(int argc, char ** argv)
+{
 
   // ===============================================================
-  // ********************** < inputs> ******************************
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  // =========================== < inputs> =========================
+  // ===============================================================
 
   // change the numberOfCellsPerSide to control the amount
   //  of work done.
-  unsigned int numberOfCellsPerSide                = 16 * 100;
+  unsigned int numberOfCellsPerSide = 16 * 100;
+
   // the courant number determines how much simulation time is
   //  done by each timestep.  don't use higher than 1.
-  const double courant                             = 1 / std::sqrt(2);
+  const double courant = 1 / std::sqrt(2);
+
   // the number of simulation timesteps
-  unsigned int numberOfTimesteps                   = 100;
+  unsigned int numberOfTimesteps = 100;
+
   // the number of output files, which determines how many simulation
   //  timesteps are performed between file writes.
-  const unsigned int numberOfOutputFiles           = 100;
+  unsigned int       numberOfOutputFiles = 10;
   const unsigned int numberOfRenderingCellsPerSide = 50;
 
   // Read command line arguments
-  for(int i=0; i<argc; i++) {
-           if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "-num_cells") == 0)) {
+  for (int i = 0; i < argc; i++)
+  {
+    if ((strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "-num_cells") == 0))
+    {
       numberOfCellsPerSide = atoi(argv[++i]);
-    } else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "-time_steps") == 0)) {
+    }
+    else if ((strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "-time_steps") == 0))
+    {
       numberOfTimesteps = atof(argv[++i]);
-    } else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "-help") == 0)) {
+    }
+    else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "-num_outputs") == 0))
+    {
+      numberOfOutputFiles = atof(argv[++i]);
+    }
+    else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "-help") == 0))
+    {
       printf("FiniteDifference 2D Wave Options:\n");
-      printf("  -num_cells (-n)  <int>: number of cells per side (default: 1600)\n");
-      printf("  -time_steps (-t) <int>: number of timesteps (default: 100s)\n");
-      printf("  -help (-h):             print this message\n");
+      printf("  -num_cells (-n)   <int>: number of cells per side (default: 1600)\n");
+      printf("  -time_steps (-t)  <int>: number of timesteps (default: 100s)\n");
+      printf("  -num_outputs (-o) <int>: number of output file (default: 10)\n");
+      printf("  -help (-h):              print this message\n");
     }
   }
 
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // ********************** </inputs> ******************************
+  // ===============================================================
+  // =========================== </inputs> =========================
   // ===============================================================
 
   const unsigned int fileWriteTimestepInterval =
-    std::max((unsigned)1,
-             numberOfTimesteps / numberOfOutputFiles);
+    std::max((unsigned)1, numberOfTimesteps / numberOfOutputFiles);
   const unsigned int heartbeatOutputTimestepInterval =
-    std::max((unsigned)1,
-             numberOfTimesteps / 10);
+    std::max((unsigned)1, numberOfTimesteps / 10);
   const double courant2 = courant * courant;
 
   const unsigned int paddedCellsPerSide = numberOfCellsPerSide + 2;
 
   // initialize the data
-  const unsigned int numberOfPaddedCells =
-    paddedCellsPerSide * paddedCellsPerSide;
-  array<double*, 2> u;
+  const unsigned int      numberOfPaddedCells = paddedCellsPerSide * paddedCellsPerSide;
+  std::array<double *, 2> u;
   u[0] = new double[numberOfPaddedCells];
   u[1] = new double[numberOfPaddedCells];
-  const std::array<double, 2> gaussianCenter =
-    {{paddedCellsPerSide / 2., paddedCellsPerSide / 2.}};
-  double maxValue = std::numeric_limits<double>::lowest();
-  for (unsigned int i = 0; i < paddedCellsPerSide; ++i) {
-    for (unsigned int j = 0; j < paddedCellsPerSide; ++j) {
-      const std::array<double, 2> diff =
-        {{(i + 0.5) - gaussianCenter[0], (j + 0.5) - gaussianCenter[1]}};
-      const double r = std::sqrt(diff[0] * diff[0] + diff[1] * diff[1]);
-      const double c = numberOfCellsPerSide / 10;
-      const double b = numberOfCellsPerSide / 10;
-      const double value = std::exp(-1.*(r-b)*(r-b)/(2*c*c));
+  const std::array<double, 2> gaussianCenter = { { paddedCellsPerSide / 2.,
+                                                   paddedCellsPerSide / 2. } };
+  double                      maxValue = std::numeric_limits<double>::lowest();
+  for (unsigned int i = 0; i < paddedCellsPerSide; ++i)
+  {
+    for (unsigned int j = 0; j < paddedCellsPerSide; ++j)
+    {
+      const std::array<double, 2> diff = { { (i + 0.5) - gaussianCenter[0],
+                                             (j + 0.5) - gaussianCenter[1] } };
+      const double                r = std::sqrt(diff[0] * diff[0] + diff[1] * diff[1]);
+      const double                c = numberOfCellsPerSide / 10;
+      const double                b = numberOfCellsPerSide / 10;
+      const double                value = std::exp(-1. * (r - b) * (r - b) / (2 * c * c));
       u[0][i * paddedCellsPerSide + j] = value;
       u[1][i * paddedCellsPerSide + j] = value;
       maxValue = std::max(maxValue, value);
@@ -136,58 +145,69 @@ int main(int argc, char** argv) {
          float(sizeof(double) * paddedCellsPerSide * paddedCellsPerSide * 2),
          maxValue);
 
-  double totalCalculationTime = 0;
-  // for each time step
+  //
+  // Time loop
+  //
+  double       totalCalculationTime = 0;
   unsigned int fileIndex = 0;
-  for (unsigned int timestepIndex = 0;
-       timestepIndex < numberOfTimesteps; ++timestepIndex) {
 
-    if (timestepIndex % heartbeatOutputTimestepInterval == 0) {
+  for (unsigned int timestepIndex = 0; timestepIndex < numberOfTimesteps; ++timestepIndex)
+  {
+
+    if (timestepIndex % heartbeatOutputTimestepInterval == 0)
+    {
       printf("simulation on timestep %4u/%4u (%%%5.1f)\n",
-             timestepIndex, numberOfTimesteps,
+             timestepIndex,
+             numberOfTimesteps,
              100. * timestepIndex / float(numberOfTimesteps));
     }
 
-    const high_resolution_clock::time_point thisTimestepsTic =
-      high_resolution_clock::now();
+    const Timer_t::time_point thisTimestepsTic = Timer_t::now();
 
-    const unsigned int t   = timestepIndex % 2;
+    const unsigned int t = timestepIndex % 2;
     const unsigned int tp1 = (timestepIndex + 1) % 2;
-    for (unsigned int ii = 0; ii < numberOfCellsPerSide; ++ii) {
+    for (unsigned int ii = 0; ii < numberOfCellsPerSide; ++ii)
+    {
       const unsigned int i = ii + 1;
-      for (unsigned int jj = 0; jj < numberOfCellsPerSide; ++jj) {
+      for (unsigned int jj = 0; jj < numberOfCellsPerSide; ++jj)
+      {
         const unsigned int j = jj + 1;
 
         const double utij = u[t][i * paddedCellsPerSide + j];
+
+        // clang-format off
         u[tp1][i * paddedCellsPerSide + j] =
-          (2 - 4 * courant2) * utij
-          - u[tp1][i * paddedCellsPerSide + j]
-          + courant2 * (1*u[t][(i+1) * paddedCellsPerSide +  j   ]
-                        + u[t][(i-1) * paddedCellsPerSide +  j   ]
-                        + u[t][ i    * paddedCellsPerSide + (j+1)]
-                        + u[t][ i    * paddedCellsPerSide + (j-1)]);
+          (2 - 4 * courant2) * utij - u[tp1][i * paddedCellsPerSide + j] +
+          courant2 *
+            (u[t][(i + 1) * paddedCellsPerSide + j      ] +
+             u[t][(i - 1) * paddedCellsPerSide + j      ] +
+             u[t][ i      * paddedCellsPerSide + (j + 1)] +
+             u[t][ i      * paddedCellsPerSide + (j - 1)]);
+        // clang-format on
       }
     }
 
-    const high_resolution_clock::time_point thisTimestepsToc =
-      high_resolution_clock::now();
-    const double thisTimestepsElapsedTime =
-      duration_cast<duration<double> >(thisTimestepsToc - thisTimestepsTic).count();
+    const Timer_t::time_point thisTimestepsToc = Timer_t::now();
+    const double              thisTimestepsElapsedTime =
+      std::chrono::duration_cast<std::chrono::nanoseconds>(thisTimestepsToc - thisTimestepsTic)
+        .count();
     totalCalculationTime += thisTimestepsElapsedTime;
 
-    if (timestepIndex % fileWriteTimestepInterval == 0) {
+    if (timestepIndex % fileWriteTimestepInterval == 0)
+    {
       // write a file
       char sprintfBuffer[500];
       sprintf(sprintfBuffer, "Serial_%03u.csv", fileIndex);
-      const unsigned int t   = timestepIndex % 2;
-      FILE* file = fopen(sprintfBuffer, "w");
+      const unsigned int t = timestepIndex % 2;
+      FILE *             file = fopen(sprintfBuffer, "w");
       const unsigned int interval =
-        std::max((unsigned)1,
-                 paddedCellsPerSide / numberOfRenderingCellsPerSide);
+        std::max((unsigned)1, paddedCellsPerSide / numberOfRenderingCellsPerSide);
       double maxValue = std::numeric_limits<double>::lowest();
-      for (unsigned int i = 0; i < paddedCellsPerSide; i += interval) {
+      for (unsigned int i = 0; i < paddedCellsPerSide; i += interval)
+      {
         fprintf(file, "%4.2f", u[t][i * paddedCellsPerSide + 0]);
-        for (unsigned int j = interval; j < paddedCellsPerSide; j += interval) {
+        for (unsigned int j = interval; j < paddedCellsPerSide; j += interval)
+        {
           const double value = u[t][i * paddedCellsPerSide + j];
           fprintf(file, ", %4.2f", value);
           maxValue = std::max(maxValue, value);
@@ -198,12 +218,11 @@ int main(int argc, char** argv) {
       printf("max value for file %3u is %4.2lf\n", fileIndex, maxValue);
       ++fileIndex;
     }
-
   }
 
   delete[] u[0];
   delete[] u[1];
 
-  printf("total calculation time was %.2lf\n", 1000 * totalCalculationTime);
+  printf("total calculation time was %.2lf seconds\n", 1e-9 * totalCalculationTime);
   return 0;
 }
