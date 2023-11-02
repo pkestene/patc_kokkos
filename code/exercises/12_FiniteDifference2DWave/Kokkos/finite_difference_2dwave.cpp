@@ -1,13 +1,13 @@
 /*
 //@HEADER
 // ************************************************************************
-// 
+//
 //                        Kokkos v. 2.0
 //              Copyright (2014) Sandia Corporation
-// 
+//
 // Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 // the U.S. Government retains certain rights in this software.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
@@ -36,7 +36,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Questions? Contact  H. Carter Edwards (hcedwar@sandia.gov)
-// 
+//
 // ************************************************************************
 //@HEADER
 */
@@ -46,165 +46,169 @@
 // An exercise for getting to know Kokkos.
 // Here we solve the wave equation in 2d with finite difference
 
-// header file containing some uninteresting ickies that are used by
-//  this example.
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <array>
-#include <string>
-#include <algorithm>
-
-using std::string;
-using std::vector;
-using std::array;
+#include <cstdio>    // for printf, sprintf, ...
+#include <cstdlib>   // atoi, atof, ...
+#include <algorithm> // for std::max
+#include <array>     // for std::array
+#include <cstring>   // for strcmp
 
 // header files for kokkos
 #include <Kokkos_Core.hpp>
 
-// header for Kokkos timer
-#include <impl/Kokkos_Timer.hpp>
-
-
-int main(int argc, char** argv) {
+int
+main(int argc, char ** argv)
+{
 
   Kokkos::initialize(argc, argv);
 
-  // ===============================================================
-  // ********************** < inputs> ******************************
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  {
+    // ===============================================================
+    // =========================== < inputs> =========================
+    // ===============================================================
 
-  // change the numberOfCellsPerSide to control the amount
-  //  of work done.
-  unsigned int numberOfCellsPerSide                = 16 * 100;
-  // the courant number determines how much simulation time is
-  //  done by each timestep.  don't use higher than 1.
-  const double courant                             = 1 / std::sqrt(2);
-  // the number of simulation timesteps
-  unsigned int numberOfTimesteps             = 2 * numberOfCellsPerSide;
-  // the number of output files, which determines how many simulation
-  //  timesteps are performed between file writes.
-  const unsigned int numberOfOutputFiles           = 100;
-  const unsigned int numberOfRenderingCellsPerSide = 50;
+    // change the numberOfCellsPerSide to control the amount
+    //  of work done.
+    unsigned int numberOfCellsPerSide = 16 * 100;
 
-  // Read command line arguments
-  for(int i=0; i<argc; i++) {
-           if( (strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "-num_cells") == 0)) {
-      numberOfCellsPerSide = atoi(argv[++i]);
-    } else if( (strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "-time_steps") == 0)) {
-      numberOfTimesteps = atof(argv[++i]);
-    } else if( (strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "-help") == 0)) {
-      printf("FiniteDifference 2D Wave Options:\n");
-      printf("  -num_cells (-n)  <int>: number of cells per side (default: 1600)\n");
-      printf("  -time_steps (-t) <int>: number of timesteps (default: 100s)\n");
-      printf("  -help (-h):             print this message\n");
-    }
-  }
+    // the courant number determines how much simulation time is
+    //  done by each timestep.  don't use higher than 1.
+    const double courant = 1 / std::sqrt(2);
 
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // ********************** </inputs> ******************************
-  // ===============================================================
+    // the number of simulation timesteps
+    unsigned int numberOfTimesteps = 2 * numberOfCellsPerSide;
+    // the number of output files, which determines how many simulation
+    //  timesteps are performed between file writes.
+    unsigned int       numberOfOutputFiles = 10;
+    const unsigned int numberOfRenderingCellsPerSide = 50;
 
-  const unsigned int fileWriteTimestepInterval =
-    std::max((unsigned)1,
-             numberOfTimesteps / numberOfOutputFiles);
-  const unsigned int heartbeatOutputTimestepInterval =
-    std::max((unsigned)1,
-             numberOfTimesteps / 10);
-  const double courant2 = courant * courant;
-
-  const unsigned int paddedCellsPerSide = numberOfCellsPerSide + 2;
-
-  // initialize the data
-  typedef Kokkos::View<double***, Kokkos::LayoutRight> ViewType;
-  ViewType u("u", 2, paddedCellsPerSide, paddedCellsPerSide);
-  ViewType::HostMirror u_host = Kokkos::create_mirror_view(u);
-
-  const std::array<double, 2> gaussianCenter =
-    {{paddedCellsPerSide / 2., paddedCellsPerSide / 2.}};
-  double maxValue = std::numeric_limits<double>::lowest();
-  for (unsigned int i = 0; i < paddedCellsPerSide; ++i) {
-    for (unsigned int j = 0; j < paddedCellsPerSide; ++j) {
-      const std::array<double, 2> diff =
-        {{(i + 0.5) - gaussianCenter[0], (j + 0.5) - gaussianCenter[1]}};
-      const double r = std::sqrt(diff[0] * diff[0] + diff[1] * diff[1]);
-      const double c = numberOfCellsPerSide / 10;
-      const double b = numberOfCellsPerSide / 10;
-      const double value = std::exp(-1.*(r-b)*(r-b)/(2*c*c));
-      u_host(0, i, j) = value;
-      u_host(1, i, j) = value;
-      maxValue = std::max(maxValue, value);
-    }
-  }
-  Kokkos::deep_copy(u, u_host);
-  printf("memory size is %8.2e bytes, max initial value is %lf\n",
-         float(sizeof(double) * paddedCellsPerSide * paddedCellsPerSide * 2),
-         maxValue);
-
-  double totalCalculationTime = 0;
-  // for each time step
-  unsigned int fileIndex = 0;
-  for (unsigned int timestepIndex = 0;
-       timestepIndex < numberOfTimesteps; ++timestepIndex) {
-
-    if (timestepIndex % heartbeatOutputTimestepInterval == 0) {
-      printf("simulation on timestep %4u/%4u (%%%5.1f)\n",
-             timestepIndex, numberOfTimesteps,
-             100. * timestepIndex / float(numberOfTimesteps));
-    }
-
-    Kokkos::Timer timer;
-
-    const unsigned int t   = timestepIndex % 2;
-    const unsigned int tp1 = (timestepIndex + 1) % 2;
-    Kokkos::parallel_for
-      (numberOfCellsPerSide * numberOfCellsPerSide,
-       KOKKOS_LAMBDA (const unsigned int index) {
-        const unsigned int i = index / numberOfCellsPerSide + 1;
-        const unsigned int j = index % numberOfCellsPerSide + 1;
-        const double utij = u(t, i, j);
-        u(tp1, i, j) =
-          (2 - 4 * courant2) * utij
-          - u(tp1, i, j)
-          + courant2 * (1*u(t, i+1, j)
-                        + u(t, i-1, j)
-                        + u(t, i, j+1)
-                        + u(t, i, j-1));
-      });
-
-    Kokkos::fence();
-    const double thisTimestepsElapsedTime = timer.seconds();
-    totalCalculationTime += thisTimestepsElapsedTime;
-
-    if (timestepIndex % fileWriteTimestepInterval == 0) {
-      // write a file
-      char sprintfBuffer[500];
-      sprintf(sprintfBuffer, "Kokkos_%03u.csv", fileIndex);
-      const unsigned int t   = timestepIndex % 2;
-      FILE* file = fopen(sprintfBuffer, "w");
-      const unsigned int interval =
-        std::max((unsigned)1,
-                 paddedCellsPerSide / numberOfRenderingCellsPerSide);
-      Kokkos::deep_copy(u_host, u);
-      double maxValue = std::numeric_limits<double>::lowest();
-      for (unsigned int i = 0; i < paddedCellsPerSide; i += interval) {
-        fprintf(file, "%4.2f", u_host(t, i, 0));
-        for (unsigned int j = interval; j < paddedCellsPerSide; j += interval) {
-          const double value = u_host(t, i, j);
-          fprintf(file, ", %4.2f", value);
-          maxValue = std::max(maxValue, value);
-        }
-        fprintf(file, "\n");
+    // Read command line arguments
+    for (int i = 0; i < argc; i++)
+    {
+      if ((strcmp(argv[i], "-n") == 0) || (strcmp(argv[i], "-num_cells") == 0))
+      {
+        numberOfCellsPerSide = atoi(argv[++i]);
       }
-      fclose(file);
-      printf("max value for file %3u is %4.2lf\n", fileIndex, maxValue);
-      ++fileIndex;
+      else if ((strcmp(argv[i], "-t") == 0) || (strcmp(argv[i], "-time_steps") == 0))
+      {
+        numberOfTimesteps = atof(argv[++i]);
+      }
+      else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "-num_outputs") == 0))
+      {
+        numberOfOutputFiles = atof(argv[++i]);
+      }
+      else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "-help") == 0))
+      {
+        printf("FiniteDifference 2D Wave Options:\n");
+        printf("  -num_cells (-n)   <int>: number of cells per side (default: 1600)\n");
+        printf("  -time_steps (-t)  <int>: number of timesteps (default: 100s)\n");
+        printf("  -num_outputs (-o) <int>: number of output file (default: 10)\n");
+        printf("  -help (-h):              print this message\n");
+      }
     }
 
-  }
+    // ===============================================================
+    // =========================== </inputs> =========================
+    // ===============================================================
 
-  printf("total calculation time was %.2lf seconds\n", totalCalculationTime);
+    const unsigned int fileWriteTimestepInterval =
+      std::max((unsigned)1, numberOfTimesteps / numberOfOutputFiles);
+    const unsigned int heartbeatOutputTimestepInterval =
+      std::max((unsigned)1, numberOfTimesteps / 10);
+    const double courant2 = courant * courant;
+
+    const unsigned int paddedCellsPerSide = numberOfCellsPerSide + 2;
+
+    // initialize the data
+    typedef Kokkos::View<double ***, Kokkos::LayoutRight> ViewType;
+    ViewType             u("u", 2, paddedCellsPerSide, paddedCellsPerSide);
+    ViewType::HostMirror u_host = Kokkos::create_mirror_view(u);
+
+    const std::array<double, 2> gaussianCenter = { { paddedCellsPerSide / 2.,
+                                                     paddedCellsPerSide / 2. } };
+    double                      maxValue = std::numeric_limits<double>::lowest();
+    for (unsigned int i = 0; i < paddedCellsPerSide; ++i)
+    {
+      for (unsigned int j = 0; j < paddedCellsPerSide; ++j)
+      {
+        const std::array<double, 2> diff = { { (i + 0.5) - gaussianCenter[0],
+                                               (j + 0.5) - gaussianCenter[1] } };
+        const double                r = std::sqrt(diff[0] * diff[0] + diff[1] * diff[1]);
+        const double                c = numberOfCellsPerSide / 10;
+        const double                b = numberOfCellsPerSide / 10;
+        const double                value = std::exp(-1. * (r - b) * (r - b) / (2 * c * c));
+        u_host(0, i, j) = value;
+        u_host(1, i, j) = value;
+        maxValue = std::max(maxValue, value);
+      }
+    }
+    Kokkos::deep_copy(u, u_host);
+    printf("memory size is %8.2e bytes, max initial value is %lf\n",
+           float(sizeof(double) * paddedCellsPerSide * paddedCellsPerSide * 2),
+           maxValue);
+
+    double totalCalculationTime = 0;
+    // for each time step
+    unsigned int fileIndex = 0;
+    for (unsigned int timestepIndex = 0; timestepIndex < numberOfTimesteps; ++timestepIndex)
+    {
+
+      if (timestepIndex % heartbeatOutputTimestepInterval == 0)
+      {
+        printf("simulation on timestep %4u/%4u (%%%5.1f)\n",
+               timestepIndex,
+               numberOfTimesteps,
+               100. * timestepIndex / float(numberOfTimesteps));
+      }
+
+      Kokkos::Timer timer;
+
+      const unsigned int t = timestepIndex % 2;
+      const unsigned int tp1 = (timestepIndex + 1) % 2;
+      Kokkos::parallel_for(
+        numberOfCellsPerSide * numberOfCellsPerSide, KOKKOS_LAMBDA(const unsigned int index) {
+          const unsigned int i = index / numberOfCellsPerSide + 1;
+          const unsigned int j = index % numberOfCellsPerSide + 1;
+          const double       utij = u(t, i, j);
+          u(tp1, i, j) =
+            (2 - 4 * courant2) * utij - u(tp1, i, j) +
+            courant2 * (1 * u(t, i + 1, j) + u(t, i - 1, j) + u(t, i, j + 1) + u(t, i, j - 1));
+        });
+
+      Kokkos::fence();
+      const double thisTimestepsElapsedTime = timer.seconds();
+      totalCalculationTime += thisTimestepsElapsedTime;
+
+      if (timestepIndex % fileWriteTimestepInterval == 0)
+      {
+        // write a file
+        char sprintfBuffer[500];
+        sprintf(sprintfBuffer, "wave_%03u.csv", fileIndex);
+        const unsigned int t = timestepIndex % 2;
+        FILE *             file = fopen(sprintfBuffer, "w");
+        const unsigned int interval =
+          std::max((unsigned)1, paddedCellsPerSide / numberOfRenderingCellsPerSide);
+        Kokkos::deep_copy(u_host, u);
+        double maxValue = std::numeric_limits<double>::lowest();
+        for (unsigned int i = 0; i < paddedCellsPerSide; i += interval)
+        {
+          fprintf(file, "%4.2f", u_host(t, i, 0));
+          for (unsigned int j = interval; j < paddedCellsPerSide; j += interval)
+          {
+            const double value = u_host(t, i, j);
+            fprintf(file, ", %4.2f", value);
+            maxValue = std::max(maxValue, value);
+          }
+          fprintf(file, "\n");
+        }
+        fclose(file);
+        printf("max value for file %3u is %4.2lf\n", fileIndex, maxValue);
+        ++fileIndex;
+      }
+    }
+
+    printf("total calculation time was %.2lf seconds\n", totalCalculationTime);
+  }
 
   Kokkos::finalize();
 

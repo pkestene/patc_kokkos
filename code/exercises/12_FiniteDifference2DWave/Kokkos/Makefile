@@ -9,17 +9,17 @@ default: build
 
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
-CXX = ${KOKKOS_PATH}/config/nvcc_wrapper
+CXX = ${KOKKOS_PATH}/bin/nvcc_wrapper
 EXE = ${EXE_NAME}.cuda
-KOKKOS_ARCH = "SNB,Kepler35"
+KOKKOS_ARCH = "Volta70"
 KOKKOS_CUDA_OPTIONS = "enable_lambda"
 else
 CXX = g++
 EXE = ${EXE_NAME}.host
-KOKKOS_ARCH = "SNB"
+KOKKOS_ARCH = "BDW"
 endif
 
-CXXFLAGS = -O3 -g
+CXXFLAGS = -O3 -Wall -Wextra -pedantic
 LINK = ${CXX}
 LINKFLAGS =
 

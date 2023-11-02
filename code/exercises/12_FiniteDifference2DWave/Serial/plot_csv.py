@@ -13,7 +13,7 @@ def read_csv(filename):
 fig, ax = plt.subplots()
 
 index = 0
-prefix = "Serial"
+prefix = "wave"
 filename = prefix+"_{0:03d}.csv".format(index)
 data = read_csv(filename)
 nx,ny = data.shape
@@ -28,7 +28,7 @@ def animate(i):
     return line,
 
 def init():
-    
+
     filename = prefix+"_{0:03d}.csv".format(0)
     data = read_csv(filename)
 

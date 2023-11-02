@@ -197,7 +197,7 @@ main(int argc, char ** argv)
     {
       // write a file
       char sprintfBuffer[500];
-      sprintf(sprintfBuffer, "Serial_%03u.csv", fileIndex);
+      sprintf(sprintfBuffer, "wave_%03u.csv", fileIndex);
       const unsigned int t = timestepIndex % 2;
       FILE *             file = fopen(sprintfBuffer, "w");
       const unsigned int interval =
